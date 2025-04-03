@@ -13,8 +13,12 @@ const HeaderWrapper = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
+  position: fixed;
   z-index: 200;
+  width: 100%;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
 `;
 
 const Logo = styled.div`
