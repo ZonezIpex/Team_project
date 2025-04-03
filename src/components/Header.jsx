@@ -129,7 +129,12 @@ function Header({ onChangeLanguage, language }) {
             )}
           </div>
 
-          <Icon src={profileIcon} alt="내 프로필" />
+          <Icon
+            src={profileIcon}
+            alt="내 프로필"
+            onClick={() => window.location.href = '/mypage'} // ✅ 이 줄 추가
+          />
+
 
           <Icon
             src={menuIcon}
