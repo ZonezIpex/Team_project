@@ -4,7 +4,7 @@ import resume2 from '../assets/resume2.png';
 
 const MiddleSection = styled.section`
   min-height: 100vh;
-  padding: 10vh 5vw 6vh;
+  padding: 6vh 5vw 6vh;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -37,7 +37,7 @@ const ResumeContainer = styled.div`
 `;
 
 const ResumeImg = styled.img`
-  width: clamp(280px, 32vw, 600px);
+  width: clamp(280px, 32vw, 500px);
   height: auto;
   border-radius: 10px;
   box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.15);
