@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 const TopSection = styled.section`
-  min-height: 100vh;
-  padding: 6vh 5vw; /* 패딩 위쪽 여백 조금 줄임 */
+  min-height: 80vh;
+  padding: 4vh 5vw;
   display: flex;
   flex-direction: column;
   justify-content: start; /* 중앙보다 위쪽에 위치하도록 조정 */
@@ -16,18 +16,18 @@ const Title = styled.h1`
   font-weight: bold;
   line-height: 1.5;
   text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-  margin-top: 10vh; /* 글씨를 살짝 위로 올림 */
+  margin-top: 24vh;
 `;
 
 const Subtitle = styled.p`
   font-size: clamp(1rem, 2vw, 1.8rem);
   font-style: italic;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   color: #f0f0f0;
 `;
 
 const ButtonWrapper = styled.div`
-  margin-top: 3rem;
+  margin-top: 4rem;
   display: flex;
   justify-content: center;
   gap: 20px;
@@ -53,8 +53,8 @@ const WriteButton = styled.button`
 function MainTop({ language }) {
   const text = {
     ko: {
-      title: '이력서 초기 작성 도우미를 통해\n작성에 도움을 받으세요',
-      subtitle: '~이력서 작성해보세요~',
+      title: '이력서 초기 작성 도우미를 통해 \n 작성에 도움을 받으세요',
+      subtitle: '나만의 이력서 만들기',
       button: '이력서 작성하기',
     },
     en: {
