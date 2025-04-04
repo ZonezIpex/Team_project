@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import MainTop from '../components/MainTop';
@@ -42,13 +42,8 @@ const ScrollTopBtn = styled.button`
   }
 `;
 
-function MainPage() {
-  const [language, setLanguage] = useState(localStorage.getItem('language') || 'ko');
+function MainPage({ language, onChangeLanguage }) {
   const [showScrollBtn, setShowScrollBtn] = useState(false);
-
-  useEffect(() => {
-    localStorage.setItem('language', language);
-  }, [language]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,7 +64,7 @@ function MainPage() {
 
   return (
     <PageWrapper>
-      <Header onChangeLanguage={setLanguage} language={language} />
+      <Header language={language} onChangeLanguage={onChangeLanguage} />
       <HighlightBanner>{bannerText[language]}</HighlightBanner>
       <MainTop language={language} />
       <MainMiddle language={language} />

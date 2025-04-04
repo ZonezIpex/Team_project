@@ -1,8 +1,9 @@
+// src/pages/MyPage.jsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Header from '../components/Header'; // 기존 Header 그대로 사용
-import Footer from '../components/Footer'; // 기존 Footer 그대로 사용
-import profileImg from '../assets/profile1.jpg'; // 프로필 이미지 파일
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import profileImg from '../assets/profile1.jpg';
 
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
@@ -83,7 +84,7 @@ const ResumeCard = styled.div`
   height: 240px;
   background-color: white;
   border-radius: 12px;
-  box-shadow: 1px 1px 6px rgba(0,0,0,0.1);
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const ReviewCard = styled.div`
@@ -91,17 +92,17 @@ const ReviewCard = styled.div`
   min-height: 200px;
   background-color: white;
   border-radius: 12px;
-  box-shadow: 1px 1px 6px rgba(0,0,0,0.1);
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
   line-height: 1.4;
 `;
 
-function MyPage() {
-  const [tab, setTab] = useState('resume'); // 'resume' 또는 'review'
+function MyPage({ language, onChangeLanguage }) {
+  const [tab, setTab] = useState('resume');
 
   return (
     <PageWrapper>
-      <Header />
+      <Header language={language} onChangeLanguage={onChangeLanguage} />
       <Content>
         <Title>마이페이지</Title>
 
@@ -111,8 +112,12 @@ function MyPage() {
         </ProfileSection>
 
         <TabBox>
-          <Tab active={tab === 'resume'} onClick={() => setTab('resume')}>이력서</Tab>
-          <Tab active={tab === 'review'} onClick={() => setTab('review')}>리뷰</Tab>
+          <Tab active={tab === 'resume'} onClick={() => setTab('resume')}>
+            이력서
+          </Tab>
+          <Tab active={tab === 'review'} onClick={() => setTab('review')}>
+            리뷰
+          </Tab>
         </TabBox>
 
         <TabContent>
@@ -126,18 +131,24 @@ function MyPage() {
           ) : (
             <>
               <ReviewCard>
-                <strong>진짜 최고의 이력서</strong><br />
-                ⭐⭐⭐⭐⭐<br />
+                <strong>진짜 최고의 이력서</strong>
+                <br />
+                ⭐⭐⭐⭐⭐
+                <br />
                 이력서 내용이 너무 마음에 들어서 내용...
               </ReviewCard>
               <ReviewCard>
-                <strong>진짜 최고의 이력서</strong><br />
-                ⭐⭐⭐⭐⭐<br />
+                <strong>진짜 최고의 이력서</strong>
+                <br />
+                ⭐⭐⭐⭐⭐
+                <br />
                 이력서 내용이 너무 마음에 들어서 내용...
               </ReviewCard>
               <ReviewCard>
-                <strong>진짜 최고의 이력서</strong><br />
-                ⭐⭐⭐⭐⭐<br />
+                <strong>진짜 최고의 이력서</strong>
+                <br />
+                ⭐⭐⭐⭐⭐
+                <br />
                 이력서 내용이 너무 마음에 들어서 내용...
               </ReviewCard>
             </>
