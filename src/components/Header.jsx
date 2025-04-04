@@ -136,9 +136,8 @@ function Header({ onChangeLanguage, language }) {
           <Icon
             src={profileIcon}
             alt="내 프로필"
-            onClick={() => window.location.href = '/mypage'} // ✅ 이 줄 추가
+            onClick={() => (window.location.href = '/mypage')}
           />
-
 
           <Icon
             src={menuIcon}
@@ -149,7 +148,7 @@ function Header({ onChangeLanguage, language }) {
         </IconGroup>
       </HeaderWrapper>
 
-      <MenuSidebar isOpen={menuOpen} innerRef={menuRef} language={language} />
+      <MenuSidebar isOpen={menuOpen} innerRef={menuRef} language={language} onClose={() => setMenuOpen(false)}/>
     </>
   );
 }
