@@ -80,10 +80,13 @@ const Title = styled.h1`
 
 const SectionTitle = styled.h3`
   font-size: 1.25rem;
-  text-align:left;
-  align-self:flex-start;
+  text-align: left;
+  align-self: flex-start;
   margin-top: 2rem;
   margin-bottom: 1rem;
+  border-bottom: 3px solid #176B87;  // 밑줄 추가
+  padding-bottom: 0.3rem;             // 밑줄과 텍스트 사이 간격
+  width: 30%;                     
 `;
 
 const Stepper = styled.div`
