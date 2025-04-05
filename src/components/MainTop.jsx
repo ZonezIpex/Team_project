@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const TopSection = styled.section`
@@ -5,10 +6,17 @@ const TopSection = styled.section`
   padding: 4vh 5vw;
   display: flex;
   flex-direction: column;
-  justify-content: start; /* 중앙보다 위쪽에 위치하도록 조정 */
+  justify-content: start;
   align-items: center;
   color: white;
   text-align: center;
+`;
+
+const Greeting = styled.div`
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-top: 10vh;
+  color: #fff7d6;
 `;
 
 const Title = styled.h1`
@@ -16,7 +24,7 @@ const Title = styled.h1`
   font-weight: bold;
   line-height: 1.5;
   text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-  margin-top: 24vh;
+  margin-top: 1rem;
 `;
 
 const Subtitle = styled.p`
@@ -56,24 +64,35 @@ function MainTop({ language }) {
       title: '이력서 초기 작성 도우미를 통해 \n 작성에 도움을 받으세요',
       subtitle: '나만의 이력서 만들기',
       button: '이력서 작성하기',
+      greeting: (name) => `안녕하세요, ${name} 님 👋\n당신의 이력서를 준비해볼까요?`,
     },
     en: {
       title: 'Use the resume assistant\nto start writing easily',
       subtitle: '~Start writing your resume~',
       button: 'Start Resume',
+      greeting: (name) => `Hello, ${name}! 👋\nReady to build your resume?`,
     },
   };
 
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const name = localStorage.getItem('username');
+    if (name) setUsername(name);
+  }, []);
+
+  const t = text[language || 'ko'];
+
   return (
     <TopSection>
-      <Title>{text[language].title}</Title>
-      <Subtitle>{text[language].subtitle}</Subtitle>
+      {username && <Greeting>{t.greeting(username)}</Greeting>}
+      <Title>{t.title}</Title>
+      <Subtitle>{t.subtitle}</Subtitle>
       <ButtonWrapper>
-        <WriteButton>{text[language].button}</WriteButton>
+        <WriteButton>{t.button}</WriteButton>
       </ButtonWrapper>
     </TopSection>
   );
 }
-
 
 export default MainTop;
