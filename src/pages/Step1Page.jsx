@@ -1,10 +1,14 @@
 import React from "react";
 import styled from "styled-components";
+import Header from '../components/Header'; // 기존 Header 그대로 사용
+import Footer from '../components/Footer'; // 기존 Footer 그대로 사용
 
-const steps = ["이력서\n양식", "신상 정보", "경력", "수정", "완성"];
+const steps = ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"];
 
 export default function ResumeStepIndicator({ currentStep = 0 }) {
   return (
+    <PageWrapper>
+      <Header/>
     <Container>
       <Title>이력서 양식 선택</Title>
 
@@ -17,6 +21,7 @@ export default function ResumeStepIndicator({ currentStep = 0 }) {
         ))}
       </Stepper>
 
+    <div>
       <SectionTitle>이력서 양식 예시</SectionTitle>
       <TemplateGrid>
         {[1, 2, 3].map((n) => (
@@ -24,41 +29,59 @@ export default function ResumeStepIndicator({ currentStep = 0 }) {
         ))}
         <TemplateAdd>+</TemplateAdd>
       </TemplateGrid>
+      </div>
 
+      <div>
       <SectionTitle>최근 사용</SectionTitle>
-      <TemplateGrid>
-        {[1, 2, 3].map((n) => (
-          <Template key={n} style={{ backgroundColor: "#f1f1f1" }}>
-            최근 {n}
-          </Template>
-        ))}
-      </TemplateGrid>
+        <TemplateBox>
+          <TemplateGrid>
+            {[1, 2, 3].map((n) => (
+              <Template key={n} style={{ backgroundColor: "#f1f1f1" }}>
+                최근 {n}
+              </Template>
+            ))}
+          </TemplateGrid>
+        </TemplateBox>
+      </div>
 
-      <Footer>
-        13916 경기도 안양시 동안구 임곡로 29 대림대학교 | 대표전화: 031-467-4700<br />
-        Copyright 학사뉴 ALL RIGHTS RESERVED
-      </Footer>
-    </Container>
+      </Container>
+      <Footer/>
+    </PageWrapper>
   );
 }
 
 // styled-components 정의
-const Container = styled.div`
+
+const PageWrapper = styled.div`
+  background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
   min-height: 100vh;
-  background: linear-gradient(to bottom, #cce0ff, white);
+  display: flex;
+  flex-direction: column;
+`;
+
+const Container = styled.div`
+  flex: 1;
+  padding: 10px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
   padding: 2rem;
   font-family: sans-serif;
   text-align: center;
 `;
 
 const Title = styled.h1`
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 2rem;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  color: white;
+  margin-top: 100px;
+  margin-bottom: 30px;
 `;
 
 const SectionTitle = styled.h3`
   font-size: 1.25rem;
+  text-align:left;
+  align-self:flex-start;
   margin-top: 2rem;
   margin-bottom: 1rem;
 `;
@@ -103,6 +126,12 @@ const Line = styled.div`
   margin-right: -2px;
 `;
 
+const TemplateBox = styled.div`
+  background: rgba(243, 251, 255, 0.8);  // 기존 #aeafb5의 rgba 버전, 투명도 60%
+  padding: 20px 70px;
+  border-radius: 10px;
+`;
+
 const TemplateGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -118,7 +147,7 @@ const Template = styled.div`
   height: 200px;
   border: 1px solid #ccc;
   border-radius: 10px;
-  background-color: #f9f9f9;
+  background-color:rgb(255, 255, 255);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -130,12 +159,4 @@ const TemplateAdd = styled(Template)`
   font-size: 24px;
   color: #aaa;
   cursor: pointer;
-`;
-
-const Footer = styled.footer`
-  font-size: 0.8rem;
-  color: #555;
-  margin-top: 3rem;
-  word-break: keep-all;
-  padding: 0 1rem;
 `;
