@@ -5,6 +5,7 @@ import MainPage from './pages/MainPage';
 import MyPage from './pages/MyPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import ProfilePage from './pages/ProfilePage';
 
 import AdminDashboard from './adminPages/AdminDashboard';
 import DashboardMain from './adminPages/dashboard/Index'; // ✅ 대시보드 본문
@@ -32,6 +33,7 @@ function App() {
         <Route path="/mypage" element={<MyPage language={language} onChangeLanguage={setLanguage} />} />
         <Route path="/login" element={<LoginPage language={language} onChangeLanguage={setLanguage} />} />
         <Route path="/signup" element={<SignupPage language={language} onChangeLanguage={setLanguage} />} />
+        <Route path="/profile" element={< ProfilePage language={language} onChangeLanguage={setLanguage} />} />
 
         {/* ✅ 어드민 레이아웃 + 중첩된 경로들 */}
         <Route path="/admin" element={<AdminDashboard language={language} onChangeLanguage={setLanguage} />}>
