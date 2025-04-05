@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const TopSection = styled.section`
@@ -59,6 +60,9 @@ const WriteButton = styled.button`
 `;
 
 function MainTop({ language }) {
+  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+
   const text = {
     ko: {
       title: '이력서 초기 작성 도우미를 통해 \n 작성에 도움을 받으세요',
@@ -74,14 +78,22 @@ function MainTop({ language }) {
     },
   };
 
-  const [username, setUsername] = useState('');
+  const t = text[language || 'ko'];
 
   useEffect(() => {
     const name = localStorage.getItem('username');
     if (name) setUsername(name);
   }, []);
 
-  const t = text[language || 'ko'];
+  // ✅ 로그인 여부에 따라 버튼 동작
+  const handleWriteClick = () => {
+    const isLoggedIn = localStorage.getItem('loggedIn');
+    if (isLoggedIn === 'true') {
+      navigate('/step1page');
+    } else {
+      navigate('/login');
+    }
+  };
 
   return (
     <TopSection>
@@ -89,7 +101,7 @@ function MainTop({ language }) {
       <Title>{t.title}</Title>
       <Subtitle>{t.subtitle}</Subtitle>
       <ButtonWrapper>
-        <WriteButton>{t.button}</WriteButton>
+        <WriteButton onClick={handleWriteClick}>{t.button}</WriteButton>
       </ButtonWrapper>
     </TopSection>
   );

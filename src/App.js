@@ -19,12 +19,12 @@ import Error404 from './errorPages/Error404';
 import Error500 from './errorPages/Error500';
 import Error503 from './errorPages/Error503';
 
-import Step1 from './pages/Step1Page'; 
-import Step01 from './pages/Step1';
-import Step02 from './pages/Step2';
-import Step03 from './pages/Step3';
-import Step04 from './pages/Step4';
-import Step05 from './pages/Step5';
+import Step1Page from './pages/Step1Page';
+import Step2 from './pages/Step2';
+import Step3 from './pages/Step3';
+import Step4 from './pages/Step4';
+import Step5 from './pages/Step5';
+
 
 function App() {
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'ko');
@@ -35,35 +35,37 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<MainPage language={language} onChangeLanguage={setLanguage} />} />
-        <Route path="/mypage" element={<MyPage language={language} onChangeLanguage={setLanguage} />} />
-        <Route path="/login" element={<LoginPage language={language} onChangeLanguage={setLanguage} />} />
-        <Route path="/signup" element={<SignupPage language={language} onChangeLanguage={setLanguage} />} />
-        <Route path="/profilepage" element={< ProfilePage language={language} onChangeLanguage={setLanguage} />} />
+    <Routes>
+      <Route path="/" element={<MainPage language={language} onChangeLanguage={setLanguage} />} />
+      <Route path="/mypage" element={<MyPage language={language} onChangeLanguage={setLanguage} />} />
+      <Route path="/login" element={<LoginPage language={language} onChangeLanguage={setLanguage} />} />
+      <Route path="/signup" element={<SignupPage language={language} onChangeLanguage={setLanguage} />} />
+      <Route path="/profilepage" element={<ProfilePage language={language} onChangeLanguage={setLanguage} />} />
 
-        {/* ✅ 어드민 레이아웃 + 중첩된 경로들 */}
-        <Route path="/admin" element={<AdminDashboard language={language} onChangeLanguage={setLanguage} />}>
-          <Route path="step1" element={<Step1 language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="step01" element={<Step01 language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="step02" element={<Step02 language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="step03" element={<Step03 language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="step04" element={<Step04 language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="step05" element={<Step05 language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="dashboard" element={<DashboardMain language={language} />} />
-          <Route path="users" element={<UsersPage />} />
-          <Route path="reviews" element={<ReviewsPage />} />
-        </Route>
+      {/* ✅ 이력서 작성 단계 경로들 */}
+      <Route path="/step1page" element={<Step1Page language={language} onChangeLanguage={setLanguage} />} />
+      <Route path="/step2" element={<Step2 language={language} onChangeLanguage={setLanguage} />} />
+      <Route path="/step3" element={<Step3 language={language} onChangeLanguage={setLanguage} />} />
+      <Route path="/step4" element={<Step4 language={language} onChangeLanguage={setLanguage} />} />
+      <Route path="/step5" element={<Step5 language={language} onChangeLanguage={setLanguage} />} />
 
-        {/* 에러 페이지 */}
-        <Route path="/error/400" element={<Error400 />} />
-        <Route path="/error/401" element={<Error401 />} />
-        <Route path="/error/403" element={<Error403 />} />
-        <Route path="/error/500" element={<Error500 />} />
-        <Route path="/error/503" element={<Error503 />} />
-        <Route path="*" element={<Error404 />} />
-      </Routes>
-    </Router>
+      {/* 어드민 라우트 */}
+      <Route path="/admin" element={<AdminDashboard language={language} onChangeLanguage={setLanguage} />}>
+        <Route path="dashboard" element={<DashboardMain language={language} />} />
+        <Route path="users" element={<UsersPage />} />
+        <Route path="reviews" element={<ReviewsPage />} />
+      </Route>
+
+      {/* 에러 페이지 */}
+      <Route path="/error/400" element={<Error400 />} />
+      <Route path="/error/401" element={<Error401 />} />
+      <Route path="/error/403" element={<Error403 />} />
+      <Route path="/error/500" element={<Error500 />} />
+      <Route path="/error/503" element={<Error503 />} />
+      <Route path="*" element={<Error404 />} />
+    </Routes>
+</Router>
+
   );
 }
 
