@@ -13,8 +13,12 @@ const HeaderWrapper = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
+  position: fixed;
   z-index: 200;
+  width: 100%;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
 `;
 
 const Logo = styled.div`
@@ -129,7 +133,11 @@ function Header({ onChangeLanguage, language }) {
             )}
           </div>
 
-          <Icon src={profileIcon} alt="내 프로필" />
+          <Icon
+            src={profileIcon}
+            alt="내 프로필"
+            onClick={() => (window.location.href = '/mypage')}
+          />
 
           <Icon
             src={menuIcon}
@@ -140,7 +148,7 @@ function Header({ onChangeLanguage, language }) {
         </IconGroup>
       </HeaderWrapper>
 
-      <MenuSidebar isOpen={menuOpen} innerRef={menuRef} language={language} />
+      <MenuSidebar isOpen={menuOpen} innerRef={menuRef} language={language} onClose={() => setMenuOpen(false)}/>
     </>
   );
 }
