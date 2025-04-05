@@ -71,6 +71,8 @@ function AdminDashboard({ language, onChangeLanguage }) {
         { path: '/login', label: '로그인 페이지' },
         { path: '/signup', label: '회원가입 페이지' },
         { path: '/mypage', label: '마이페이지' },
+        { path: '/profilepage', label: '프로필 상세 페이지' }, // ✅ 추가
+        { path: '/step1page', label: '이력서 작성 Step1' },   // ✅ 추가
         { path: '/reviews', label: '리뷰 목록 페이지' },
         { path: '/error/404', label: '404 에러 페이지' },
         { path: '/error/500', label: '500 에러 페이지' },
@@ -84,6 +86,8 @@ function AdminDashboard({ language, onChangeLanguage }) {
         { path: '/login', label: 'Login Page' },
         { path: '/signup', label: 'Signup Page' },
         { path: '/mypage', label: 'My Page' },
+        { path: '/profilepage', label: 'Profile Page' },      // ✅ 추가
+        { path: '/step1page', label: 'Resume Step1' },         // ✅ 추가
         { path: '/reviews', label: 'Review List Page' },
         { path: '/error/404', label: 'Error 404 Page' },
         { path: '/error/500', label: 'Error 500 Page' },
