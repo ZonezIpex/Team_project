@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import profileImg from '../assets/profile1.jpg';
+import resume1 from '../assets/이력서이미지.jpg';
+import { useNavigate } from 'react-router-dom';
 
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
@@ -96,9 +98,22 @@ const ReviewCard = styled.div`
   padding: 20px;
   line-height: 1.4;
 `;
+const LinkText = styled.div`
+  color: white;
+  font-size: 1rem;
+  margin-top: 5px;
+  cursor: pointer;
+  text-decoration: underline;
 
-function MyPage({ language, onChangeLanguage }) {
+  &:hover {
+    color: #ffeb3b;
+  }
+`;
+
+
+const MyPage = ({ language, onChangeLanguage }) => {
   const [tab, setTab] = useState('resume');
+  const navigate = useNavigate();
 
   return (
     <PageWrapper>
@@ -108,47 +123,46 @@ function MyPage({ language, onChangeLanguage }) {
 
         <ProfileSection>
           <ProfileImage src={profileImg} alt="프로필" />
-          <ProfileText>고냥이</ProfileText>
+          <div>
+            <ProfileText>고냥이</ProfileText>
+            <LinkText onClick={() => navigate('/ProfilePage')}>개인정보 🔗</LinkText>
+            <LinkText onClick={() => navigate('/blog')}>블로그 🔗</LinkText>
+          </div>
         </ProfileSection>
 
         <TabBox>
-          <Tab active={tab === 'resume'} onClick={() => setTab('resume')}>
-            이력서
-          </Tab>
-          <Tab active={tab === 'review'} onClick={() => setTab('review')}>
-            리뷰
-          </Tab>
+          <Tab active={tab === 'resume'} onClick={() => setTab('resume')}>이력서</Tab>
+          <Tab active={tab === 'review'} onClick={() => setTab('review')}>리뷰</Tab>
         </TabBox>
 
         <TabContent>
           {tab === 'resume' ? (
             <>
-              <ResumeCard />
-              <ResumeCard />
-              <ResumeCard />
-              <ResumeCard />
+              <ResumeCard>
+                <img src={resume1} alt="이력서 이미지" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
+              </ResumeCard>
+              <ResumeCard>
+                <img src={resume1} alt="이력서 이미지" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
+              </ResumeCard>
+              <ResumeCard>
+                <img src={resume1} alt="이력서 이미지" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
+              </ResumeCard>
             </>
           ) : (
             <>
               <ReviewCard>
-                <strong>진짜 최고의 이력서</strong>
-                <br />
-                ⭐⭐⭐⭐⭐
-                <br />
+                <strong>진짜 최고의 이력서</strong><br />
+                ⭐⭐⭐⭐⭐<br />
                 이력서 내용이 너무 마음에 들어서 내용...
               </ReviewCard>
               <ReviewCard>
-                <strong>진짜 최고의 이력서</strong>
-                <br />
-                ⭐⭐⭐⭐⭐
-                <br />
+                <strong>진짜 최고의 이력서</strong><br />
+                ⭐⭐⭐⭐⭐<br />
                 이력서 내용이 너무 마음에 들어서 내용...
               </ReviewCard>
               <ReviewCard>
-                <strong>진짜 최고의 이력서</strong>
-                <br />
-                ⭐⭐⭐⭐⭐
-                <br />
+                <strong>진짜 최고의 이력서</strong><br />
+                ⭐⭐⭐⭐⭐<br />
                 이력서 내용이 너무 마음에 들어서 내용...
               </ReviewCard>
             </>
@@ -158,6 +172,6 @@ function MyPage({ language, onChangeLanguage }) {
       <Footer />
     </PageWrapper>
   );
-}
+};
 
 export default MyPage;
