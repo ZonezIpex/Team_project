@@ -40,17 +40,16 @@ function App() {
         <Route path="/mypage" element={<MyPage language={language} onChangeLanguage={setLanguage} />} />
         <Route path="/login" element={<LoginPage language={language} onChangeLanguage={setLanguage} />} />
         <Route path="/signup" element={<SignupPage language={language} onChangeLanguage={setLanguage} />} />
-
         <Route path="/profilepage" element={< ProfilePage language={language} onChangeLanguage={setLanguage} />} />
 
         {/* ✅ 어드민 레이아웃 + 중첩된 경로들 */}
         <Route path="/admin" element={<AdminDashboard language={language} onChangeLanguage={setLanguage} />}>
-          <Route path="/step1" element={<Step1 language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/step01" element={<Step01 language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/step02" element={<Step02 language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/step03" element={<Step03 language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/step04" element={<Step04 language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/step05" element={<Step05 language={language} onChangeLanguage={setLanguage} />} />
+          <Route path="step1" element={<Step1 language={language} onChangeLanguage={setLanguage} />} />
+          <Route path="step01" element={<Step01 language={language} onChangeLanguage={setLanguage} />} />
+          <Route path="step02" element={<Step02 language={language} onChangeLanguage={setLanguage} />} />
+          <Route path="step03" element={<Step03 language={language} onChangeLanguage={setLanguage} />} />
+          <Route path="step04" element={<Step04 language={language} onChangeLanguage={setLanguage} />} />
+          <Route path="step05" element={<Step05 language={language} onChangeLanguage={setLanguage} />} />
           <Route path="dashboard" element={<DashboardMain language={language} />} />
           <Route path="users" element={<UsersPage />} />
           <Route path="reviews" element={<ReviewsPage />} />
