@@ -33,7 +33,7 @@ function App() {
         <Route path="/mypage" element={<MyPage language={language} onChangeLanguage={setLanguage} />} />
         <Route path="/login" element={<LoginPage language={language} onChangeLanguage={setLanguage} />} />
         <Route path="/signup" element={<SignupPage language={language} onChangeLanguage={setLanguage} />} />
-        <Route path="/profile" element={< ProfilePage language={language} onChangeLanguage={setLanguage} />} />
+        <Route path="/profilepage" element={< ProfilePage language={language} onChangeLanguage={setLanguage} />} />
 
         {/* ✅ 어드민 레이아웃 + 중첩된 경로들 */}
         <Route path="/admin" element={<AdminDashboard language={language} onChangeLanguage={setLanguage} />}>
