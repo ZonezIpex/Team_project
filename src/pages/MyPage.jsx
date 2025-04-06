@@ -1,8 +1,11 @@
+// src/pages/MyPage.jsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Header from '../components/Header'; // 기존 Header 그대로 사용
-import Footer from '../components/Footer'; // 기존 Footer 그대로 사용
-import profileImg from '../assets/profile1.jpg'; // 프로필 이미지 파일
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import profileImg from '../assets/profile1.jpg';
+import resume1 from '../assets/이력서이미지.jpg';
+import { useNavigate } from 'react-router-dom';
 
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
@@ -83,7 +86,7 @@ const ResumeCard = styled.div`
   height: 240px;
   background-color: white;
   border-radius: 12px;
-  box-shadow: 1px 1px 6px rgba(0,0,0,0.1);
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const ReviewCard = styled.div`
@@ -91,23 +94,40 @@ const ReviewCard = styled.div`
   min-height: 200px;
   background-color: white;
   border-radius: 12px;
-  box-shadow: 1px 1px 6px rgba(0,0,0,0.1);
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
   line-height: 1.4;
 `;
+const LinkText = styled.div`
+  color: white;
+  font-size: 1rem;
+  margin-top: 5px;
+  cursor: pointer;
+  text-decoration: underline;
 
-function MyPage() {
-  const [tab, setTab] = useState('resume'); // 'resume' 또는 'review'
+  &:hover {
+    color: #ffeb3b;
+  }
+`;
+
+
+const MyPage = ({ language, onChangeLanguage }) => {
+  const [tab, setTab] = useState('resume');
+  const navigate = useNavigate();
 
   return (
     <PageWrapper>
-      <Header />
+      <Header language={language} onChangeLanguage={onChangeLanguage} />
       <Content>
         <Title>마이페이지</Title>
 
         <ProfileSection>
           <ProfileImage src={profileImg} alt="프로필" />
-          <ProfileText>고냥이</ProfileText>
+          <div>
+            <ProfileText>고냥이</ProfileText>
+            <LinkText onClick={() => navigate('/ProfilePage')}>개인정보 🔗</LinkText>
+            <LinkText onClick={() => navigate('/blog')}>블로그 🔗</LinkText>
+          </div>
         </ProfileSection>
 
         <TabBox>
@@ -118,10 +138,15 @@ function MyPage() {
         <TabContent>
           {tab === 'resume' ? (
             <>
-              <ResumeCard />
-              <ResumeCard />
-              <ResumeCard />
-              <ResumeCard />
+              <ResumeCard>
+                <img src={resume1} alt="이력서 이미지" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
+              </ResumeCard>
+              <ResumeCard>
+                <img src={resume1} alt="이력서 이미지" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
+              </ResumeCard>
+              <ResumeCard>
+                <img src={resume1} alt="이력서 이미지" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
+              </ResumeCard>
             </>
           ) : (
             <>
@@ -147,6 +172,6 @@ function MyPage() {
       <Footer />
     </PageWrapper>
   );
-}
+};
 
 export default MyPage;
