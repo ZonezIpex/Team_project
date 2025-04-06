@@ -1,3 +1,19 @@
+
+## 추가-4<br/>
+src/components에 review 폴더 추가<br/>
+ReviewCard.jsx<br/>
+ReviewTabs.jsx<br/>
+ReviewSlider.jsx<br/>
+ReviewGrid.jsx<br/>
+reviewStyles.jsx<br/>
+까지가 ReviewList.jsx 에 들어가야 하는 코드<br/><br/>
+
+ReviewForm.jsx<br/>
+ReviewImageUpload.jsx<br/>
+ReviewRating.jsx<br/>
+reviewWriteStyles.jsx<br/>
+까지가 ReviewWrite.jsx에 들어가야 하는 코드<br/><br/>
+
 ## App.js<br/>
 <Route path="/review" element={<ReviewList />} /><br/>
 <Route path="/review/write" element={<ReviewWrite />} /><br/>
