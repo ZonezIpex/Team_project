@@ -20,6 +20,7 @@ import Error500 from './errorPages/Error500';
 import Error503 from './errorPages/Error503';
 
 import Step1Page from './pages/Step1Page';
+import Step2Page from './pages/Step2Page';
 import Step2 from './pages/Step2';
 import Step3 from './pages/Step3';
 import Step4 from './pages/Step4';
@@ -44,6 +45,7 @@ function App() {
 
       {/* ✅ 이력서 작성 단계 경로들 */}
       <Route path="/step1page" element={<Step1Page language={language} onChangeLanguage={setLanguage} />} />
+      <Route path="/step2page" element={<Step2Page language={language} onChangeLanguage={setLanguage} />} />
       <Route path="/step2" element={<Step2 language={language} onChangeLanguage={setLanguage} />} />
       <Route path="/step3" element={<Step3 language={language} onChangeLanguage={setLanguage} />} />
       <Route path="/step4" element={<Step4 language={language} onChangeLanguage={setLanguage} />} />

@@ -1,99 +1,302 @@
 // src/components/Step2.jsx
 import React from "react";
+import styled from "styled-components";
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import Step1Page from './Step1Page';
+import Step3 from './Step3';
+import { useNavigate } from 'react-router-dom';
+
+const PageWrapper = styled.div`
+  background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Container = styled.div`
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  font-family: sans-serif;
+  text-align: center;
+`;
+
+const ResumeInput = styled.div`
+  background-color: white;
+  padding: 20px 30px;
+  border-radius: 10px;
+  box-shadow: 3px 3px 10px -3px gray;
+`;
+
+const Title = styled.h1`
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  color: white;
+  margin-top: 100px;
+  margin-bottom: 30px;
+`;
+
+const Stepper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+`;
+
+const Step = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Circle = styled.div`
+  min-width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: ${props =>
+    props.index <= props.currentStep ? '#146c94' : 'white'};
+  color: ${props =>
+    props.index <= props.currentStep ? 'white' : '#146c94'};
+  border: 3px solid #146c94;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 5px;
+  white-space: pre-line;
+  box-sizing: border-box;
+`;
+
+const Line = styled.div`
+  width: 30px;
+  height: 5px;
+  background-color: #146c94;
+  margin-left: -2px;
+  margin-right: -2px;
+`;
+
+const InfoSection = styled.div`
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+  width: 100%;
+  max-width: 800px;
+`;
+
+const PhotoBox = styled.div`
+  width: 150px;
+  height: 200px;
+  border: 2px dashed #aaa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
+`;
+
+const InputsColumn = styled.div`
+  flex: 1;
+`;
+
+const InputRow = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-top: ${props => props.marginTop || "0"};
+`;
+
+const Input = styled.input`
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+`;
+
+const Select = styled.select`
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+`;
+
+const BirthAddressSection = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 800px;
+`;
+
+const AddressInput = styled(Input)`
+  flex: 2;
+`;
+
+// 병역 사항 관련 스타일
+const MilitarySection = styled.div`
+  width: 100%;
+  max-width: 800px;
+  margin-top: 30px;
+  text-align: left;
+`;
+
+const MilitaryTitle = styled.h4`
+  margin-bottom: 10px;
+`;
+
+const MilitaryTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  font-size: 14px;
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+
+  th {
+    background-color: #f8f8f8;
+    font-weight: normal;
+  }
+
+  input, select {
+    width: 100%;
+    border: none;
+    font-size: 14px;
+    text-align: center;
+    background-color: transparent;
+    outline: none;
+  }
+`;
+
+const LinkText = styled.div`
+  color: white;
+  background-color: #146c94;
+  border: 1px solid #146c94;
+  border-radius:20px;
+  font-size: 1rem;
+  margin-top: 5px;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    color: #146c94;
+    background-color: white;
+  }
+`;
+
+const StepButton = styled.div`
+  text-align:center;
+`;
+
+const steps = ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"];
+const currentStep = 1; // 현재 단계: 신상정보까지 완료
 
 const Step2 = () => {
+  const navigate = useNavigate();
   return (
-    <div style={{ padding: "30px", maxWidth: "800px", margin: "0 auto" }}>
-      <h2 style={{ textAlign: "center" }}>2단계: 신상 정보 입력</h2>
+    <PageWrapper>
+      <Header/>
+      <Container>
+        <Title>신상 정보 입력</Title>
 
-      {/* 사진 및 기본 정보 */}
-      <div style={{ display: "flex", gap: "20px", marginTop: "30px" }}>
-        {/* 사진 업로드 박스 */}
-        <div
-          style={{
-            width: "150px",
-            height: "200px",
-            border: "2px dashed #aaa",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexShrink: 0,
-            cursor: "pointer",
-          }}
-        >
-          + 사진 추가
-        </div>
+        <Stepper>
+          {steps.map((step, index) => (
+            <Step key={step}>
+              <Circle index={index} currentStep={currentStep}>
+                {step}
+              </Circle>
+              {index < steps.length - 1 && <Line />}
+            </Step>
+          ))}
+        </Stepper>
 
-        {/* 이름 입력들 */}
-        <div style={{ flex: 1 }}>
-          <div style={{ display: "flex", gap: "10px" }}>
-            <input type="text" placeholder="이름" style={{ flex: 1 }} />
-            <input type="text" placeholder="영문 이름" style={{ flex: 1 }} />
-          </div>
-          <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-            <input type="text" placeholder="성" style={{ flex: 1 }} />
-            <input type="text" placeholder="영문 성" style={{ flex: 1 }} />
-          </div>
-          <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-            <input type="email" placeholder="이메일 주소" style={{ flex: 1 }} />
-            <input type="tel" placeholder="전화번호" style={{ flex: 1 }} />
-          </div>
-        </div>
-      </div>
+        <ResumeInput>
+          <InfoSection>
+            <PhotoBox>+ 사진 추가</PhotoBox>
+            <InputsColumn>
+              <InputRow>
+                <Input type="text" placeholder="이름" />
+                <Input type="text" placeholder="영문 이름" />
+              </InputRow>
+              <InputRow marginTop="10px">
+                <Input type="text" placeholder="성" />
+                <Input type="text" placeholder="영문 성" />
+              </InputRow>
+              <InputRow marginTop="10px">
+                <Input type="email" placeholder="이메일 주소" />
+                <Input type="tel" placeholder="전화번호" />
+              </InputRow>
+            </InputsColumn>
+          </InfoSection>
 
-      {/* 생년월일 & 주소 */}
-      <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-        <select style={{ flex: 1 }}>
-          <option>년</option>
-          {/* 년도 옵션 추가 가능 */}
-        </select>
-        <select style={{ flex: 1 }}>
-          <option>월</option>
-        </select>
-        <select style={{ flex: 1 }}>
-          <option>일</option>
-        </select>
-        <input type="text" placeholder="주소" style={{ flex: 2 }} />
-      </div>
+          <BirthAddressSection>
+            <Select>
+              <option>년</option>
+            </Select>
+            <Select>
+              <option>월</option>
+            </Select>
+            <Select>
+              <option>일</option>
+            </Select>
+            <AddressInput type="text" placeholder="주소" />
+          </BirthAddressSection>
 
-      {/* 병역사항 */}
-      <div style={{ marginTop: "30px" }}>
-        <h4>병역 사항</h4>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
-          <thead>
-            <tr>
-              <th>복무기간</th>
-              <th>군별</th>
-              <th>계급</th>
-              <th>병과</th>
-              <th>군필여부</th>
-              <th>보훈대상</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><input type="text" placeholder="예: 2018~2020" /></td>
-              <td><input type="text" /></td>
-              <td><input type="text" /></td>
-              <td><input type="text" /></td>
-              <td>
-                <select>
-                  <option>필</option>
-                  <option>미필</option>
-                  <option>면제</option>
-                </select>
-              </td>
-              <td>
-                <select>
-                  <option>대상</option>
-                  <option>비대상</option>
-                </select>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+          <MilitarySection>
+            <MilitaryTitle>병역 사항</MilitaryTitle>
+            <MilitaryTable>
+              <thead>
+                <tr>
+                  <th>복무기간</th>
+                  <th>군별</th>
+                  <th>계급</th>
+                  <th>병과</th>
+                  <th>군필여부</th>
+                  <th>보훈대상</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="text" placeholder="예: 2018~2020" /></td>
+                  <td><input type="text" /></td>
+                  <td><input type="text" /></td>
+                  <td><input type="text" /></td>
+                  <td>
+                    <select>
+                      <option>필</option>
+                      <option>미필</option>
+                      <option>면제</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select>
+                      <option>대상</option>
+                      <option>비대상</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </MilitaryTable>
+          </MilitarySection>
+        </ResumeInput>
+      </Container>
+      <StepButton>
+        <LinkText onClick={() => navigate('/step1Page')}>이전</LinkText>
+        <LinkText onClick={() => navigate('/step3')}>다음</LinkText>
+      </StepButton>
+      <Footer/>
+    </PageWrapper>
   );
 };
 
