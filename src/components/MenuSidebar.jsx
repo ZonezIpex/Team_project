@@ -58,7 +58,7 @@ function MenuSidebar({ isOpen, innerRef, language }) {
       <Overlay isOpen={isOpen} />
       <SidebarWrapper ref={innerRef} isOpen={isOpen}>
         <MenuButton onClick={() => (window.location.href = '/')}>{text.home}</MenuButton>
-        <MenuButton onClick={() => (window.location.href = '/reviews')}>{text.review}</MenuButton>
+        <MenuButton onClick={() => (window.location.href = '/review')}>{text.review}</MenuButton>
         <MenuButton onClick={() => (window.location.href = '/mypage')}>{text.mypage}</MenuButton>
         <MenuButton
           onClick={() => {

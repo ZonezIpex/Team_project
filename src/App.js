@@ -6,6 +6,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<MainPage />} />
+        <Route path="/review" element={<ReviewList />} />
+        <Route path="/review/write" element={<ReviewWrite />} />
       </Routes>
     </Router>
   );
