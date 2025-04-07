@@ -6,7 +6,7 @@ import Footer from '../components/Footer';
 import Step2Page from './Step2Page';
 import Step4 from './Step4';
 import { useNavigate } from 'react-router-dom';
-import StyledTable from '../components/StepTable'; // ✅ 공통 테이블 스타일 import
+import StyledTable from '../components/StepTable';
 
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
@@ -132,6 +132,7 @@ const PreButton=styled(LinkText)`
 `;
 
 const NextButton=styled(LinkText)`
+    text-align:left;
     margin-right: 30px;
 `;
 
@@ -140,7 +141,6 @@ const StepButton = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  max-width: 800px;
   margin-bottom: 50px;
 `;
 

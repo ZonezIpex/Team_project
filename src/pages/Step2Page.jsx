@@ -6,7 +6,7 @@ import Footer from '../components/Footer';
 import Step1Page from './Step1Page';
 import Step3Page from './Step3Page';
 import { useNavigate } from 'react-router-dom';
-import StepTable from '../components/StepTable';
+import StyledTable from '../components/StepTable';
 
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
@@ -173,7 +173,8 @@ const AddressInput = styled(Input)`
 // 병역 사항 관련 스타일
 const MilitarySection = styled.div`
   width: 100%;
-  max-width: 800px;
+  overflow-x: auto;
+  max-width: 100%;
   margin-top: 30px;
   text-align: left;
 `;
@@ -231,6 +232,7 @@ const PreButton=styled(LinkText)`
 `;
 
 const NextButton=styled(LinkText)`
+    text-align:left;
     margin-right: 30px;
 `;
 
@@ -239,9 +241,7 @@ const StepButton = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  max-width: 800px;
   margin-bottom: 50px;
-  margin-top:-80px;
 `;
 
 const steps = ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"];
@@ -305,41 +305,16 @@ const Step2Page = () => {
               </AddressSection>
           </BirthAddressSection>
 
+          
           <MilitarySection>
             <MilitaryTitle>병역 사항</MilitaryTitle>
-            <StepTable>
-              <thead>
-                <tr>
-                  <th>복무기간</th>
-                  <th>군별</th>
-                  <th>계급</th>
-                  <th>병과</th>
-                  <th>군필여부</th>
-                  <th>보훈대상</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><input type="text" placeholder="예: 2018~2020" /></td>
-                  <td><input type="text" /></td>
-                  <td><input type="text" /></td>
-                  <td><input type="text" /></td>
-                  <td>
-                    <select>
-                      <option>필</option>
-                      <option>미필</option>
-                      <option>면제</option>
-                    </select>
-                  </td>
-                  <td>
-                    <select>
-                      <option>대상</option>
-                      <option>비대상</option>
-                    </select>
-                  </td>
-                </tr>
-              </tbody>
-            </StepTable>
+              <StyledTable
+                type="military"
+                inputComponent={Input}
+                selectComponent={Select}
+                showMore={false} // 한 줄만 표시하고 '더 쓰기' 숨기기
+              />
+
           </MilitarySection>
         </ResumeInput>
       </Container>
