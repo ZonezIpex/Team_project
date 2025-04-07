@@ -47,7 +47,7 @@ function App() {
 
           {/* ✅ 이력서 작성 단계 경로들 */}
           <Route path="/step1page" element={<Step1Page language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/step2page" element={<Step2 language={language} onChangeLanguage={setLanguage} />} />
+          <Route path="/step2page" element={<Step2Page language={language} onChangeLanguage={setLanguage} />} />
           <Route path="/step3" element={<Step3 language={language} onChangeLanguage={setLanguage} />} />
           <Route path="/step4" element={<Step4 language={language} onChangeLanguage={setLanguage} />} />
           <Route path="/step5" element={<Step5 language={language} onChangeLanguage={setLanguage} />} />
