@@ -166,104 +166,33 @@ const Step3Page = () => {
         <InputSection>
           {/* 학력 */}
           <SectionTitle>학력</SectionTitle>
-          <StyledTable>
-            <thead>
-              <tr>
-                <Th>졸업일</Th>
-                <Th>학교명</Th>
-                <Th>졸업여부</Th>
-                <Th>성적</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...Array(4)].map((_, i) => (
-                <tr key={i}>
-                  <Td><Input type="date" /></Td>
-                  <Td><Input type="text" /></Td>
-                  <Td>
-                    <Select>
-                      <option>졸업</option>
-                      <option>미졸업</option>
-                    </Select>
-                  </Td>
-                  <Td><Input type="text" placeholder="예: 4.3 / 4.5" /></Td>
-                </tr>
-              ))}
-            </tbody>
-          </StyledTable>
+            <StyledTable
+              type="education"
+              inputComponent={Input}
+              selectComponent={Select}
+            />
 
-          {/* 경력 */}
-          <SectionTitle>경력</SectionTitle>
-          <StyledTable>
-            <thead>
-              <tr>
-                <Th>회사명</Th>
-                <Th>근무기간</Th>
-                <Th>최종직위</Th>
-                <Th>담당업무</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...Array(4)].map((_, i) => (
-                <tr key={i}>
-                  <Td><Input type="text" /></Td>
-                  <Td><Input type="text" placeholder="예: 2020~2023" /></Td>
-                  <Td><Input type="text" /></Td>
-                  <Td><Input type="text" /></Td>
-                </tr>
-              ))}
-            </tbody>
-          </StyledTable>
+            <SectionTitle>경력</SectionTitle>
+            <StyledTable
+              type="career"
+              inputComponent={Input}
+              selectComponent={Select}
+            />
 
-          {/* 자격증 */}
-          <SectionTitle>자격증</SectionTitle>
-          <StyledTable>
-            <thead>
-              <tr>
-                <Th>종류</Th>
-                <Th>취득일</Th>
-                <Th>발행처</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...Array(4)].map((_, i) => (
-                <tr key={i}>
-                  <Td><Input type="text" /></Td>
-                  <Td><Input type="date" /></Td>
-                  <Td><Input type="text" /></Td>
-                </tr>
-              ))}
-            </tbody>
-          </StyledTable>
+            <SectionTitle>자격증</SectionTitle>
+            <StyledTable
+              type="certificate"
+              inputComponent={Input}
+              selectComponent={Select}
+            />
 
-          {/* 외국어 */}
-          <SectionTitle>외국어</SectionTitle>
-          <StyledTable>
-            <thead>
-              <tr>
-                <Th>언어명</Th>
-                <Th>구사정도</Th>
-                <Th>시험명</Th>
-                <Th>점수</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...Array(4)].map((_, i) => (
-                <tr key={i}>
-                  <Td><Input type="text" /></Td>
-                  <Td>
-                    <Select>
-                      <option>상</option>
-                      <option>중</option>
-                      <option>하</option>
-                    </Select>
-                  </Td>
-                  <Td><Input type="text" /></Td>
-                  <Td><Input type="text" /></Td>
-                </tr>
-              ))}
-            </tbody>
-          </StyledTable>
+            <SectionTitle>외국어</SectionTitle>
+            <StyledTable
+              type="language"
+              inputComponent={Input}
+              selectComponent={Select}
+            />
+
         </InputSection>
       </Container>
 
