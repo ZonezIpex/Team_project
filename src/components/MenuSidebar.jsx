@@ -131,7 +131,7 @@ function MenuSidebar({ isOpen, innerRef, language, onClose }) {
           <Home size={18} /> {text.home}
         </MenuButton>
 
-        <MenuButton onClick={() => handleNavigation('/reviews')}>
+        <MenuButton onClick={() => handleNavigation('/review')}>
           <MessageCircle size={18} /> {text.review}
         </MenuButton>
 

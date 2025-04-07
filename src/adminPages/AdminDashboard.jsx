@@ -1,3 +1,4 @@
+// src/adminPages/AdminDashboard.jsx
 import styled from 'styled-components';
 import Header from '../components/Header';
 import AdminSidebar from './components/AdminSidebar';
@@ -71,9 +72,10 @@ function AdminDashboard({ language, onChangeLanguage }) {
         { path: '/login', label: '로그인 페이지' },
         { path: '/signup', label: '회원가입 페이지' },
         { path: '/mypage', label: '마이페이지' },
-        { path: '/profilepage', label: '프로필 상세 페이지' }, // ✅ 추가
-        { path: '/step1page', label: '이력서 작성 Step1' },   // ✅ 추가
-        { path: '/reviews', label: '리뷰 목록 페이지' },
+        { path: '/profilepage', label: '프로필 상세 페이지' },
+        { path: '/step1page', label: '이력서 작성 Step1' },
+        { path: '/review', label: '리뷰 목록 보기' },
+        { path: '/review/write', label: '리뷰 작성하기' },
         { path: '/error/404', label: '404 에러 페이지' },
         { path: '/error/500', label: '500 에러 페이지' },
       ]
@@ -86,9 +88,10 @@ function AdminDashboard({ language, onChangeLanguage }) {
         { path: '/login', label: 'Login Page' },
         { path: '/signup', label: 'Signup Page' },
         { path: '/mypage', label: 'My Page' },
-        { path: '/profilepage', label: 'Profile Page' },      // ✅ 추가
-        { path: '/step1page', label: 'Resume Step1' },         // ✅ 추가
-        { path: '/reviews', label: 'Review List Page' },
+        { path: '/profilepage', label: 'Profile Page' },
+        { path: '/step1page', label: 'Resume Step1' },
+        { path: '/review', label: 'Review List' },
+        { path: '/review/write', label: 'Write Review' },
         { path: '/error/404', label: 'Error 404 Page' },
         { path: '/error/500', label: 'Error 500 Page' },
       ]
@@ -124,7 +127,7 @@ function AdminDashboard({ language, onChangeLanguage }) {
           </>
         )}
 
-        {/* 유저관리/리뷰 등 중첩 라우트용 */}
+        {/* 중첩 라우트 출력 영역 */}
         <Outlet />
       </MainContent>
     </PageWrapper>

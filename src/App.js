@@ -7,6 +7,9 @@ import LoginPage from './pages/LoginPage'; // ✅ 로그인 페이지
 import SignupPage from './pages/SignupPage'; // ✅ 회원가입 페이지
 import ProfilePage from './pages/ProfilePage'; // ✅ 프로필 페이지
 
+import ReviewList from './pages/ReviewList'; // ✅ 리뷰 리스트 페이지
+import ReviewWrite from './pages/ReviewWrite'; // ✅ 리뷰 작성 페이지
+
 import AdminDashboard from './adminPages/AdminDashboard'; // ✅ 어드민 대시보드 레이아웃
 import DashboardMain from './adminPages/dashboard/Index'; // ✅ 대시보드 본문
 import UsersPage from './adminPages/users/UsersPage'; // ✅ 유저 관리 페이지
@@ -34,7 +37,6 @@ function App() {
   }, [language]);
 
   return (
-    <Router>
       <Router>
         <Routes>
           <Route path="/" element={<MainPage language={language} onChangeLanguage={setLanguage} />} />
@@ -70,7 +72,6 @@ function App() {
           <Route path="*" element={<Error404 />} />
         </Routes>
       </Router>
-  </Router>
 
   );
 }
