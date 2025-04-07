@@ -5,6 +5,10 @@
 2. npm install styled-components
 3. npm install lucide-react
 
+## 4월 7일
+- step2 완료
+- step3 제작 시작
+
 ## 4월 6일
 - step2작업 시작
 - 설치해야할 거 정리
