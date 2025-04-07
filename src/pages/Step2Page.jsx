@@ -4,8 +4,9 @@ import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Step1Page from './Step1Page';
-import Step3 from './Step3';
+import Step3Page from './Step3Page';
 import { useNavigate } from 'react-router-dom';
+import StepTable from '../components/StepTable';
 
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
@@ -43,7 +44,7 @@ const InputTitle=styled.h1`
   margin-top: 0;
   font-size: 1.2rem;
 
-`
+`;
 
 const Stepper = styled.div`
   display: flex;
@@ -240,7 +241,7 @@ const StepButton = styled.div`
   width: 100%;
   max-width: 800px;
   margin-bottom: 50px;
-  margin-top:-100px;
+  margin-top:-80px;
 `;
 
 const steps = ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"];
@@ -306,7 +307,7 @@ const Step2Page = () => {
 
           <MilitarySection>
             <MilitaryTitle>병역 사항</MilitaryTitle>
-            <MilitaryTable>
+            <StepTable>
               <thead>
                 <tr>
                   <th>복무기간</th>
@@ -338,14 +339,14 @@ const Step2Page = () => {
                   </td>
                 </tr>
               </tbody>
-            </MilitaryTable>
+            </StepTable>
           </MilitarySection>
         </ResumeInput>
       </Container>
 
       <StepButton>
         <PreButton onClick={() => navigate('/step1Page')}>이전</PreButton>
-        <NextButton onClick={() => navigate('/step3')}>다음</NextButton>
+        <NextButton onClick={() => navigate('/step3Page')}>다음</NextButton>
       </StepButton>
 
       <Footer/>

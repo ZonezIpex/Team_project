@@ -7,7 +7,8 @@
 
 ## 4월 7일
 - step2 완료
-- step3 제작 시작
+- step3 완료
+- component에 step에 쓰는 table 스타일 저장함(StepTable.jsx)
 
 ## 4월 6일
 - step2작업 시작
