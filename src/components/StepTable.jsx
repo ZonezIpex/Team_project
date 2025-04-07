@@ -115,25 +115,37 @@ if (type === 'military') {
       <thead>
         <tr>
           {columns.map((col) => (
-            <Th key={col}>{col}</Th> // ✅ 스타일 조건 제거
+            <Th key={col}>{col}</Th>
           ))}
         </tr>
       </thead>
       <tbody>
         <tr>
-          <Td><Input type="text" placeholder="예: 2018~2020" /></Td>
-          <Td><Input type="text" /></Td>
-          <Td><Input type="text" /></Td>
-          <Td><Input type="text" /></Td>
           <Td>
-            <Select>
+            <Input
+              type="text"
+              placeholder="예: 2018~2020"
+              style={{ width: '120px' }}
+            />
+          </Td>
+          <Td>
+            <Input type="text" style={{ width: '100px' }} />
+          </Td>
+          <Td>
+            <Input type="text" style={{ width: '100px' }} />
+          </Td>
+          <Td>
+            <Input type="text" style={{ width: '100px' }} />
+          </Td>
+          <Td>
+            <Select style={{ width: '80px' }}>
               <option>필</option>
               <option>미필</option>
               <option>면제</option>
             </Select>
           </Td>
           <Td>
-            <Select>
+            <Select style={{ width: '80px' }}>
               <option>대상</option>
               <option>비대상</option>
             </Select>
@@ -143,6 +155,7 @@ if (type === 'military') {
     </Table>
   );
 }
+
 
   // 그 외 타입은 행 추가 가능
   return (

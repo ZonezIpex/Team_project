@@ -94,16 +94,6 @@ const Input = styled.input`
   padding: 6px;
   box-sizing: border-box;
 `;
-const Th = styled.th`
-  border: 1px solid #ddd;
-  padding: 8px;
-`;
-
-const Td = styled.td`
-  border: 1px solid #ddd;
-  padding: 8px;
-`;
-
 
 const Select = styled.select`
   width: 100%;

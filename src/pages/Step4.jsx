@@ -26,6 +26,14 @@ const Container = styled.div`
   text-align: center;
 `;
 
+const ResumeInput = styled.div`
+  background-color: white;
+  padding: 20px 30px;
+  border-radius: 10px;
+  box-shadow: 3px 3px 10px -3px gray;
+  margin-bottom: 50px;
+`;
+
 const Title = styled.h1`
   font-size: clamp(1.8rem, 3vw, 2.5rem);
   color: white;
@@ -33,11 +41,10 @@ const Title = styled.h1`
   margin-bottom: 30px;
 `;
 
-const InputSection = styled.div`
-  background-color: white;
-  padding: 0 20px 20px 20px;
-  border-radius: 20px;
-  box-shadow: 3px 3px 10px -3px gray;
+const InputTitle=styled.h1`
+  margin-top: 0;
+  font-size: 1.2rem;
+
 `;
 
 const Stepper = styled.div`
@@ -82,33 +89,127 @@ const Line = styled.div`
   margin-right: -2px;
 `;
 
-const SectionTitle = styled.h4`
+const InfoSection = styled.div`
+  display: flex;
+  gap: 20px;
   margin-top: 30px;
-  text-align: left;
-  border-bottom: 1px solid black;
-  padding-bottom: 0.3rem;
+  width: 100%;
+  max-width: 800px;
+`;
+
+const PhotoBox = styled.div`
+  width: 120px;
+  height: 150px;
+  border: 2px dashed #aaa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
+`;
+
+const InputsColumn = styled.div`
+  flex: 1;
+  margin-top: 20px;
+`;
+
+const InputRow = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-top: ${props => props.marginTop || "0"};
 `;
 
 const Input = styled.input`
-  width: 100%;
-  padding: 6px;
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
   box-sizing: border-box;
 `;
-const Th = styled.th`
-  border: 1px solid #ddd;
-  padding: 8px;
-`;
-
-const Td = styled.td`
-  border: 1px solid #ddd;
-  padding: 8px;
-`;
-
 
 const Select = styled.select`
-  width: 100%;
-  padding: 6px;
+  flex: 1;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
   box-sizing: border-box;
+  margin-right: 10px;
+`;
+
+const BirthTitle = styled.h4`
+  margin-bottom: 10px;
+  margin-left: 5px;
+  text-align: left;
+`;
+
+const BirthAddressSection = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 1000px;
+`;
+
+const AddressSection = styled.div`
+  margin-left: 20px;
+  flex: 1;
+  max-width: 600px;
+`
+
+const AddressTitle = styled.h4`
+  margin-bottom: 10px;
+  margin-left: 5px;
+  text-align: left;
+`;
+
+const AddressInput = styled(Input)`
+  flex: 1;
+  width: 100%;
+  min-width: 0; // flex에서 줄바꿈 방지
+`;
+
+// 병역 사항 관련 스타일
+const MilitarySection = styled.div`
+  width: 100%;
+  overflow-x: auto;
+  max-width: 100%;
+  margin-top: 30px;
+  text-align: left;
+`;
+
+const MilitaryTitle = styled.h4`
+  margin-bottom: 10px;
+  margin-left: 5px;
+`;
+
+const MilitaryTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  font-size: 14px;
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+
+  th {
+    background-color: #f8f8f8;
+    font-weight: normal;
+  }
+
+  input, select {
+    width: 100%;
+    border: none;
+    font-size: 14px;
+    text-align: center;
+    background-color: transparent;
+    outline: none;
+  }
 `;
 
 const LinkText = styled.div`
@@ -132,6 +233,7 @@ const PreButton=styled(LinkText)`
 `;
 
 const NextButton=styled(LinkText)`
+    text-align:left;
     margin-right: 30px;
 `;
 
@@ -140,84 +242,137 @@ const StepButton = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  max-width: 800px;
   margin-bottom: 50px;
 `;
 
+const InputSection = styled.div`
+  background-color: white;
+  padding: 0 20px 20px 20px;
+  border-radius: 20px;
+  box-shadow: 3px 3px 10px -3px gray;
+`;
+
+const SectionTitle = styled.h4`
+  margin-top: 30px;
+  text-align: left;
+  border-bottom: 1px solid black;
+  padding-bottom: 0.3rem;
+`;
+
 const steps = ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"];
-const currentStep = 2; // 현재 단계
+const currentStep = 3; // 현재 단계
 
 const Step4 = () => {
-  const sectionStyle = {
-    marginBottom: "30px",
-    padding: "20px",
-    border: "1px solid #ccc",
-    borderRadius: "10px",
-    backgroundColor: "#f9f9f9",
-  };
-
-  const inputStyle = {
-    width: "100%",
-    padding: "8px",
-    marginBottom: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-  };
-
+  const navigate = useNavigate();
   return (
-    <div
-      style={{
-        padding: "30px",
-        maxWidth: "800px",
-        margin: "0 auto",
-        height: "80vh",           // ✅ 높이 제한
-        overflowY: "auto",        // ✅ 세로 스크롤
-        backgroundColor: "#fff",
-        borderRadius: "10px",
-      }}
-    >
-      <h2 style={{ textAlign: "center", marginBottom: "30px" }}>4단계: 최종 수정</h2>
+    <PageWrapper>
+      <Header/>
+      <Container>
+        <Title>신상 정보 입력</Title>
 
-      {/* 기본 정보 */}
-      <div style={sectionStyle}>
-        <h3>기본 정보</h3>
-        <input type="text" placeholder="이름" style={inputStyle} />
-        <input type="email" placeholder="이메일" style={inputStyle} />
-        <input type="tel" placeholder="전화번호" style={inputStyle} />
-        <input type="text" placeholder="주소" style={inputStyle} />
-      </div>
+        <Stepper>
+          {steps.map((step, index) => (
+            <Step key={step}>
+              <Circle index={index} currentStep={currentStep}>
+                {step}
+              </Circle>
+              {index < steps.length - 1 && <Line />}
+            </Step>
+          ))}
+        </Stepper>
 
-      {/* 학력 */}
-      <div style={sectionStyle}>
-        <h3>학력</h3>
-        <input type="text" placeholder="학교명" style={inputStyle} />
-        <input type="text" placeholder="전공" style={inputStyle} />
-        <input type="text" placeholder="졸업 여부" style={inputStyle} />
-      </div>
+        <ResumeInput>
+        <InputTitle>신상정보</InputTitle>
+          <InfoSection>
+            <PhotoBox>+ 사진 추가</PhotoBox>
+            <InputsColumn>
+              <InputRow>
+                <Input type="text" placeholder="이름" />
+                <Input type="text" placeholder="영문 이름" />
+              </InputRow>
+              <InputRow marginTop="10px">
+                <Input type="text" placeholder="성" />
+                <Input type="text" placeholder="영문 성" />
+              </InputRow>
+              <InputRow marginTop="10px">
+                <Input type="email" placeholder="이메일 주소" />
+                <Input type="tel" placeholder="전화번호" />
+              </InputRow>
+            </InputsColumn>
+          </InfoSection>
 
-      {/* 경력 */}
-      <div style={sectionStyle}>
-        <h3>경력</h3>
-        <input type="text" placeholder="회사명" style={inputStyle} />
-        <input type="text" placeholder="직책" style={inputStyle} />
-        <input type="text" placeholder="근무기간" style={inputStyle} />
-        <textarea placeholder="담당업무 설명" rows={4} style={inputStyle}></textarea>
-      </div>
+          <BirthAddressSection>
+            <div>
+            <BirthTitle>생년월일</BirthTitle>
+            <Select>
+              <option>년</option>
+            </Select>
+            <Select>
+              <option>월</option>
+            </Select>
+            <Select>
+              <option>일</option>
+            </Select>
+            </div>
+              <AddressSection>
+                <AddressTitle>주소</AddressTitle>
+                <AddressInput type="text" placeholder="주소" />
+              </AddressSection>
+          </BirthAddressSection>
 
-      {/* 자격증 */}
-      <div style={sectionStyle}>
-        <h3>자격증</h3>
-        <input type="text" placeholder="자격증명" style={inputStyle} />
-        <input type="date" placeholder="취득일" style={inputStyle} />
-      </div>
+          
+          <MilitarySection>
+            <MilitaryTitle>병역 사항</MilitaryTitle>
+              <StyledTable
+                type="military"
+                inputComponent={Input}
+                selectComponent={Select}
+                showMore={false} // 한 줄만 표시하고 '더 쓰기' 숨기기
+              />
 
-      {/* 외국어 */}
-      <div style={sectionStyle}>
-        <h3>외국어</h3>
-        <input type="text" placeholder="언어명" style={inputStyle} />
-        <input type="text" placeholder="시험명 / 점수" style={inputStyle} />
-      </div>
-    </div>
+          </MilitarySection>
+        </ResumeInput>
+
+        <InputSection>
+          {/* 학력 */}
+          <SectionTitle>학력</SectionTitle>
+            <StyledTable
+              type="education"
+              inputComponent={Input}
+              selectComponent={Select}
+            />
+
+            <SectionTitle>경력</SectionTitle>
+            <StyledTable
+              type="career"
+              inputComponent={Input}
+              selectComponent={Select}
+            />
+
+            <SectionTitle>자격증</SectionTitle>
+            <StyledTable
+              type="certificate"
+              inputComponent={Input}
+              selectComponent={Select}
+            />
+
+            <SectionTitle>외국어</SectionTitle>
+            <StyledTable
+              type="language"
+              inputComponent={Input}
+              selectComponent={Select}
+            />
+
+        </InputSection>
+        </Container>
+
+        <StepButton>
+        <PreButton onClick={() => navigate('/step2Page')}>이전</PreButton>
+        <NextButton onClick={() => navigate('/step4')}>다음</NextButton>
+        </StepButton>
+
+        <Footer/>
+        </PageWrapper>
   );
 };
 
