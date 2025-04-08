@@ -7,8 +7,6 @@ import LoginPage from './pages/LoginPage'; // ✅ 로그인 페이지
 import SignupPage from './pages/SignupPage'; // ✅ 회원가입 페이지
 import ProfilePage from './pages/ProfilePage'; // ✅ 프로필 페이지
 
-import ReviewList from './pages/ReviewList'; // ✅ 리뷰 리스트 페이지
-import ReviewWrite from './pages/ReviewWrite'; // ✅ 리뷰 작성 페이지
 
 import AdminDashboard from './adminPages/AdminDashboard'; // ✅ 어드민 대시보드 레이아웃
 import DashboardMain from './adminPages/dashboard/Index'; // ✅ 대시보드 본문
@@ -53,8 +51,6 @@ function App() {
         <Route path="/step5" element={<Step5 language={language} onChangeLanguage={setLanguage} />} />
 
           {/* ✅ 리뷰 관련 라우트 추가 (친구 작업 반영) */}
-          <Route path="/review" element={<ReviewList language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/review/write" element={<ReviewWrite language={language} onChangeLanguage={setLanguage} />} />
 
           {/* 어드민 라우트 */}
           <Route path="/admin" element={<AdminDashboard language={language} onChangeLanguage={setLanguage} />}>

@@ -237,12 +237,15 @@ const NextButton=styled(LinkText)`
 `;
 
 const StepButton = styled.div`
-  text-align:center;
+  width: 100%;
+  max-width: 900px; /* 기존 800px에서 더 넓혀줌 */
+  margin: 50px auto 0;
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  margin-bottom: 50px;
+  align-items: center;
 `;
+
+
 
 const steps = ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"];
 const currentStep = 1; // 현재 단계: 신상정보까지 완료
@@ -317,12 +320,12 @@ const Step2Page = () => {
 
           </MilitarySection>
         </ResumeInput>
+        <StepButton>
+          <PreButton onClick={() => navigate('/step1Page')}>이전</PreButton>
+          <NextButton onClick={() => navigate('/step3Page')}>다음</NextButton>
+        </StepButton>
       </Container>
 
-      <StepButton>
-        <PreButton onClick={() => navigate('/step1Page')}>이전</PreButton>
-        <NextButton onClick={() => navigate('/step3Page')}>다음</NextButton>
-      </StepButton>
 
       <Footer/>
     </PageWrapper>

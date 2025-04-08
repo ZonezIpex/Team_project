@@ -135,12 +135,14 @@ const NextButton=styled(LinkText)`
 `;
 
 const StepButton = styled.div`
-  text-align:center;
+  width: 100%;
+  max-width: 900px; /* 기존 800px에서 더 넓혀줌 */
+  margin: 50px auto 0;
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  margin-bottom: 50px;
+  align-items: center;
 `;
+
 
 const steps = ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"];
 const currentStep = 2; // 현재 단계
@@ -192,12 +194,12 @@ const Step3Page = () => {
             />
 
         </InputSection>
+        
+        <StepButton>
+          <PreButton onClick={() => navigate('/step2Page')}>이전</PreButton>
+          <NextButton onClick={() => navigate('/step4Page')}>다음</NextButton>
+        </StepButton>
       </Container>
-
-      <StepButton>
-        <PreButton onClick={() => navigate('/step2Page')}>이전</PreButton>
-        <NextButton onClick={() => navigate('/step4Page')}>다음</NextButton>
-      </StepButton>
 
       <Footer/>
     </PageWrapper>

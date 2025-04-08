@@ -237,12 +237,14 @@ const NextButton=styled(LinkText)`
     margin-right: 30px;
 `;
 
+
 const StepButton = styled.div`
-  text-align:center;
+  width: 100%;
+  max-width: 900px; /* 기존 800px에서 더 넓혀줌 */
+  margin: 50px auto 0;
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  margin-bottom: 50px;
+  align-items: center;
 `;
 
 const InputSection = styled.div`
@@ -364,12 +366,12 @@ const Step4 = () => {
             />
 
         </InputSection>
-        </Container>
 
-        <StepButton>
-        <PreButton onClick={() => navigate('/step3Page')}>이전</PreButton>
-        <NextButton onClick={() => navigate('/step5')}>다음</NextButton>
-        </StepButton>
+          <StepButton>
+          <PreButton onClick={() => navigate('/step3Page')}>이전</PreButton>
+          <NextButton onClick={() => navigate('/step5')}>다음</NextButton>
+          </StepButton>
+        </Container>
 
         <Footer/>
         </PageWrapper>
