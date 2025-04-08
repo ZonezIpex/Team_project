@@ -76,7 +76,7 @@ const FooterText = styled.div`
   text-align: center;
 `;
 
-const Profile = () => {
+const ProfilePage = () => {
   return (
     <PageWrapper>
       <Header />
