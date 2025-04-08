@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { LayoutDashboard, Users, MessageCircle, Settings } from 'lucide-react';
+import { Home, LayoutDashboard, Users, MessageCircle, Settings } from 'lucide-react';
 
 const Sidebar = styled.aside`
   width: 220px;
@@ -59,7 +59,7 @@ function AdminSidebar({ language }) {
       <SidebarTitle>{text.title}</SidebarTitle>
       
       <SidebarLink end to="/admin">
-        <LayoutDashboard size={20} /> {language === 'en' ? 'Admin Home' : '어드민 홈'}
+        <Home size={20} /> {language === 'en' ? 'Admin Home' : '어드민 홈'}
       </SidebarLink>
 
       <SidebarLink end to="/admin/dashboard">

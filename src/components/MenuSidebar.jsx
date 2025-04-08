@@ -114,36 +114,37 @@ function MenuSidebar({ isOpen, innerRef, language, onClose }) {
 
   return (
     <>
-      <Overlay
-  isVisible={isOpen || isClosing}
-  onClick={() => {
-    setIsClosing(true);
-    setTimeout(onClose, 400);
-  }}
-/>
+    <Overlay
+      isVisible={isOpen || isClosing}
+      onClick={() => {
+        setIsClosing(true);
+        setTimeout(onClose, 400);
+      }}
+    />
 
-      {(isOpen || isClosing) && (
-        <SidebarWrapper ref={innerRef} isClosing={isClosing}>
-          <CloseButton size={24} onClick={onClose} />
-          <SidebarTitle>{text.welcome}</SidebarTitle>
+    {(isOpen || isClosing) && (
+      <SidebarWrapper ref={innerRef} isClosing={isClosing}>
+        <CloseButton size={24} onClick={onClose} />
+        <SidebarTitle>{text.welcome}</SidebarTitle>
 
-          <MenuButton onClick={() => handleNavigation('/')}>
-            <Home size={18} /> {text.home}
-          </MenuButton>
+        <MenuButton onClick={() => handleNavigation('/')}>
+          <Home size={18} /> {text.home}
+        </MenuButton>
 
-          <MenuButton onClick={() => handleNavigation('/reviews')}>
-            <MessageCircle size={18} /> {text.review}
-          </MenuButton>
+        <MenuButton onClick={() => handleNavigation('/review')}>
+          <MessageCircle size={18} /> {text.review}
+        </MenuButton>
 
-          <MenuButton onClick={() => handleNavigation('/mypage')}>
-            <User size={18} /> {text.mypage}
-          </MenuButton>
+        <MenuButton onClick={() => handleNavigation('/mypage')}>
+          <User size={18} /> {text.mypage}
+        </MenuButton>
 
-          <MenuButton onClick={handleLogout}>
-            <LogOut size={18} /> {text.logout}
-          </MenuButton>
-        </SidebarWrapper>
-      )}
+        <MenuButton onClick={handleLogout}>
+          <LogOut size={18} /> {text.logout}
+        </MenuButton>
+      </SidebarWrapper>
+    )}
+
     </>
   );
 }
