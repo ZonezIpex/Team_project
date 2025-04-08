@@ -230,15 +230,17 @@ const TitleWrapper = styled.div`
   margin-left: -37rem;
 `;
 
+/*인기/최신/내 리뷰 박스*/
 const TitleButton = styled.button`
-  background-color: ${(props) => (props.active ? "#eaf6fb" : "#64a8f0")};
+  background-color: ${(props) => (props.active ? "#b6e4ff" : "#64a8f0")};
   color: ${(props) => (props.active ? "#003049" : "#fff")};
   font-size: 1.2rem;
   font-weight: bold;
   padding: 0.6rem 1.4rem;
   border-radius: 16px 16px 0 0;
+  margin-top: 20px;
   margin-right: 0rem;
-  margin-bottom: -1px;
+  margin-bottom: -16px;
   border: none;
   cursor: pointer;
 `;
@@ -254,14 +256,14 @@ const Slider = styled.div`
 const BoxWrapper = styled.div`
   overflow: hidden;
   width: 100%;
-  max-width: 1120px;
+  max-width: 1160px; //1120수정
   margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #b6e4ff;
-  border-radius: 16px;
-  padding: 2rem;
+  border-radius: 0px 16px 16px 16px;
+  padding: 1.5rem;
 `;
 
 const Grid = styled.div`
