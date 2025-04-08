@@ -1,11 +1,14 @@
 import React from "react";
 import styled from "styled-components";
+import Step2Page from './Step2Page';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header'; // 기존 Header 그대로 사용
 import Footer from '../components/Footer'; // 기존 Footer 그대로 사용
 
 const steps = ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"];
 
 export default function ResumeStepIndicator({ currentStep = 0 }) {
+  const navigate = useNavigate();
   return (
     <PageWrapper>
       <Header/>
@@ -45,6 +48,11 @@ export default function ResumeStepIndicator({ currentStep = 0 }) {
       </div>
 
       </Container>
+      
+      <StepButton>
+        <PreButton onClick={() => navigate('/step1Page')}>이전</PreButton>
+        <NextButton onClick={() => navigate('/step3Page')}>다음</NextButton>
+      </StepButton>
       <Footer/>
     </PageWrapper>
   );
@@ -162,4 +170,37 @@ const TemplateAdd = styled(Template)`
   font-size: 24px;
   color: #aaa;
   cursor: pointer;
+`;
+
+const LinkText = styled.div`
+  color: white;
+  background-color: #146c94;
+  border: 1px solid #146c94;
+  border-radius:20px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 8px 20px;
+
+  &:hover {
+    color: #146c94;
+    background-color: white;
+  }
+`;
+
+const PreButton=styled(LinkText)`
+    margin-left: 30px;
+`;
+
+const NextButton=styled(LinkText)`
+    text-align:left;
+    margin-right: 30px;
+`;
+
+const StepButton = styled.div`
+  text-align:center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 50px;
 `;
