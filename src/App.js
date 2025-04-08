@@ -7,6 +7,8 @@ import LoginPage from './pages/LoginPage'; // ✅ 로그인 페이지
 import SignupPage from './pages/SignupPage'; // ✅ 회원가입 페이지
 import ProfilePage from './pages/ProfilePage'; // ✅ 프로필 페이지
 
+import ReviewList from './pages/ReviewList'; // ✅ 리뷰 리스트 페이지
+import ReviewWrite from './pages/ReviewWrite'; // ✅ 리뷰 작성 페이지
 
 import AdminDashboard from './adminPages/AdminDashboard'; // ✅ 어드민 대시보드 레이아웃
 import DashboardMain from './adminPages/dashboard/Index'; // ✅ 대시보드 본문
@@ -43,14 +45,16 @@ function App() {
           <Route path="/signup" element={<SignupPage language={language} onChangeLanguage={setLanguage} />} />
           <Route path="/profilepage" element={<ProfilePage language={language} onChangeLanguage={setLanguage} />} />
 
-        {/* ✅ 이력서 작성 단계 경로들 */}
-        <Route path="/step1page" element={<Step1Page language={language} onChangeLanguage={setLanguage} />} />
-        <Route path="/step2page" element={<Step2Page language={language} onChangeLanguage={setLanguage} />} />
-        <Route path="/step3page" element={<Step3Page language={language} onChangeLanguage={setLanguage} />} />
-        <Route path="/step4Page" element={<Step4Page language={language} onChangeLanguage={setLanguage} />} />
-        <Route path="/step5Page" element={<Step5Page language={language} onChangeLanguage={setLanguage} />} />
+          {/* ✅ 이력서 작성 단계 경로들 */}
+          <Route path="/step1page" element={<Step1Page language={language} onChangeLanguage={setLanguage} />} />
+          <Route path="/step2page" element={<Step2Page language={language} onChangeLanguage={setLanguage} />} />
+          <Route path="/step3page" element={<Step3Page language={language} onChangeLanguage={setLanguage} />} />
+          <Route path="/step4page" element={<Step4Page language={language} onChangeLanguage={setLanguage} />} />
+          <Route path="/step5page" element={<Step5Page language={language} onChangeLanguage={setLanguage} />} />
 
           {/* ✅ 리뷰 관련 라우트 추가 (친구 작업 반영) */}
+          <Route path="/review" element={<ReviewList language={language} onChangeLanguage={setLanguage} />} />
+          <Route path="/review/write" element={<ReviewWrite language={language} onChangeLanguage={setLanguage} />} />
 
           {/* 어드민 라우트 */}
           <Route path="/admin" element={<AdminDashboard language={language} onChangeLanguage={setLanguage} />}>

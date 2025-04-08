@@ -3,8 +3,6 @@ import React from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import Step3Page from './Step3Page';
-import Step5Page from './Step5Page';
 import { useNavigate } from 'react-router-dom';
 import StyledTable from '../components/StepTable';
 
@@ -183,33 +181,6 @@ const MilitarySection = styled.div`
 const MilitaryTitle = styled.h4`
   margin-bottom: 10px;
   margin-left: 5px;
-`;
-
-const MilitaryTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #ddd;
-  font-size: 14px;
-
-  th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-  }
-
-  th {
-    background-color: #f8f8f8;
-    font-weight: normal;
-  }
-
-  input, select {
-    width: 100%;
-    border: none;
-    font-size: 14px;
-    text-align: center;
-    background-color: transparent;
-    outline: none;
-  }
 `;
 
 const LinkText = styled.div`

@@ -2,10 +2,7 @@
 import React from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
-import Footer from '../components/Footer';
-import Step4Page from './Step4Page';
-import { useNavigate } from 'react-router-dom';
-import StyledTable from '../components/StepTable';
+import Footer from '../components/Footer'
 
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
