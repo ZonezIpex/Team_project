@@ -27,7 +27,7 @@ const Container = styled.div`
 const ResumeInput = styled.div`
   background-color: white;
   padding: 20px 30px;
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: 3px 3px 10px -3px gray;
   margin-bottom: 50px;
 `;

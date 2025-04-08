@@ -2,6 +2,26 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+// 공통 스타일 Input / Select
+const StyledInput = styled.input`
+  width: 100%;
+  padding: 8px;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+`;
+
+const StyledSelect = styled.select`
+  width: 100%;
+  padding: 8px;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  box-sizing: border-box;
+`;
+
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -12,7 +32,7 @@ const Th = styled.th`
   border: 1px solid #ddd;
   padding: 8px;
   text-align: center;
-  background-color:rgb(255, 255, 255); // ✅ 모든 Th에 기본 배경 적용
+  background-color: rgb(255, 255, 255);
 `;
 
 const Td = styled.td`
@@ -47,36 +67,86 @@ const StyledTable = ({
   type = 'military',
   inputComponent: Input,
   selectComponent: Select,
-  showMore = true, // 기본값 true
+  showMore = true,
 }) => {
   const [rows, setRows] = useState(4);
+  const columns = columnConfigs[type];
 
   const handleAddRow = () => {
     setRows(prev => prev + 1);
   };
 
-  const renderCell = (colName, rowIndex) => {
+  if (!columns) {
+    return <div>올바르지 않은 type입니다: {type}</div>;
+  }
+
+  // 🔹 신상정보(military)는 사용자 커스텀 컴포넌트 그대로 사용
+  if (type === 'military') {
+    return (
+      <Table>
+        <thead>
+          <tr>
+            {columns.map(col => (
+              <Th key={col}>{col}</Th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <Td>
+              <Input type="text" placeholder="예: 2018~2020" style={{ width: '120px' }} />
+            </Td>
+            <Td>
+              <Input type="text" style={{ width: '100px' }} />
+            </Td>
+            <Td>
+              <Input type="text" style={{ width: '100px' }} />
+            </Td>
+            <Td>
+              <Input type="text" style={{ width: '100px' }} />
+            </Td>
+            <Td>
+              <Select style={{ width: '80px' }}>
+                <option>필</option>
+                <option>미필</option>
+                <option>면제</option>
+              </Select>
+            </Td>
+            <Td>
+              <Select style={{ width: '80px' }}>
+                <option>대상</option>
+                <option>비대상</option>
+              </Select>
+            </Td>
+          </tr>
+        </tbody>
+      </Table>
+    );
+  }
+
+  // 🔹 그 외 테이블은 공통 스타일 컴포넌트 사용
+  const renderCell = (colName) => {
     if (type === 'education') {
       switch (colName) {
         case '졸업일':
-          return <Input type="date" />;
+          return <StyledInput type="date" />;
         case '졸업여부':
           return (
-            <Select>
+            <StyledSelect>
               <option>졸업</option>
               <option>미졸업</option>
-            </Select>
+            </StyledSelect>
           );
         case '성적':
-          return <Input type="text" placeholder="예: 4.3 / 4.5" />;
+          return <StyledInput type="text" placeholder="예: 4.3 / 4.5" />;
         default:
-          return <Input type="text" />;
+          return <StyledInput type="text" />;
       }
     }
 
     if (type === 'career') {
       return (
-        <Input
+        <StyledInput
           type="text"
           placeholder={colName === '근무기간' ? '예: 2020~2023' : ''}
         />
@@ -84,80 +154,25 @@ const StyledTable = ({
     }
 
     if (type === 'certificate') {
-      return <Input type={colName === '취득일' ? 'date' : 'text'} />;
+      return <StyledInput type={colName === '취득일' ? 'date' : 'text'} />;
     }
 
     if (type === 'language') {
       if (colName === '구사정도') {
         return (
-          <Select>
+          <StyledSelect>
             <option>상</option>
             <option>중</option>
             <option>하</option>
-          </Select>
+          </StyledSelect>
         );
       }
-      return <Input type="text" />;
+      return <StyledInput type="text" />;
     }
 
     return null;
   };
 
-  const columns = columnConfigs[type];
-
-  if (!columns) {
-    return <div>올바르지 않은 type입니다: {type}</div>;
-  }
-// 병역 사항은 별도 처리 (한 줄만)
-if (type === 'military') {
-  return (
-    <Table>
-      <thead>
-        <tr>
-          {columns.map((col) => (
-            <Th key={col}>{col}</Th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <Td>
-            <Input
-              type="text"
-              placeholder="예: 2018~2020"
-              style={{ width: '120px' }}
-            />
-          </Td>
-          <Td>
-            <Input type="text" style={{ width: '100px' }} />
-          </Td>
-          <Td>
-            <Input type="text" style={{ width: '100px' }} />
-          </Td>
-          <Td>
-            <Input type="text" style={{ width: '100px' }} />
-          </Td>
-          <Td>
-            <Select style={{ width: '80px' }}>
-              <option>필</option>
-              <option>미필</option>
-              <option>면제</option>
-            </Select>
-          </Td>
-          <Td>
-            <Select style={{ width: '80px' }}>
-              <option>대상</option>
-              <option>비대상</option>
-            </Select>
-          </Td>
-        </tr>
-      </tbody>
-    </Table>
-  );
-}
-
-
-  // 그 외 타입은 행 추가 가능
   return (
     <>
       <Table>
@@ -172,7 +187,7 @@ if (type === 'military') {
           {[...Array(rows)].map((_, rowIndex) => (
             <tr key={rowIndex}>
               {columns.map(col => (
-                <Td key={col}>{renderCell(col, rowIndex)}</Td>
+                <Td key={col}>{renderCell(col)}</Td>
               ))}
             </tr>
           ))}
