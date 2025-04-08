@@ -28,6 +28,8 @@ import Step3 from './pages/Step3';
 import Step4 from './pages/Step4';
 import Step5 from './pages/Step5';
 
+import { AuthProvider } from './contexts/AuthContext';
+
 
 function App() {
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'ko');
@@ -37,6 +39,7 @@ function App() {
   }, [language]);
 
   return (
+    <AuthProvider>
       <Router>
         <Routes>
           <Route path="/" element={<MainPage language={language} onChangeLanguage={setLanguage} />} />
@@ -72,6 +75,7 @@ function App() {
           <Route path="*" element={<Error404 />} />
         </Routes>
       </Router>
+      </AuthProvider>
 
   );
 }
