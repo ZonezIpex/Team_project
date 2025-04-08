@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Step3Page from './Step3Page';
-import Step5 from './Step5';
+import Step5Page from './Step5Page';
 import { useNavigate } from 'react-router-dom';
 import StyledTable from '../components/StepTable';
 
@@ -369,7 +369,7 @@ const Step4 = () => {
 
           <StepButton>
           <PreButton onClick={() => navigate('/step3Page')}>이전</PreButton>
-          <NextButton onClick={() => navigate('/step5')}>다음</NextButton>
+          <NextButton onClick={() => navigate('/step5Page')}>다음</NextButton>
           </StepButton>
         </Container>
 

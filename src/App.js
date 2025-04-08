@@ -24,7 +24,7 @@ import Step1Page from './pages/Step1Page';
 import Step2Page from './pages/Step2Page';
 import Step3Page from './pages/Step3Page';
 import Step4Page from './pages/Step4Page';
-import Step5 from './pages/Step5';
+import Step5Page from './pages/Step5Page';
 
 
 function App() {
@@ -48,7 +48,7 @@ function App() {
         <Route path="/step2page" element={<Step2Page language={language} onChangeLanguage={setLanguage} />} />
         <Route path="/step3page" element={<Step3Page language={language} onChangeLanguage={setLanguage} />} />
         <Route path="/step4Page" element={<Step4Page language={language} onChangeLanguage={setLanguage} />} />
-        <Route path="/step5" element={<Step5 language={language} onChangeLanguage={setLanguage} />} />
+        <Route path="/step5Page" element={<Step5Page language={language} onChangeLanguage={setLanguage} />} />
 
           {/* ✅ 리뷰 관련 라우트 추가 (친구 작업 반영) */}
 
