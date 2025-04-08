@@ -1,4 +1,4 @@
-// src/components/Step2.jsx
+// src/components/Step4.jsx
 import React from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
@@ -29,6 +29,7 @@ const ResumeInput = styled.div`
   padding: 20px 30px;
   border-radius: 10px;
   box-shadow: 3px 3px 10px -3px gray;
+  margin-bottom: 50px;
 `;
 
 const Title = styled.h1`
@@ -207,6 +208,7 @@ const NextButton=styled(LinkText)`
     margin-right: 30px;
 `;
 
+
 const StepButton = styled.div`
   width: 100%;
   max-width: 900px; /* 기존 800px에서 더 넓혀줌 */
@@ -216,12 +218,24 @@ const StepButton = styled.div`
   align-items: center;
 `;
 
+const InputSection = styled.div`
+  background-color: white;
+  padding: 0 20px 20px 20px;
+  border-radius: 20px;
+  box-shadow: 3px 3px 10px -3px gray;
+`;
 
+const SectionTitle = styled.h4`
+  margin-top: 30px;
+  text-align: left;
+  border-bottom: 1px solid black;
+  padding-bottom: 0.3rem;
+`;
 
 const steps = ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"];
-const currentStep = 1; // 현재 단계: 신상정보까지 완료
+const currentStep = 3; // 현재 단계
 
-const Step2Page = () => {
+const Step4 = () => {
   const navigate = useNavigate();
   return (
     <PageWrapper>
@@ -291,16 +305,48 @@ const Step2Page = () => {
 
           </MilitarySection>
         </ResumeInput>
-        <StepButton>
-          <PreButton onClick={() => navigate('/step1Page')}>이전</PreButton>
-          <NextButton onClick={() => navigate('/step3Page')}>다음</NextButton>
-        </StepButton>
-      </Container>
 
+        <InputSection>
+          {/* 학력 */}
+          <SectionTitle>학력</SectionTitle>
+            <StyledTable
+              type="education"
+              inputComponent={Input}
+              selectComponent={Select}
+            />
 
-      <Footer/>
-    </PageWrapper>
+            <SectionTitle>경력</SectionTitle>
+            <StyledTable
+              type="career"
+              inputComponent={Input}
+              selectComponent={Select}
+            />
+
+            <SectionTitle>자격증</SectionTitle>
+            <StyledTable
+              type="certificate"
+              inputComponent={Input}
+              selectComponent={Select}
+            />
+
+            <SectionTitle>외국어</SectionTitle>
+            <StyledTable
+              type="language"
+              inputComponent={Input}
+              selectComponent={Select}
+            />
+
+        </InputSection>
+
+          <StepButton>
+          <PreButton onClick={() => navigate('/step3Page')}>이전</PreButton>
+          <NextButton onClick={() => navigate('/step5Page')}>다음</NextButton>
+          </StepButton>
+        </Container>
+
+        <Footer/>
+        </PageWrapper>
   );
 };
 
-export default Step2Page;
+export default Step4;

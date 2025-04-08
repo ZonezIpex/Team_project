@@ -181,15 +181,17 @@ const ButtonWrapper = styled.div`
 `;
 
 const Button = styled.button`
-  background-color: #146c94;
   color: white;
-  border: none;
-  padding: 0.8rem 2rem;
-  border-radius: 30px;
+  background-color: #146c94;
+  border: 1px solid #146c94;
+  border-radius:20px;
   font-size: 1rem;
   cursor: pointer;
+  text-decoration: none;
+  padding: 8px 20px;
 
   &:hover {
-    background-color: #0d4c6d;
+    color: #146c94;
+    background-color: white;
   }
 `;
