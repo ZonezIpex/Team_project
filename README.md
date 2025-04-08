@@ -1,7 +1,12 @@
 ## 추가-5<br/>
 ReviewList.jsx<br/>
-ReviewWrite.jsx수정<br/><br/>
-컨테이너 박스 잘못되어 있어서 수정
+ReviewWrite.jsx수정<br/>
+컨테이너 박스 잘못되어 있어서 수정<br/>
+슬라이더 문제있어서 수정<br/>
+슬라이더 버튼 색 수정<br/>
+스크롤바 색상 변경<br/>
+하트 색상 변경<br/>
+하단 버튼 색상 변경<br/>
 
 ## 추가-4<br/>
 src/components에 review 폴더 추가<br/>

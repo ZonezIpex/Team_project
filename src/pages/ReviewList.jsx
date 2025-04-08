@@ -66,7 +66,7 @@ const ReviewList = () => {
           <Card key={i}>
             <ResumeImage src={resumeImage} />
             <LikeButton onClick={() => togglePopularLike(i)}>
-              {popularLikedStates[i] ? <FaHeart style={{ color: "#e74c3c" }} /> : <FaRegHeart />}
+              {popularLikedStates[i] ? <FaHeart style={{ color: "#ff6b6b" }} /> : <FaRegHeart />}
             </LikeButton>
             <ReviewInfo>
               <div>리뷰 제목</div>
@@ -79,7 +79,7 @@ const ReviewList = () => {
           <Card key={i}>
             <ResumeImage src={resumeImage} />
             <LikeButton onClick={() => toggleLatestLike(i)}>
-              {latestLikedStates[i] ? <FaHeart style={{ color: "#e74c3c" }} /> : <FaRegHeart />}
+              {latestLikedStates[i] ? <FaHeart style={{ color: "#ff6b6b" }} /> : <FaRegHeart />}
             </LikeButton>
             <ReviewInfo>
               <div>최신 리뷰 제목</div>
@@ -92,7 +92,7 @@ const ReviewList = () => {
           <Card key={i}>
             <ResumeImage src={resumeImage} />
             <LikeButton onClick={() => toggleMyLike(i)}>
-              {myLikedStates[i] ? <FaHeart style={{ color: "#e74c3c" }} /> : <FaRegHeart />}
+              {myLikedStates[i] ? <FaHeart style={{ color: "#ff6b6b" }} /> : <FaRegHeart />}
             </LikeButton>
             <ReviewInfo>
               <div>작성한 리뷰 제목</div>
@@ -152,7 +152,7 @@ const ReviewList = () => {
                   <Card key={i}>
                     <ResumeImage src={resumeImage} />
                     <LikeButton onClick={() => toggleBottomLike(i)}>
-                      {bottomLikedStates[i] ? <FaHeart style={{ color: "#e74c3c" }} /> : <FaRegHeart />}
+                      {bottomLikedStates[i] ? <FaHeart style={{ color: "#ff6b6b" }} /> : <FaRegHeart />}
                     </LikeButton>
                     <ReviewInfo>
                       <div>제목 : </div>
@@ -196,16 +196,22 @@ const LeftArrowButton = styled.button`
   background-color: transparent;
   border: none;
   font-size: 2rem;
-  color: #333;
+  color: white; // 색상
   cursor: pointer;
+  &:hover {
+    color: #64a8f0; // 🔹 hover 시 색상 바꾸고 싶으면 여기도 설정 가능
+  }
 `;
 
 const RightArrowButton = styled.button`
   background-color: transparent;
   border: none;
   font-size: 2rem;
-  color: #333;
+  color: white; // 색상
   cursor: pointer;
+  &:hover {
+    color: #64a8f0; // 🔹 hover 시 색상 바꾸고 싶으면 여기도 설정 가능
+  }
 `;
 
 const Section = styled.div`
@@ -247,23 +253,24 @@ const TitleButton = styled.button`
 
 const Slider = styled.div`
   display: flex;
-  gap: 1.5rem;
+  gap: 1.3rem; //수정
   transition: transform 0.5s ease-in-out;
   transform: translateX(${(props) => `-${props.offset}px`});
   width: fit-content;
 `;
 
+/*상단 컨테이너*/
 const BoxWrapper = styled.div`
   overflow: hidden;
   width: 100%;
-  max-width: 1160px; //1120수정
+  max-width: 1120px; //1120수정
   margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #b6e4ff;
   border-radius: 0px 16px 16px 16px;
-  padding: 1.5rem;
+  padding: 2rem;
 `;
 
 const Grid = styled.div`
@@ -288,6 +295,8 @@ const ResumeImage = styled.img`
   width: 100%;
   height: 270px;
   object-fit: contain;
+  image-rendering: auto; /* 또는 crisp-edges, pixelated 등 테스트 */
+  transform: translateZ(0); /* GPU 가속 유도 */
 `;
 
 const ReviewInfo = styled.div`
@@ -320,7 +329,7 @@ const LikeButton = styled.button`
 `;
 
 const WriteButton = styled.button`
-  background-color: #157aac;
+  background-color: #146c94;
   color: white;
   padding: 0.7rem 1.5rem;
   border-radius: 999px;
@@ -330,6 +339,13 @@ const WriteButton = styled.button`
   margin: 2rem auto 1rem auto;
   cursor: pointer;
   transform: translateX(390%);
+
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover {
+    background-color: white;
+    color: #146c94;
+  }
 `;
 
 const VerticalSlider = styled.div`
@@ -339,4 +355,22 @@ const VerticalSlider = styled.div`
   height: 600px;
   overflow-y: auto;
   padding-bottom: 0.5rem;
+
+  &::-webkit-scrollbar {
+    width: 10px; /* 스크롤바 너비 */
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #e0f3ff; /* 트랙 배경색 */
+    border-radius: 9px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #64a8f0; /* 슬라이더 색상 */
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color:rgb(68, 115, 165); /* hover 시 색상 */
+  }
 `;

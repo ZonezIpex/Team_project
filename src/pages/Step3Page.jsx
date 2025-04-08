@@ -3,8 +3,6 @@ import React from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import Step2Page from './Step2Page';
-import Step4Page from './Step4Page';
 import { useNavigate } from 'react-router-dom';
 import StyledTable from '../components/StepTable';
 
