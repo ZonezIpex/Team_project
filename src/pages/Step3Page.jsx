@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Step2Page from './Step2Page';
-import Step4 from './Step4';
+import Step4Page from './Step4Page';
 import { useNavigate } from 'react-router-dom';
 import StyledTable from '../components/StepTable';
 
@@ -91,14 +91,22 @@ const SectionTitle = styled.h4`
 
 const Input = styled.input`
   width: 100%;
-  padding: 6px;
   box-sizing: border-box;
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
 `;
 
 const Select = styled.select`
-  width: 100%;
-  padding: 6px;
+  flex: 1;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
   box-sizing: border-box;
+  margin-right: 10px;
 `;
 
 const LinkText = styled.div`
@@ -188,7 +196,7 @@ const Step3Page = () => {
 
       <StepButton>
         <PreButton onClick={() => navigate('/step2Page')}>이전</PreButton>
-        <NextButton onClick={() => navigate('/step4')}>다음</NextButton>
+        <NextButton onClick={() => navigate('/step4Page')}>다음</NextButton>
       </StepButton>
 
       <Footer/>
