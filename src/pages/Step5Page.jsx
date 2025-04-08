@@ -3,6 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer'
+import { useNavigate } from 'react-router-dom';
 
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
@@ -34,6 +35,48 @@ const Title = styled.h2`
   color: white;
   margin-top: 100px;
   margin-bottom: 30px;
+`;
+
+const Stepper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+`;
+
+const Step = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Circle = styled.div`
+  min-width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: ${props =>
+    props.index <= props.currentStep ? '#146c94' : 'white'};
+  color: ${props =>
+    props.index <= props.currentStep ? 'white' : '#146c94'};
+  border: 3px solid #146c94;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 5px;
+  white-space: pre-line;
+  box-sizing: border-box;
+`;
+
+const Line = styled.div`
+  width: 30px;
+  height: 5px;
+  background-color: #146c94;
+  margin-left: -2px;
+  margin-right: -2px;
 `;
 
 const Section = styled.div`
@@ -76,12 +119,57 @@ const CompleteButton = styled.button`
     background-color: white;
 `;
 
+const LinkText = styled.div`
+  color: white;
+  background-color: #146c94;
+  border: 1px solid #146c94;
+  border-radius:20px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 8px 20px;
+
+  &:hover {
+    color: #146c94;
+    background-color: white;
+  }
+`;
+
+const PreButton=styled(LinkText)`
+    margin-left: 30px;
+`;
+
+const StepButton = styled.div`
+  width: 100%;
+  max-width: 900px; /* 기존 800px에서 더 넓혀줌 */
+  margin: 50px auto 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+
+const steps = ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"];
+const currentStep = 4; // 현재 단계
+
 const Step5Page = () => {
+  const navigate = useNavigate();
   return (
     <PageWrapper>
       <Header/>
     <Container>
       <Title>이력서 완성</Title>
+
+        <Stepper>
+          {steps.map((step, index) => (
+            <Step key={step}>
+              <Circle index={index} currentStep={currentStep}>
+                {step}
+              </Circle>
+              {index < steps.length - 1 && <Line />}
+            </Step>
+          ))}
+        </Stepper>
 
 <InputSection>
       <Section>
@@ -115,11 +203,16 @@ const Step5Page = () => {
       </InputSection>
 
       <ButtonWrapper>
-        <CompleteButton onClick={() => alert("이력서 저장이 완료되었습니다!")}>
-          이력서 완료
-        </CompleteButton>
+        
       </ButtonWrapper>
       
+      <StepButton>
+          <PreButton onClick={() => navigate('/step4Page')}>이전</PreButton>
+          <CompleteButton onClick={() => alert("이력서 저장이 완료되었습니다!")}>
+          이력서 완료
+        </CompleteButton>
+      </StepButton>
+          
     </Container>
     <Footer/>
     </PageWrapper>
