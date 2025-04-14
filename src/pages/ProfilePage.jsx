@@ -138,4 +138,4 @@ const Profile = () => {
   );
 };
 
-export default ProfilePage;
+export default Profile;
