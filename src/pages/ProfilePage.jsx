@@ -4,7 +4,6 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import profileImg from '../assets/profile1.jpg';
 
-// 레이아웃 스타일
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
   min-height: 100vh;
@@ -24,9 +23,9 @@ const Title = styled.h1`
   font-size: clamp(1.8rem, 3vw, 2.5rem);
   color: white;
   margin-bottom: 30px;
+  font-weight: bold;
 `;
 
-// 프로필 이미지
 const ProfileImage = styled.img`
   width: 120px;
   height: 120px;
@@ -35,9 +34,8 @@ const ProfileImage = styled.img`
   border: 3px solid white;
 `;
 
-// 내부 카드 구성
 const InfoCard = styled.div`
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.6);
   border-radius: 12px;
   padding: 30px;
   width: 100%;
@@ -50,6 +48,7 @@ const SectionTitle = styled.h2`
   font-size: 1.3rem;
   color: #333;
   margin-bottom: 20px;
+  font-weight: bold;
 `;
 
 const InfoRow = styled.div`
@@ -57,16 +56,19 @@ const InfoRow = styled.div`
   align-items: center;
   margin-bottom: 15px;
   gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid black;
 `;
 
 const Label = styled.div`
   font-weight: bold;
-  color: #666;
+  color: #333;
   width: 80px;
 `;
 
 const Value = styled.div`
   color: #333;
+  font-weight: bold;
 `;
 
 const FooterText = styled.div`
@@ -76,14 +78,13 @@ const FooterText = styled.div`
   text-align: center;
 `;
 
-const Profile = () => {
+const ProfilePage = () => {
   return (
     <PageWrapper>
       <Header />
       <Content>
         <Title>마이페이지</Title>
 
-        {/* 개인정보 */}
         <InfoCard>
           <SectionTitle>개인정보</SectionTitle>
           <InfoRow>
@@ -100,7 +101,6 @@ const Profile = () => {
           </InfoRow>
         </InfoCard>
 
-        {/* 연락처 */}
         <InfoCard>
           <SectionTitle>연락처</SectionTitle>
           <InfoRow>
@@ -113,7 +113,6 @@ const Profile = () => {
           </InfoRow>
         </InfoCard>
 
-        {/* 주소 */}
         <InfoCard>
           <SectionTitle>주소</SectionTitle>
           <InfoRow>
@@ -126,7 +125,6 @@ const Profile = () => {
           </InfoRow>
         </InfoCard>
 
-        {/* 푸터 텍스트 */}
         <FooterText>
           13916 경기도 안양시 동안구 임곡로 29 대림대학교 | 대표전화 : 031-467-4700
           <br />
@@ -138,4 +136,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default ProfilePage;
