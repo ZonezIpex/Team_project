@@ -25,14 +25,15 @@ const Content = styled.div`
 const Title = styled.h1`
   font-size: clamp(1.8rem, 3vw, 2.5rem);
   color: white;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  font-weight: bold;
 `;
 
 const ProfileSection = styled.div`
   display: flex;
   align-items: center;
   gap: 25px;
-  margin-bottom: 40px;
+  margin-bottom: 50px;
 `;
 
 const ProfileImage = styled.img`
@@ -49,67 +50,92 @@ const ProfileText = styled.div`
   font-weight: bold;
 `;
 
-const TabBox = styled.div`
-  display: flex;
-  background-color: #dbefff;
-  border-radius: 20px;
-  overflow: hidden;
-  margin-bottom: 40px;
-`;
-
-const Tab = styled.button`
-  flex: 1;
-  padding: 15px 30px;
-  font-size: 1rem;
-  background-color: ${({ active }) => (active ? '#b0d4f1' : '#dbefff')};
-  border: none;
-  cursor: pointer;
-  font-weight: ${({ active }) => (active ? 'bold' : 'normal')};
-  color: ${({ active }) => (active ? '#000' : '#555')};
-
-  &:hover {
-    background-color: #cbe5ff;
-  }
-`;
-
-const TabContent = styled.div`
-  width: 100%;
-  max-width: 1000px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-`;
-
-const ResumeCard = styled.div`
-  width: 180px;
-  height: 240px;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.1);
-`;
-
-const ReviewCard = styled.div`
-  width: 280px;
-  min-height: 200px;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  line-height: 1.4;
-`;
 const LinkText = styled.div`
   color: white;
   font-size: 1rem;
-  margin-top: 5px;
+  margin-top: 6px;
   cursor: pointer;
   text-decoration: underline;
+  transition: 0.2s;
 
   &:hover {
     color: #ffeb3b;
   }
 `;
 
+const TabContainer = styled.div`
+  width: 100%;
+  max-width: 900px;
+`;
+
+const TabHeader = styled.div`
+  display: flex;
+`;
+
+const TabButton = styled.button`
+  flex: 1;
+  padding: 15px 0;
+  background-color: ${({ active }) => (active ? 'white' : '#dbefff')};
+  color: ${({ active }) => (active ? '#333' : '#555')};
+  border: 2px solid #7fc6ff;
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  font-weight: ${({ active }) => (active ? 'bold' : 'normal')};
+  cursor: pointer;
+  transition: 0.2s;
+
+  &:hover {
+    background-color: white;
+    color: #333;
+  }
+`;
+
+const TabContentBox = styled.div`
+  background-color: white;
+  border: 2px solid #7fc6ff;
+  border-radius: 0 0 12px 12px;
+  padding: 40px 20px;
+`;
+
+const CardList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+`;
+
+const ResumeCard = styled.div`
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: 0.2s;
+
+  img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+`;
+
+const ReviewCard = styled.div`
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  min-height: 200px;
+  line-height: 1.5;
+  transition: 0.2s;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+`;
 
 const MyPage = ({ language, onChangeLanguage }) => {
   const [tab, setTab] = useState('resume');
@@ -130,44 +156,38 @@ const MyPage = ({ language, onChangeLanguage }) => {
           </div>
         </ProfileSection>
 
-        <TabBox>
-          <Tab active={tab === 'resume'} onClick={() => setTab('resume')}>이력서</Tab>
-          <Tab active={tab === 'review'} onClick={() => setTab('review')}>리뷰</Tab>
-        </TabBox>
+        <TabContainer>
+          <TabHeader>
+            <TabButton active={tab === 'resume'} onClick={() => setTab('resume')}>
+              이력서
+            </TabButton>
+            <TabButton active={tab === 'review'} onClick={() => setTab('review')}>
+              리뷰
+            </TabButton>
+          </TabHeader>
 
-        <TabContent>
-          {tab === 'resume' ? (
-            <>
-              <ResumeCard>
-                <img src={resume1} alt="이력서 이미지" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
-              </ResumeCard>
-              <ResumeCard>
-                <img src={resume1} alt="이력서 이미지" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
-              </ResumeCard>
-              <ResumeCard>
-                <img src={resume1} alt="이력서 이미지" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
-              </ResumeCard>
-            </>
-          ) : (
-            <>
-              <ReviewCard>
-                <strong>진짜 최고의 이력서</strong><br />
-                ⭐⭐⭐⭐⭐<br />
-                이력서 내용이 너무 마음에 들어서 내용...
-              </ReviewCard>
-              <ReviewCard>
-                <strong>진짜 최고의 이력서</strong><br />
-                ⭐⭐⭐⭐⭐<br />
-                이력서 내용이 너무 마음에 들어서 내용...
-              </ReviewCard>
-              <ReviewCard>
-                <strong>진짜 최고의 이력서</strong><br />
-                ⭐⭐⭐⭐⭐<br />
-                이력서 내용이 너무 마음에 들어서 내용...
-              </ReviewCard>
-            </>
-          )}
-        </TabContent>
+          <TabContentBox>
+            {tab === 'resume' ? (
+              <CardList>
+                {[...Array(3)].map((_, idx) => (
+                  <ResumeCard key={idx}>
+                    <img src={resume1} alt="이력서" />
+                  </ResumeCard>
+                ))}
+              </CardList>
+            ) : (
+              <CardList>
+                {[...Array(3)].map((_, idx) => (
+                  <ReviewCard key={idx}>
+                    <strong>진짜 최고의 이력서</strong><br />
+                    ⭐⭐⭐⭐⭐<br />
+                    이력서 내용이 너무 마음에 들어서 내용...
+                  </ReviewCard>
+                ))}
+              </CardList>
+            )}
+          </TabContentBox>
+        </TabContainer>
       </Content>
       <Footer />
     </PageWrapper>
