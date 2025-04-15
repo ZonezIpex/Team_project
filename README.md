@@ -1,35 +1,53 @@
-## 📅 GOD 브랜치 작업 내역
+## 추가-6<br/>
+ReviewWrite.jsx수정<br/>
+영어 버전 수용(ReviewList.jsx, ReviewWrite.jsx)<br/>
 
-### 2025-04-14
-- yang 브랜치 내용 병합 완료 -> 마이페이지, 개인리뷰 화면 UI개선
-- junhwan 브랜치 내용 병합 완료 -> 전체리뷰 디테일 개선, 가시성 증대
+## 추가-5<br/>
+ReviewList.jsx<br/>
+ReviewWrite.jsx수정<br/>
+컨테이너 박스 잘못되어 있어서 수정<br/>
+슬라이더 문제있어서 수정<br/>
+슬라이더 버튼 색 수정<br/>
+스크롤바 색상 변경<br/>
+하트 색상 변경<br/> 
+하단 버튼 색상 변경<br/>
 
-### 2025-04-08
-- step1~5 페이지 전체 제작완료 & 연결
--어드민 페이지 바로가기 전부 추가 완료
+## 추가-4<br/>
+src/components에 review 폴더 추가<br/>
+ReviewCard.jsx<br/>
+ReviewTabs.jsx<br/>
+ReviewSlider.jsx<br/>
+ReviewGrid.jsx<br/>
+reviewStyles.jsx<br/>
+까지가 ReviewList.jsx 에 들어가야 하는 코드<br/><br/>
 
-### 2025-04-07
-- 준환이 리뷰 페이지 메인화면에 반영 -> 작업물 최신화
-- 코드 오류부분 전체 수정
-- 메뉴사이드바에 있던 리뷰 바로가기 버튼 명령어 reviews -> reivew 수정
-- 송씨 step2 제작완료 & 앞뒤 페이지 가는 버튼 추가, 전체적 통일성 보완
+ReviewForm.jsx<br/>
+ReviewImageUpload.jsx<br/>
+ReviewRating.jsx<br/>
+reviewWriteStyles.jsx<br/>
+까지가 ReviewWrite.jsx에 들어가야 하는 코드<br/><br/>
 
-### 2025-04-06(새벽)
-- 송씨 step1 제작완료 & 메인페이지 이력서 작성하기 버튼이랑 연동 완료
-- 하진이 마이페이지 & 리뷰페이지(미완) 저장완료
-- 어드민 페이지에 위에 2개 바로가기 추가 완료
+## App.js<br/>
+<Route path="/review" element={<ReviewList />} /><br/>
+<Route path="/review/write" element={<ReviewWrite />} /><br/>
+해당 코드 추가<br/><br/>
 
-### 2025-04-05
-- 마이페이지 개인정보 화면 추가 (`551aa6c`)
-- 로그인/회원가입 페이지 개선 및 인증 로직 구현 (`b745330`)
-- 관리자 대시보드 및 회원 관리 기능 구현 (`43d99eb`)
-- GitHub main 브랜치에서 병합 (`7a72e90`, `c74fd6e`)
-- profile 파일 작업 (`4666af5`)
+## MenuSidebar.jsx<br/>
+<MenuButton onClick={() => (window.location.href = '/reviews')}>{text.review}</MenuButton> 에서<br/>
+reviews => review 로 변경<br/>
+<MenuButton onClick={() => (window.location.href = '/review')}>{text.review}</MenuButton><br/><br/>
 
-### 2025-04-04
-- 메인화면 UI 추가 (`ec1df47`)
+## src/pages<br/>
+ReviewList.jsx<br/>
+ReviewWrite.jsx<br/>
+추가<br/><br/>
 
-### 2025-04-03
-- 로그인, 회원가입 기능 초기 구현 (`49db6b8`)
-- README.md 업데이트 (`dd7548b`)
-- 메인 브랜치 병합 (`cb0788e`, `4d76073`)
+## src/assets<br/> 
+resume-1.jpg<br/>
+이미지 추가<br/><br/>
+
+## 터미널<br/>
+npm install react-icons<br/>
+해당 패키지는 별칭 때문에 설치하는 것<br/>
+- 만약 안되면 PowerShell을 관리자 권한으로 열고<br/>
+  `Set-ExecutionPolicy RemoteSigned` 입력 후 y 입력<br/>

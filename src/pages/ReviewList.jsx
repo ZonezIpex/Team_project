@@ -15,6 +15,19 @@ const ReviewList = () => {
     localStorage.setItem("language", language);
   }, [language]);
 
+  const t = {
+    popular: language === "ko" ? "인기 리뷰" : "Popular Reviews",
+    latest: language === "ko" ? "최신 리뷰" : "Latest Reviews",
+    myReviews: language === "ko" ? "내 리뷰" : "My Reviews",
+    allReviews: language === "ko" ? "전체 리뷰" : "All Reviews",
+    title: language === "ko" ? "리뷰 제목" : "Review Title",
+    content: language === "ko" ? "리뷰 내용" : "Review Content",
+    myTitle: language === "ko" ? "작성한 리뷰 제목" : "My Review Title",
+    myContent: language === "ko" ? "작성한 리뷰 내용" : "My Review Content",
+    write: language === "ko" ? "리뷰 작성하기" : "Write Review",
+    labelTitle: language === "ko" ? "제목 :" : "Title:"
+  };
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const reviewsPerSlide = 4;
   const totalReviews = 8;
@@ -29,80 +42,49 @@ const ReviewList = () => {
   const [myLikedStates, setMyLikedStates] = useState(Array(8).fill(false));
   const [bottomLikedStates, setBottomLikedStates] = useState(Array(12).fill(false));
 
-  const togglePopularLike = (index) => {
-    const updated = [...popularLikedStates];
+  const toggleLike = (setter) => (index) => {
+  setter((prev) => {
+    const updated = [...prev];
     updated[index] = !updated[index];
-    setPopularLikedStates(updated);
-  };
-
-  const toggleLatestLike = (index) => {
-    const updated = [...latestLikedStates];
-    updated[index] = !updated[index];
-    setLatestLikedStates(updated);
-  };
-
-  const toggleMyLike = (index) => {
-    const updated = [...myLikedStates];
-    updated[index] = !updated[index];
-    setMyLikedStates(updated);
-  };
-
-  const toggleBottomLike = (index) => {
-    const updated = [...bottomLikedStates];
-    updated[index] = !updated[index];
-    setBottomLikedStates(updated);
-  };
-
-  const Title = styled.h2`
-    font-size: 1.5rem;
-    margin: 0;
-    padding: 0;
-  `;
+    return updated;
+  });
+};
 
   const renderReviews = () => {
-    switch (activeTab) {
-      case "popular":
-        return [...Array(8)].map((_, i) => (
-          <Card key={i}>
-            <ResumeImage src={resumeImage} />
-            <LikeButton onClick={() => togglePopularLike(i)}>
-              {popularLikedStates[i] ? <FaHeart style={{ color: "#ff6b6b" }} /> : <FaRegHeart />}
-            </LikeButton>
-            <ReviewInfo>
-              <div>리뷰 제목</div>
-              <div>리뷰 내용</div>
-            </ReviewInfo>
-          </Card>
-        ));
-      case "latest":
-        return [...Array(8)].map((_, i) => (
-          <Card key={i}>
-            <ResumeImage src={resumeImage} />
-            <LikeButton onClick={() => toggleLatestLike(i)}>
-              {latestLikedStates[i] ? <FaHeart style={{ color: "#ff6b6b" }} /> : <FaRegHeart />}
-            </LikeButton>
-            <ReviewInfo>
-              <div>최신 리뷰 제목</div>
-              <div>최신 리뷰 내용</div>
-            </ReviewInfo>
-          </Card>
-        ));
-      case "myReviews":
-        return [...Array(8)].map((_, i) => (
-          <Card key={i}>
-            <ResumeImage src={resumeImage} />
-            <LikeButton onClick={() => toggleMyLike(i)}>
-              {myLikedStates[i] ? <FaHeart style={{ color: "#ff6b6b" }} /> : <FaRegHeart />}
-            </LikeButton>
-            <ReviewInfo>
-              <div>작성한 리뷰 제목</div>
-              <div>작성한 리뷰 내용</div>
-            </ReviewInfo>
-          </Card>
-        ));
-      default:
-        return null;
+    let likedStates = [];
+    let toggleFunc;
+
+    if (activeTab === "popular") {
+      likedStates = popularLikedStates;
+      toggleFunc = (i) => setPopularLikedStates(toggleLike(popularLikedStates, i));
+    } else if (activeTab === "latest") {
+      likedStates = latestLikedStates;
+      toggleFunc = (i) => setLatestLikedStates(toggleLike(latestLikedStates, i));
+    } else {
+      likedStates = myLikedStates;
+      toggleFunc = (i) => setMyLikedStates(toggleLike(myLikedStates, i));
     }
+
+    return [...Array(8)].map((_, i) => (
+      <Card key={i}>
+        <ResumeImage src={resumeImage} />
+        <LikeButton onClick={() => toggleFunc(i)}>
+          {likedStates[i] ? <FaHeart style={{ color: "#ff6b6b" }} /> : <FaRegHeart />}
+        </LikeButton>
+        <ReviewInfo>
+          <div>
+            {activeTab === "myReviews"
+              ? t.myTitle
+              : t.title}
+          </div>
+          <div>
+            {activeTab === "myReviews"
+              ? t.myContent
+              : t.content}
+          </div>
+        </ReviewInfo>
+      </Card>
+    ));
   };
 
   const handlePrev = () => {
@@ -120,15 +102,9 @@ const ReviewList = () => {
         <Section>
           <TitleContainer>
             <TitleWrapper>
-              <TitleButton active={activeTab === "popular"} onClick={() => setActiveTab("popular")}>
-                인기 리뷰
-              </TitleButton>
-              <TitleButton active={activeTab === "latest"} onClick={() => setActiveTab("latest")}>
-                최신 리뷰
-              </TitleButton>
-              <TitleButton active={activeTab === "myReviews"} onClick={() => setActiveTab("myReviews")}>
-                내 리뷰
-              </TitleButton>
+              <TitleButton active={activeTab === "popular"} onClick={() => setActiveTab("popular")}>{t.popular}</TitleButton>
+              <TitleButton active={activeTab === "latest"} onClick={() => setActiveTab("latest")}>{t.latest}</TitleButton>
+              <TitleButton active={activeTab === "myReviews"} onClick={() => setActiveTab("myReviews")}>{t.myReviews}</TitleButton>
             </TitleWrapper>
           </TitleContainer>
 
@@ -142,7 +118,7 @@ const ReviewList = () => {
         </Section>
 
         <Section>
-          <Title>전체 리뷰</Title>
+          <Title>{t.allReviews}</Title>
           <br />
           <br />
           <AllReviewsContainer>
@@ -151,12 +127,16 @@ const ReviewList = () => {
                 {[...Array(12)].map((_, i) => (
                   <Card key={i}>
                     <ResumeImage src={resumeImage} />
-                    <LikeButton onClick={() => toggleBottomLike(i)}>
+                    <LikeButton onClick={() => {
+                      const updated = [...bottomLikedStates];
+                      updated[i] = !updated[i];
+                      setBottomLikedStates(updated);
+                    }}>
                       {bottomLikedStates[i] ? <FaHeart style={{ color: "#ff6b6b" }} /> : <FaRegHeart />}
                     </LikeButton>
                     <ReviewInfo>
-                      <div>제목 : </div>
-                      <div>리뷰 내용</div>
+                      <div>{t.labelTitle}</div>
+                      <div>{t.content}</div>
                     </ReviewInfo>
                   </Card>
                 ))}
@@ -165,7 +145,7 @@ const ReviewList = () => {
           </AllReviewsContainer>
         </Section>
 
-        <WriteButton onClick={() => navigate("/review/write")}>리뷰 작성하기</WriteButton>
+        <WriteButton onClick={() => navigate("/review/write")}>{t.write}</WriteButton>
       </Container>
       <Footer language={language} />
     </PageWrapper>
@@ -174,6 +154,12 @@ const ReviewList = () => {
 
 export default ReviewList;
 
+// styled-components 생략 (이전 그대로 유지)
+const Title = styled.h2`
+  font-size: 1.5rem;
+  margin: 0;
+  padding: 0;
+`;
 // 스타일 컴포넌트 (수정 금지)
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
