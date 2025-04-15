@@ -1,11 +1,114 @@
-// Step3Page.jsx
 import React from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useNavigate } from 'react-router-dom';
-import StyledTable from '../components/StepTable';
+import { useNavigate } from "react-router-dom";
+import StyledTable from "../components/StepTable";
 
+export default function Step3Page({ language, onChangeLanguage }) {
+  const navigate = useNavigate();
+
+  const text = {
+    title: {
+      ko: "경력 입력",
+      en: "Enter Experience",
+    },
+    steps: {
+      ko: ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"],
+      en: ["Template", "Personal\nInfo", "Experience", "Edit", "Complete"],
+    },
+    sectionTitles: {
+      ko: {
+        education: "학력",
+        career: "경력",
+        certificate: "자격증",
+        language: "외국어",
+      },
+      en: {
+        education: "Education",
+        career: "Career",
+        certificate: "Certificates",
+        language: "Languages",
+      },
+    },
+    next: {
+      ko: "다음",
+      en: "Next",
+    },
+    prev: {
+      ko: "이전",
+      en: "Previous",
+    },
+  };
+
+  return (
+    <PageWrapper>
+      <Header language={language} onChangeLanguage={onChangeLanguage} />
+      <Container>
+        <Title>{text.title[language]}</Title>
+
+        <Stepper>
+          {text.steps[language].map((step, index) => (
+            <Step key={step}>
+              <Circle active={index === 2}>{step}</Circle> {/* Adjust active step */}
+              {index < text.steps[language].length - 1 && <Line />}
+            </Step>
+          ))}
+        </Stepper>
+
+        <InputSection>
+          {/* 학력 */}
+          <SectionTitle>{text.sectionTitles[language].education}</SectionTitle>
+          <StyledTable
+            type="education"
+            inputComponent={Input}
+            selectComponent={Select}
+            language={language}
+          />
+
+          {/* 경력 */}
+          <SectionTitle>{text.sectionTitles[language].career}</SectionTitle>
+          <StyledTable
+            type="career"
+            inputComponent={Input}
+            selectComponent={Select}
+            language={language}
+          />
+
+          {/* 자격증 */}
+          <SectionTitle>{text.sectionTitles[language].certificate}</SectionTitle>
+          <StyledTable
+            type="certificate"
+            inputComponent={Input}
+            selectComponent={Select}
+            language={language}
+          />
+
+          {/* 외국어 */}
+          <SectionTitle>{text.sectionTitles[language].language}</SectionTitle>
+          <StyledTable
+            type="language"
+            inputComponent={Input}
+            selectComponent={Select}
+            language={language}
+          />
+        </InputSection>
+
+        <StepButton>
+          <PreButton onClick={() => navigate("/step2Page")}>
+            {text.prev[language]}
+          </PreButton>
+          <NextButton onClick={() => navigate("/step4Page")}>
+            {text.next[language]}
+          </NextButton>
+        </StepButton>
+      </Container>
+      <Footer language={language} />
+    </PageWrapper>
+  );
+}
+
+// Styled-components
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
   min-height: 100vh;
@@ -19,7 +122,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
   font-family: sans-serif;
   text-align: center;
 `;
@@ -31,20 +133,11 @@ const Title = styled.h1`
   margin-bottom: 30px;
 `;
 
-const InputSection = styled.div`
-  background-color: white;
-  padding: 0 20px 20px 20px;
-  border-radius: 20px;
-  box-shadow: 3px 3px 10px -3px gray;
-`;
-
 const Stepper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0;
   margin-bottom: 3rem;
-  flex-wrap: wrap;
 `;
 
 const Step = styled.div`
@@ -56,10 +149,8 @@ const Circle = styled.div`
   min-width: 70px;
   height: 70px;
   border-radius: 50%;
-  background-color: ${props =>
-    props.index <= props.currentStep ? '#146c94' : 'white'};
-  color: ${props =>
-    props.index <= props.currentStep ? 'white' : '#146c94'};
+  background-color: ${(props) => (props.active ? "#146c94" : "white")};
+  color: ${(props) => (props.active ? "white" : "#146c94")};
   border: 3px solid #146c94;
   font-weight: bold;
   display: flex;
@@ -67,8 +158,8 @@ const Circle = styled.div`
   justify-content: center;
   font-size: 0.8rem;
   text-align: center;
-  padding: 5px;
   white-space: pre-line;
+  padding: 5px;
   box-sizing: border-box;
 `;
 
@@ -76,8 +167,13 @@ const Line = styled.div`
   width: 30px;
   height: 5px;
   background-color: #146c94;
-  margin-left: -2px;
-  margin-right: -2px;
+`;
+
+const InputSection = styled.div`
+  background-color: white;
+  padding: 0 20px 20px 20px;
+  border-radius: 20px;
+  box-shadow: 3px 3px 10px -3px gray;
 `;
 
 const SectionTitle = styled.h4`
@@ -111,7 +207,7 @@ const LinkText = styled.div`
   color: white;
   background-color: #146c94;
   border: 1px solid #146c94;
-  border-radius:20px;
+  border-radius: 20px;
   font-size: 1rem;
   cursor: pointer;
   text-decoration: none;
@@ -123,85 +219,21 @@ const LinkText = styled.div`
   }
 `;
 
-const PreButton=styled(LinkText)`
-    margin-left: 30px;
+const PreButton = styled(LinkText)`
+  margin-left: 30px;
 `;
 
-const NextButton=styled(LinkText)`
-    text-align:left;
-    margin-right: 30px;
+const NextButton = styled(LinkText)`
+  text-align: left;
+  margin-right: 30px;
 `;
 
 const StepButton = styled.div`
   width: 100%;
-  max-width: 900px; /* 기존 800px에서 더 넓혀줌 */
-  margin: 50px auto 0;
+  max-width: 900px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 40px;
 `;
 
-
-const steps = ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"];
-const currentStep = 2; // 현재 단계
-
-const Step3Page = () => {
-  const navigate = useNavigate();
-  return (
-    <PageWrapper>
-      <Header/>
-      <Container>
-        <Title>경력 입력</Title>
-        <Stepper>
-          {steps.map((step, index) => (
-            <Step key={step}>
-              <Circle index={index} currentStep={currentStep}>{step}</Circle>
-              {index < steps.length - 1 && <Line />}
-            </Step>
-          ))}
-        </Stepper>
-
-        <InputSection>
-          {/* 학력 */}
-          <SectionTitle>학력</SectionTitle>
-            <StyledTable
-              type="education"
-              inputComponent={Input}
-              selectComponent={Select}
-            />
-
-            <SectionTitle>경력</SectionTitle>
-            <StyledTable
-              type="career"
-              inputComponent={Input}
-              selectComponent={Select}
-            />
-
-            <SectionTitle>자격증</SectionTitle>
-            <StyledTable
-              type="certificate"
-              inputComponent={Input}
-              selectComponent={Select}
-            />
-
-            <SectionTitle>외국어</SectionTitle>
-            <StyledTable
-              type="language"
-              inputComponent={Input}
-              selectComponent={Select}
-            />
-
-        </InputSection>
-        
-        <StepButton>
-          <PreButton onClick={() => navigate('/step2Page')}>이전</PreButton>
-          <NextButton onClick={() => navigate('/step4Page')}>다음</NextButton>
-        </StepButton>
-      </Container>
-
-      <Footer/>
-    </PageWrapper>
-  );
-};
-
-export default Step3Page;

@@ -1,4 +1,4 @@
-// src/components/Step2.jsx
+// src/pages/Step2Page.jsx
 import React from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
@@ -6,6 +6,164 @@ import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 import StyledTable from '../components/StepTable';
 
+const Step2Page = ({ language, onChangeLanguage }) => {
+  const navigate = useNavigate();
+
+  const text = {
+    title: {
+      ko: "신상 정보 입력",
+      en: "Enter Personal Information",
+    },
+    steps: {
+      ko: ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"],
+      en: ["Template", "Personal\nInfo", "Experience", "Edit", "Complete"],
+    },
+    inputTitle: {
+      ko: "신상정보",
+      en: "Personal Details",
+    },
+    photo: {
+      ko: "+ 사진 추가",
+      en: "+ Add Photo",
+    },
+    name: {
+      ko: "이름",
+      en: "First Name",
+    },
+    nameEn: {
+      ko: "영문 이름",
+      en: "First Name (EN)",
+    },
+    surname: {
+      ko: "성",
+      en: "Last Name",
+    },
+    surnameEn: {
+      ko: "영문 성",
+      en: "Last Name (EN)",
+    },
+    email: {
+      ko: "이메일 주소",
+      en: "Email Address",
+    },
+    phone: {
+      ko: "전화번호",
+      en: "Phone Number",
+    },
+    birth: {
+      ko: "생년월일",
+      en: "Date of Birth",
+    },
+    year: {
+      ko: "년",
+      en: "Year",
+    },
+    month: {
+      ko: "월",
+      en: "Month",
+    },
+    day: {
+      ko: "일",
+      en: "Day",
+    },
+    address: {
+      ko: "주소",
+      en: "Address",
+    },
+    military: {
+      ko: "병역 사항",
+      en: "Military Service",
+    },
+    prev: {
+      ko: "이전",
+      en: "Previous",
+    },
+    next: {
+      ko: "다음",
+      en: "Next",
+    },
+  };
+
+  const currentStep = 1;
+
+  return (
+    <PageWrapper>
+      <Header language={language} onChangeLanguage={onChangeLanguage}/>
+      <Container>
+        <Title>{text.title[language]}</Title>
+
+        <Stepper>
+          {text.steps[language].map((step, index) => (
+            <Step key={step}>
+              <Circle index={index} currentStep={currentStep}>
+                {step}
+              </Circle>
+              {index < text.steps[language].length - 1 && <Line />}
+            </Step>
+          ))}
+        </Stepper>
+
+        <ResumeInput>
+          <InputTitle>{text.inputTitle[language]}</InputTitle>
+          <InfoSection>
+            <PhotoBox>{text.photo[language]}</PhotoBox>
+            <InputsColumn>
+              <InputRow>
+                <Input type="text" placeholder={text.name[language]} />
+                <Input type="text" placeholder={text.nameEn[language]} />
+              </InputRow>
+              <InputRow marginTop="10px">
+                <Input type="text" placeholder={text.surname[language]} />
+                <Input type="text" placeholder={text.surnameEn[language]} />
+              </InputRow>
+              <InputRow marginTop="10px">
+                <Input type="email" placeholder={text.email[language]} />
+                <Input type="tel" placeholder={text.phone[language]} />
+              </InputRow>
+            </InputsColumn>
+          </InfoSection>
+
+          <BirthAddressSection>
+            <div>
+              <BirthTitle>{text.birth[language]}</BirthTitle>
+              <Select><option>{text.year[language]}</option></Select>
+              <Select><option>{text.month[language]}</option></Select>
+              <Select><option>{text.day[language]}</option></Select>
+            </div>
+            <AddressSection>
+              <AddressTitle>{text.address[language]}</AddressTitle>
+              <AddressInput type="text" placeholder={text.address[language]} />
+            </AddressSection>
+          </BirthAddressSection>
+
+          <MilitarySection>
+            <MilitaryTitle>{text.military[language]}</MilitaryTitle>
+            <StyledTable
+              type="military"
+              inputComponent={Input}
+              selectComponent={Select}
+              showMore={false}
+            />
+          </MilitarySection>
+        </ResumeInput>
+
+        <StepButton>
+          <PreButton onClick={() => navigate('/step1Page')}>
+            {text.prev[language]}
+          </PreButton>
+          <NextButton onClick={() => navigate('/step3Page')}>
+            {text.next[language]}
+          </NextButton>
+        </StepButton>
+      </Container>
+      <Footer language={language} />
+    </PageWrapper>
+  );
+};
+
+export default Step2Page;
+
+// -------------------- Styled Components --------------------
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
   min-height: 100vh;
@@ -38,10 +196,9 @@ const Title = styled.h1`
   margin-bottom: 30px;
 `;
 
-const InputTitle=styled.h1`
+const InputTitle = styled.h1`
   margin-top: 0;
   font-size: 1.2rem;
-
 `;
 
 const Stepper = styled.div`
@@ -154,7 +311,7 @@ const AddressSection = styled.div`
   margin-left: 20px;
   flex: 1;
   max-width: 600px;
-`
+`;
 
 const AddressTitle = styled.h4`
   margin-bottom: 10px;
@@ -165,10 +322,9 @@ const AddressTitle = styled.h4`
 const AddressInput = styled(Input)`
   flex: 1;
   width: 100%;
-  min-width: 0; // flex에서 줄바꿈 방지
+  min-width: 0;
 `;
 
-// 병역 사항 관련 스타일
 const MilitarySection = styled.div`
   width: 100%;
   overflow-x: auto;
@@ -198,109 +354,20 @@ const LinkText = styled.div`
   }
 `;
 
-const PreButton=styled(LinkText)`
-    margin-left: 30px;
+const PreButton = styled(LinkText)`
+  margin-left: 30px;
 `;
 
-const NextButton=styled(LinkText)`
-    text-align:left;
-    margin-right: 30px;
+const NextButton = styled(LinkText)`
+  text-align:left;
+  margin-right: 30px;
 `;
 
 const StepButton = styled.div`
   width: 100%;
-  max-width: 900px; /* 기존 800px에서 더 넓혀줌 */
+  max-width: 900px;
   margin: 50px auto 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
-
-
-
-const steps = ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"];
-const currentStep = 1; // 현재 단계: 신상정보까지 완료
-
-const Step2Page = () => {
-  const navigate = useNavigate();
-  return (
-    <PageWrapper>
-      <Header/>
-      <Container>
-        <Title>신상 정보 입력</Title>
-
-        <Stepper>
-          {steps.map((step, index) => (
-            <Step key={step}>
-              <Circle index={index} currentStep={currentStep}>
-                {step}
-              </Circle>
-              {index < steps.length - 1 && <Line />}
-            </Step>
-          ))}
-        </Stepper>
-
-        <ResumeInput>
-        <InputTitle>신상정보</InputTitle>
-          <InfoSection>
-            <PhotoBox>+ 사진 추가</PhotoBox>
-            <InputsColumn>
-              <InputRow>
-                <Input type="text" placeholder="이름" />
-                <Input type="text" placeholder="영문 이름" />
-              </InputRow>
-              <InputRow marginTop="10px">
-                <Input type="text" placeholder="성" />
-                <Input type="text" placeholder="영문 성" />
-              </InputRow>
-              <InputRow marginTop="10px">
-                <Input type="email" placeholder="이메일 주소" />
-                <Input type="tel" placeholder="전화번호" />
-              </InputRow>
-            </InputsColumn>
-          </InfoSection>
-
-          <BirthAddressSection>
-            <div>
-            <BirthTitle>생년월일</BirthTitle>
-            <Select>
-              <option>년</option>
-            </Select>
-            <Select>
-              <option>월</option>
-            </Select>
-            <Select>
-              <option>일</option>
-            </Select>
-            </div>
-              <AddressSection>
-                <AddressTitle>주소</AddressTitle>
-                <AddressInput type="text" placeholder="주소" />
-              </AddressSection>
-          </BirthAddressSection>
-
-          
-          <MilitarySection>
-            <MilitaryTitle>병역 사항</MilitaryTitle>
-              <StyledTable
-                type="military"
-                inputComponent={Input}
-                selectComponent={Select}
-                showMore={false} // 한 줄만 표시하고 '더 쓰기' 숨기기
-              />
-
-          </MilitarySection>
-        </ResumeInput>
-        <StepButton>
-          <PreButton onClick={() => navigate('/step1Page')}>이전</PreButton>
-          <NextButton onClick={() => navigate('/step3Page')}>다음</NextButton>
-        </StepButton>
-      </Container>
-
-
-      <Footer/>
-    </PageWrapper>
-  );
-};
-
-export default Step2Page;

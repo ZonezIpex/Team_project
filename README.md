@@ -5,6 +5,10 @@
 2. npm install styled-components
 3. npm install lucide-react
 
+## 4월 15일
+- 언어변경 1차 수정
+- 병역사항 부분 언어 변경되도록 수정해야함
+
 ## 4월 8일
 - step12345 완료
 - step input창 크기 맞추기

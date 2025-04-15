@@ -5,43 +5,72 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router-dom";
 
-const steps = ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"];
-
-export default function Step1Page() {
+export default function Step1Page({ language, onChangeLanguage }) {
   const navigate = useNavigate();
+
+  const text = {
+    title: {
+      ko: "이력서 양식 선택",
+      en: "Select Resume Template",
+    },
+    steps: {
+      ko: ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"],
+      en: ["Template", "Personal\nInfo", "Experience", "Edit", "Complete"],
+    },
+    exampleTitle: {
+      ko: "이력서 양식 예시",
+      en: "Resume Template Examples",
+    },
+    recentTitle: {
+      ko: "최근 사용",
+      en: "Recently Used",
+    },
+    templateLabel: {
+      ko: (n) => `양식 ${n}`,
+      en: (n) => `Template ${n}`,
+    },
+    recentLabel: {
+      ko: (n) => `최근 ${n}`,
+      en: (n) => `Recent ${n}`,
+    },
+    next: {
+      ko: "다음",
+      en: "Next",
+    },
+  };
 
   return (
     <PageWrapper>
-      <Header />
+      <Header language={language}  onChangeLanguage={onChangeLanguage} />
       <Container>
-        <Title>이력서 양식 선택</Title>
+        <Title>{text.title[language]}</Title>
 
         <Stepper>
-          {steps.map((step, index) => (
+          {text.steps[language].map((step, index) => (
             <Step key={step}>
               <Circle active={index === 0}>{step}</Circle>
-              {index < steps.length - 1 && <Line />}
+              {index < text.steps[language].length - 1 && <Line />}
             </Step>
           ))}
         </Stepper>
 
         <Section>
-          <SectionTitle>이력서 양식 예시</SectionTitle>
+          <SectionTitle>{text.exampleTitle[language]}</SectionTitle>
           <TemplateGrid>
             {[1, 2, 3].map((n) => (
-              <Template key={n}>양식 {n}</Template>
+              <Template key={n}>{text.templateLabel[language](n)}</Template>
             ))}
             <TemplateAdd>+</TemplateAdd>
           </TemplateGrid>
         </Section>
 
         <Section>
-          <SectionTitle>최근 사용</SectionTitle>
+          <SectionTitle>{text.recentTitle[language]}</SectionTitle>
           <TemplateBox>
             <TemplateGrid>
               {[1, 2, 3].map((n) => (
                 <Template key={n} style={{ backgroundColor: "#f1f1f1" }}>
-                  최근 {n}
+                  {text.recentLabel[language](n)}
                 </Template>
               ))}
             </TemplateGrid>
@@ -49,10 +78,12 @@ export default function Step1Page() {
         </Section>
 
         <ButtonWrapper>
-          <Button onClick={() => navigate('/step2page')}>다음</Button>
+          <Button onClick={() => navigate('/step2page')}>
+            {text.next[language]}
+          </Button>
         </ButtonWrapper>
       </Container>
-      <Footer />
+      <Footer language={language} />
     </PageWrapper>
   );
 }
@@ -98,14 +129,8 @@ const Circle = styled.div`
   min-width: 70px;
   height: 70px;
   border-radius: 50%;
-  background-color: ${(props) =>
-    props.index !== undefined
-      ? props.index <= props.currentStep ? '#146c94' : 'white'
-      : props.active ? '#146c94' : 'white'};
-  color: ${(props) =>
-    props.index !== undefined
-      ? props.index <= props.currentStep ? 'white' : '#146c94'
-      : props.active ? 'white' : '#146c94'};
+  background-color: ${(props) => props.active ? '#146c94' : 'white'};
+  color: ${(props) => props.active ? 'white' : '#146c94'};
   border: 3px solid #146c94;
   font-weight: bold;
   display: flex;
@@ -117,7 +142,6 @@ const Circle = styled.div`
   padding: 5px;
   box-sizing: border-box;
 `;
-
 
 const Line = styled.div`
   width: 30px;
@@ -184,7 +208,7 @@ const Button = styled.button`
   color: white;
   background-color: #146c94;
   border: 1px solid #146c94;
-  border-radius:20px;
+  border-radius: 20px;
   font-size: 1rem;
   cursor: pointer;
   text-decoration: none;

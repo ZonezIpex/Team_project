@@ -1,4 +1,3 @@
-// src/components/StyledTable.jsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
@@ -56,31 +55,59 @@ const AddRowButton = styled.button`
 `;
 
 const columnConfigs = {
-  education: ['졸업일', '학교명', '졸업여부', '성적'],
-  career: ['회사명', '근무기간', '최종직위', '담당업무'],
-  certificate: ['종류', '취득일', '발행처'],
-  language: ['언어명', '구사정도', '시험명', '점수'],
-  military: ['복무기간', '군별', '계급', '병과', '군필여부', '보훈대상'],
+  education: {
+    ko: ['졸업일', '학교명', '졸업여부', '성적'],
+    en: ['Graduation Date', 'School Name', 'Graduation Status', 'Grade'],
+  },
+  career: {
+    ko: ['회사명', '근무기간', '최종직위', '담당업무'],
+    en: ['Company Name', 'Employment Period', 'Last Position', 'Responsibilities'],
+  },
+  certificate: {
+    ko: ['종류', '취득일', '발행처'],
+    en: ['Certificate Type', 'Acquisition Date', 'Issuer'],
+  },
+  language: {
+    ko: ['언어명', '구사정도', '시험명', '점수'],
+    en: ['Language', 'Proficiency', 'Test Name', 'Score'],
+  },
+  military: {
+    ko: ['복무기간', '군별', '계급', '병과', '군필여부', '보훈대상'],
+    en: ['Service Period', 'Military Branch', 'Rank', 'Military Occupation', 'Completed Service', 'Veteran Status'],
+  },
+  skills: {
+    ko: ['기술명', '수준', '설명'],
+    en: ['Skill Name', 'Level', 'Description'],
+  },
+  awards: {
+    ko: ['수상명', '일자', '기관'],
+    en: ['Award Name', 'Date', 'Organization'],
+  },
+  reference: {
+    ko: ['이름', '연락처', '관계'],
+    en: ['Name', 'Contact', 'Relation'],
+  },
 };
 
 const StyledTable = ({
   type = 'military',
   inputComponent: Input,
   selectComponent: Select,
+  language = 'ko',
   showMore = true,
 }) => {
+  const columns = columnConfigs[type]?.[language];
+
   const [rows, setRows] = useState(4);
-  const columns = columnConfigs[type];
 
   const handleAddRow = () => {
     setRows(prev => prev + 1);
   };
 
   if (!columns) {
-    return <div>올바르지 않은 type입니다: {type}</div>;
+    return <div>Invalid type or language: type="{type}", language="{language}"</div>;
   }
 
-  // 🔹 신상정보(military)는 사용자 커스텀 컴포넌트 그대로 사용
   if (type === 'military') {
     return (
       <Table>
@@ -94,7 +121,7 @@ const StyledTable = ({
         <tbody>
           <tr>
             <Td>
-              <Input type="text" placeholder="예: 2018~2020" style={{ width: '120px' }} />
+              <Input type="text" placeholder={language === 'ko' ? '예: 2018~2020' : 'e.g. 2018~2020'} style={{ width: '120px' }} />
             </Td>
             <Td>
               <Input type="text" style={{ width: '100px' }} />
@@ -107,15 +134,15 @@ const StyledTable = ({
             </Td>
             <Td>
               <Select style={{ width: '80px' }}>
-                <option>필</option>
-                <option>미필</option>
-                <option>면제</option>
+                <option>{language === 'ko' ? '필' : 'Completed'}</option>
+                <option>{language === 'ko' ? '미필' : 'Not Completed'}</option>
+                <option>{language === 'ko' ? '면제' : 'Exempt'}</option>
               </Select>
             </Td>
             <Td>
               <Select style={{ width: '80px' }}>
-                <option>대상</option>
-                <option>비대상</option>
+                <option>{language === 'ko' ? '대상' : 'Eligible'}</option>
+                <option>{language === 'ko' ? '비대상' : 'Not Eligible'}</option>
               </Select>
             </Td>
           </tr>
@@ -124,21 +151,20 @@ const StyledTable = ({
     );
   }
 
-  // 🔹 그 외 테이블은 공통 스타일 컴포넌트 사용
   const renderCell = (colName) => {
     if (type === 'education') {
       switch (colName) {
-        case '졸업일':
+        case language === 'ko' ? '졸업일' : 'Graduation Date':
           return <StyledInput type="date" />;
-        case '졸업여부':
+        case language === 'ko' ? '졸업여부' : 'Graduation Status':
           return (
             <StyledSelect>
-              <option>졸업</option>
-              <option>미졸업</option>
+              <option>{language === 'ko' ? '졸업' : 'Graduated'}</option>
+              <option>{language === 'ko' ? '미졸업' : 'Not Graduated'}</option>
             </StyledSelect>
           );
-        case '성적':
-          return <StyledInput type="text" placeholder="예: 4.3 / 4.5" />;
+        case language === 'ko' ? '성적' : 'Grade':
+          return <StyledInput type="text" placeholder={language === 'ko' ? '예: 4.3 / 4.5' : 'e.g. 4.3 / 4.5'} />;
         default:
           return <StyledInput type="text" />;
       }
@@ -148,29 +174,30 @@ const StyledTable = ({
       return (
         <StyledInput
           type="text"
-          placeholder={colName === '근무기간' ? '예: 2020~2023' : ''}
+          placeholder={colName === (language === 'ko' ? '근무기간' : 'Employment Period') ? (language === 'ko' ? '예: 2020~2023' : 'e.g. 2020~2023') : ''}
         />
       );
     }
 
     if (type === 'certificate') {
-      return <StyledInput type={colName === '취득일' ? 'date' : 'text'} />;
+      return <StyledInput type={colName === (language === 'ko' ? '취득일' : 'Acquisition Date') ? 'date' : 'text'} />;
     }
 
     if (type === 'language') {
-      if (colName === '구사정도') {
+      if (colName === (language === 'ko' ? '구사정도' : 'Proficiency')) {
         return (
           <StyledSelect>
-            <option>상</option>
-            <option>중</option>
-            <option>하</option>
+            <option>{language === 'ko' ? '상' : 'High'}</option>
+            <option>{language === 'ko' ? '중' : 'Medium'}</option>
+            <option>{language === 'ko' ? '하' : 'Low'}</option>
           </StyledSelect>
         );
       }
       return <StyledInput type="text" />;
     }
 
-    return null;
+    // 기타 테이블은 모두 기본 인풋
+    return <StyledInput type="text" />;
   };
 
   return (
@@ -195,7 +222,9 @@ const StyledTable = ({
       </Table>
 
       {showMore && (
-        <AddRowButton onClick={handleAddRow}>+ 더 쓰기</AddRowButton>
+        <AddRowButton onClick={handleAddRow}>
+          {language === 'ko' ? '+ 더 쓰기' : '+ Add More'}
+        </AddRowButton>
       )}
     </>
   );
