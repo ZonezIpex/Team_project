@@ -33,6 +33,7 @@ import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'ko');
+  const [selectedTemplate, setSelectedTemplate] = useState(null);  // 템플릿 선택 상태 추가
 
   useEffect(() => {
     localStorage.setItem('language', language);
@@ -49,8 +50,25 @@ function App() {
           <Route path="/profilepage" element={<ProfilePage language={language} onChangeLanguage={setLanguage} />} />
 
           {/* ✅ 이력서 작성 단계 경로들 */}
-          <Route path="/step1page" element={<Step1Page language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/step2page" element={<Step2Page language={language} onChangeLanguage={setLanguage} />} />
+          // App.js에서 Step1Page와 Step2Page에 selectedTemplate을 전달합니다.
+          <Route 
+            path="/step1page" 
+            element={<Step1Page 
+              language={language} 
+              onChangeLanguage={setLanguage} 
+              selectedTemplate={selectedTemplate} 
+              setSelectedTemplate={setSelectedTemplate} 
+            />} 
+          />
+          <Route 
+            path="/step2page" 
+            element={<Step2Page 
+              language={language} 
+              onChangeLanguage={setLanguage} 
+              selectedTemplate={selectedTemplate}  // selectedTemplate을 props로 전달
+            />} 
+          />
+
           <Route path="/step3page" element={<Step3Page language={language} onChangeLanguage={setLanguage} />} />
           <Route path="/step4page" element={<Step4Page language={language} onChangeLanguage={setLanguage} />} />
           <Route path="/step5page" element={<Step5Page language={language} onChangeLanguage={setLanguage} />} />

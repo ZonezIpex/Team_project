@@ -41,6 +41,8 @@ export default function Step3Page({ language, onChangeLanguage }) {
     },
   };
 
+  const currentStep = 2;
+
   return (
     <PageWrapper>
       <Header language={language} onChangeLanguage={onChangeLanguage} />
@@ -50,7 +52,9 @@ export default function Step3Page({ language, onChangeLanguage }) {
         <Stepper>
           {text.steps[language].map((step, index) => (
             <Step key={step}>
-              <Circle active={index === 2}>{step}</Circle> {/* Adjust active step */}
+              <Circle index={index} currentStep={currentStep}>
+                {step}
+              </Circle>
               {index < text.steps[language].length - 1 && <Line />}
             </Step>
           ))}

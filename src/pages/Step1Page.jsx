@@ -4,8 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router-dom";
 
-export default function Step1Page({ language, onChangeLanguage }) {
-  const [selectedTemplate, setSelectedTemplate] = useState(null);  // 선택된 템플릿 상태
+export default function Step1Page({ language, onChangeLanguage, selectedTemplate, setSelectedTemplate }) {
   const [templateDescription, setTemplateDescription] = useState(""); // 템플릿 설명 상태
   const navigate = useNavigate();
 
@@ -38,19 +37,20 @@ export default function Step1Page({ language, onChangeLanguage }) {
       ko: "다음",
       en: "Next",
     },
+    select: {
+      ko: "선택",
+      en: "Select",
+    },
   };
 
-  // 템플릿 선택 시 상태 업데이트
   const handleTemplateSelect = (n) => {
-    setSelectedTemplate(n);  // 선택된 템플릿 번호 저장
-    // 선택된 템플릿에 대한 설명 설정 (예시로 간단한 설명 추가)
+    setSelectedTemplate(n);  // 템플릿을 선택하면 selectedTemplate 상태를 업데이트
     setTemplateDescription(`템플릿 ${n}에 대한 설명입니다.`);
   };
 
-  // Step1에서 선택한 템플릿을 Step2로 전달
   const handleNext = () => {
     if (selectedTemplate) {
-      navigate('/step2page', { state: { selectedTemplate } });  // 템플릿 번호를 state로 전달
+      navigate('/step2page', { state: { selectedTemplate } });    // 템플릿을 선택한 경우에만 다음 페이지로 이동
     } else {
       alert('템플릿을 선택해주세요.');
     }
@@ -77,9 +77,9 @@ export default function Step1Page({ language, onChangeLanguage }) {
             {[1, 2, 3].map((n) => (
               <Template
                 key={n}
-                onClick={() => handleTemplateSelect(n)}  // 템플릿 클릭 시 선택
+                onClick={() => handleTemplateSelect(n)}
                 style={{
-                  backgroundColor: selectedTemplate === n ? "#d1e9f7" : "#fff",  // 선택된 템플릿 강조
+                  backgroundColor: selectedTemplate === n ? "#d1e9f7" : "#fff",
                 }}
               >
                 {text.templateLabel[language](n)}
@@ -118,7 +118,7 @@ export default function Step1Page({ language, onChangeLanguage }) {
             </SelectedTemplateDescription>
           </SelectedTemplateWrapper>
           <Button onClick={handleNext}>
-            {text.next[language]}
+            {text.select[language]}
           </Button>
         </SelectedTemplateContainer>
 
@@ -133,10 +133,6 @@ export default function Step1Page({ language, onChangeLanguage }) {
   );
 }
 
-// styled-components (no changes here)
-
-
-// styled-components
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
   min-height: 100vh;

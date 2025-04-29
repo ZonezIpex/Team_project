@@ -1,22 +1,35 @@
 // src/pages/Step2Page.jsx
-import React, { useEffect } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import StyledTable from '../components/StepTable';
 
-const Step2Page = ({ language, onChangeLanguage, selectedTemplate }) => {
+const Step2Page = ({ language, onChangeLanguage }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const selectedTemplate = location.state?.selectedTemplate;
 
-  // --- [ 추가된 부분 ] 선택된 템플릿이 없으면 Step1Page로 리다이렉트
-  useEffect(() => {
-    if (!selectedTemplate) {
-      alert("템플릿을 선택해주세요.");
-      navigate('/step1Page');
+  const [photo, setPhoto] = useState(null);  // 사진 상태 추가
+  const fileInputRef = useRef(null);  // fileInput 요소에 대한 ref 추가
+
+  const handlePhotoChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhoto(reader.result); // 파일을 읽어와서 상태에 저장
+      };
+      reader.readAsDataURL(file); // 파일을 데이터 URL로 읽기
     }
-  }, [selectedTemplate, navigate]);
-  // --------------------------------------------
+  };
+
+  const handlePhotoClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();  // 파일 입력 요소를 클릭하여 파일 선택 창 열기
+    }
+  };
 
   const text = {
     title: {
@@ -91,9 +104,46 @@ const Step2Page = ({ language, onChangeLanguage, selectedTemplate }) => {
       ko: "다음",
       en: "Next",
     },
+    selectedTemplateLabel: {
+      ko: "선택된 이력서 양식",
+      en: "Selected Resume Template",
+    },
+    templateLabel: {
+      ko: (n) => `양식 ${n}`,
+      en: (n) => `Template ${n}`,
+    },
   };
 
   const currentStep = 1;
+
+  // 생년월일을 위한 옵션들
+  const getYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let year = currentYear; year >= 1900; year--) {
+      years.push(year);
+    }
+    return years;
+  };
+
+  const getMonthOptions = () => {
+    return [
+      "1", "2", "3", "4", "5", "6", 
+      "7", "8", "9", "10", "11", "12"
+    ];
+  };
+
+  const getDayOptions = () => {
+    const days = [];
+    for (let day = 1; day <= 31; day++) {
+      days.push(day);
+    }
+    return days;
+  };
+
+  const [birthYear, setBirthYear] = useState('년');
+  const [birthMonth, setBirthMonth] = useState('월');
+  const [birthDay, setBirthDay] = useState('일');
 
   return (
     <PageWrapper>
@@ -112,18 +162,38 @@ const Step2Page = ({ language, onChangeLanguage, selectedTemplate }) => {
           ))}
         </Stepper>
 
-        {/* --- [ 추가된 부분 ] 선택한 템플릿 이름 표시 --- */}
-        {selectedTemplate && (
-          <SelectedTemplateBox>
-            선택한 템플릿: {selectedTemplate.name}
-          </SelectedTemplateBox>
+        {/* 선택한 템플릿 이름 표시 */}
+        {selectedTemplate ? (
+          <SelectedTemplateContainer>
+            <h2>{text.selectedTemplateLabel[language]}</h2>
+            <TemplateDescription>
+              <p>{text.templateLabel[language](selectedTemplate)}</p>
+            </TemplateDescription>
+          </SelectedTemplateContainer>
+        ) : (
+          <p>{text.selectedTemplateLabel[language]}가 선택되지 않았습니다.</p>
         )}
-        {/* -------------------------------------------------- */}
 
         <ResumeInput>
           <InputTitle>{text.inputTitle[language]}</InputTitle>
           <InfoSection>
-            <PhotoBox>{text.photo[language]}</PhotoBox>
+            <PhotoBox onClick={handlePhotoClick}> {/* PhotoBox 클릭 시 파일 선택 창 열기 */}
+              {photo ? (
+                <PhotoPreview
+                  src={photo}
+                  alt="Profile"
+                />
+              ) : (
+                <label>{text.photo[language]}</label>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}  // fileInput에 ref 연결
+                onChange={handlePhotoChange}
+                hidden
+              />
+            </PhotoBox>
             <InputsColumn>
               <InputRow>
                 <Input type="text" placeholder={text.name[language]} />
@@ -143,9 +213,33 @@ const Step2Page = ({ language, onChangeLanguage, selectedTemplate }) => {
           <BirthAddressSection>
             <div>
               <BirthTitle>{text.birth[language]}</BirthTitle>
-              <Select><option>{text.year[language]}</option></Select>
-              <Select><option>{text.month[language]}</option></Select>
-              <Select><option>{text.day[language]}</option></Select>
+              <Select
+                value={birthYear}
+                onChange={(e) => setBirthYear(e.target.value)}
+              >
+                <option value="년">년</option>
+                {getYearOptions().map((year) => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </Select>
+              <Select
+                value={birthMonth}
+                onChange={(e) => setBirthMonth(e.target.value)}
+              >
+                <option value="월">월</option>
+                {getMonthOptions().map((month, index) => (
+                  <option key={month} value={index + 1}>{month}</option>
+                ))}
+              </Select>
+              <Select
+                value={birthDay}
+                onChange={(e) => setBirthDay(e.target.value)}
+              >
+                <option value="일">일</option>
+                {getDayOptions().map((day) => (
+                  <option key={day} value={day}>{day}</option>
+                ))}
+              </Select>
             </div>
             <AddressSection>
               <AddressTitle>{text.address[language]}</AddressTitle>
@@ -181,6 +275,12 @@ const Step2Page = ({ language, onChangeLanguage, selectedTemplate }) => {
 export default Step2Page;
 
 // -------------------- Styled Components --------------------
+const PhotoPreview = styled.img`
+  width: 120px;
+  height: 150px;
+  object-fit: cover;
+`;
+
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
   min-height: 100vh;
@@ -211,13 +311,6 @@ const Title = styled.h1`
   color: white;
   margin-top: 100px;
   margin-bottom: 30px;
-`;
-
-const SelectedTemplateBox = styled.div`
-  margin-bottom: 20px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #146c94;
 `;
 
 const InputTitle = styled.h1`
@@ -265,6 +358,17 @@ const Line = styled.div`
   margin-right: -2px;
 `;
 
+const SelectedTemplateContainer = styled.div`
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+`;
+
+const TemplateDescription = styled.div`
+  padding-top: 10px;
+  font-size: 1.2rem;
+`;
+
 const InfoSection = styled.div`
   display: flex;
   gap: 20px;
@@ -276,7 +380,7 @@ const InfoSection = styled.div`
 const PhotoBox = styled.div`
   width: 120px;
   height: 150px;
-  border: 2px dashed #aaa;
+  border: 1px solid #aaa;
   display: flex;
   justify-content: center;
   align-items: center;
