@@ -5,6 +5,11 @@
 2. npm install styled-components
 3. npm install lucide-react
 
+## 4월 29일
+- step1Page 탬플릿 선택
+- step1,2,3,4,5 props로 이전페이지 내용 전달 작업중
+- App.js 수정해야함
+
 ## 4월 15일
 - 언어변경 1차 수정
 - 병역사항 부분 언어 변경되도록 수정해야함

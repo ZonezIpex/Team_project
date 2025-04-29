@@ -1,11 +1,12 @@
-// src/pages/Step1Page.jsx
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router-dom";
 
 export default function Step1Page({ language, onChangeLanguage }) {
+  const [selectedTemplate, setSelectedTemplate] = useState(null);  // 선택된 템플릿 상태
+  const [templateDescription, setTemplateDescription] = useState(""); // 템플릿 설명 상태
   const navigate = useNavigate();
 
   const text = {
@@ -39,9 +40,25 @@ export default function Step1Page({ language, onChangeLanguage }) {
     },
   };
 
+  // 템플릿 선택 시 상태 업데이트
+  const handleTemplateSelect = (n) => {
+    setSelectedTemplate(n);  // 선택된 템플릿 번호 저장
+    // 선택된 템플릿에 대한 설명 설정 (예시로 간단한 설명 추가)
+    setTemplateDescription(`템플릿 ${n}에 대한 설명입니다.`);
+  };
+
+  // Step1에서 선택한 템플릿을 Step2로 전달
+  const handleNext = () => {
+    if (selectedTemplate) {
+      navigate('/step2page', { state: { selectedTemplate } });  // 템플릿 번호를 state로 전달
+    } else {
+      alert('템플릿을 선택해주세요.');
+    }
+  };
+
   return (
     <PageWrapper>
-      <Header language={language}  onChangeLanguage={onChangeLanguage} />
+      <Header language={language} onChangeLanguage={onChangeLanguage} />
       <Container>
         <Title>{text.title[language]}</Title>
 
@@ -58,7 +75,15 @@ export default function Step1Page({ language, onChangeLanguage }) {
           <SectionTitle>{text.exampleTitle[language]}</SectionTitle>
           <TemplateGrid>
             {[1, 2, 3].map((n) => (
-              <Template key={n}>{text.templateLabel[language](n)}</Template>
+              <Template
+                key={n}
+                onClick={() => handleTemplateSelect(n)}  // 템플릿 클릭 시 선택
+                style={{
+                  backgroundColor: selectedTemplate === n ? "#d1e9f7" : "#fff",  // 선택된 템플릿 강조
+                }}
+              >
+                {text.templateLabel[language](n)}
+              </Template>
             ))}
             <TemplateAdd>+</TemplateAdd>
           </TemplateGrid>
@@ -77,8 +102,28 @@ export default function Step1Page({ language, onChangeLanguage }) {
           </TemplateBox>
         </Section>
 
+        {/* 선택된 템플릿과 설명을 보여주는 영역 */}
+        <SelectedTemplateContainer display={selectedTemplate ? 'flex' : 'none'}>
+          <SelectedTemplateWrapper>
+            <SelectedTemplateImage>
+              <img
+                src={`template${selectedTemplate}.png`}
+                alt={`Template ${selectedTemplate}`}
+                width="300px"
+              />
+            </SelectedTemplateImage>
+            <SelectedTemplateDescription>
+              <h3>{text.templateLabel[language](selectedTemplate)}</h3>
+              <p>{templateDescription}</p>
+            </SelectedTemplateDescription>
+          </SelectedTemplateWrapper>
+          <Button onClick={handleNext}>
+            {text.next[language]}
+          </Button>
+        </SelectedTemplateContainer>
+
         <ButtonWrapper>
-          <Button onClick={() => navigate('/step2page')}>
+          <Button onClick={handleNext}>
             {text.next[language]}
           </Button>
         </ButtonWrapper>
@@ -87,6 +132,9 @@ export default function Step1Page({ language, onChangeLanguage }) {
     </PageWrapper>
   );
 }
+
+// styled-components (no changes here)
+
 
 // styled-components
 const PageWrapper = styled.div`
@@ -129,8 +177,8 @@ const Circle = styled.div`
   min-width: 70px;
   height: 70px;
   border-radius: 50%;
-  background-color: ${(props) => props.active ? '#146c94' : 'white'};
-  color: ${(props) => props.active ? 'white' : '#146c94'};
+  background-color: ${(props) => (props.active ? '#146c94' : 'white')};
+  color: ${(props) => (props.active ? 'white' : '#146c94')};
   border: 3px solid #146c94;
   font-weight: bold;
   display: flex;
@@ -185,13 +233,13 @@ const Template = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 `;
 
 const TemplateAdd = styled(Template)`
   border: 2px dashed #aaa;
   font-size: 24px;
   color: #aaa;
-  cursor: pointer;
 `;
 
 const ButtonWrapper = styled.div`
@@ -218,4 +266,39 @@ const Button = styled.button`
     color: #146c94;
     background-color: white;
   }
+`;
+
+const SelectedTemplateContainer = styled.div`
+  position: fixed;  // 페이지 전체에서 고정 위치
+  top: 50%;  // 화면 세로 가운데
+  left: 50%;  // 화면 가로 가운데
+  transform: translate(-50%, -50%);  // 정확하게 가운데 정렬
+  width: 80%;  // 원하는 너비
+  max-width: 900px;
+  height: 70%;
+  max-height: 900px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.9);  // 배경색을 반투명하게
+  border-radius: 10px;
+  z-index: 100;  // 다른 요소들 위에 표시되도록
+  display: ${(props) => (props.display === 'flex' ? 'flex' : 'none')};
+  justify-content: center;  // 내용이 가로로 가운데 정렬
+  align-items: center;  // 내용이 세로로 가운데 정렬
+`;
+
+const SelectedTemplateWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const SelectedTemplateImage = styled.div`
+  flex: 1;
+  text-align: center;
+`;
+
+const SelectedTemplateDescription = styled.div`
+  flex: 2;
+  padding-left: 20px;
+  text-align: left;
 `;

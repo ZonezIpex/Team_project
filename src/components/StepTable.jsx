@@ -119,37 +119,38 @@ const StyledTable = ({
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <Td>
-              <Input type="text" placeholder={language === 'ko' ? '예: 2018~2020' : 'e.g. 2018~2020'} style={{ width: '120px' }} />
-            </Td>
-            <Td>
-              <Input type="text" style={{ width: '100px' }} />
-            </Td>
-            <Td>
-              <Input type="text" style={{ width: '100px' }} />
-            </Td>
-            <Td>
-              <Input type="text" style={{ width: '100px' }} />
-            </Td>
-            <Td>
-              <Select style={{ width: '80px' }}>
-                <option>{language === 'ko' ? '필' : 'Completed'}</option>
-                <option>{language === 'ko' ? '미필' : 'Not Completed'}</option>
-                <option>{language === 'ko' ? '면제' : 'Exempt'}</option>
-              </Select>
-            </Td>
-            <Td>
-              <Select style={{ width: '80px' }}>
-                <option>{language === 'ko' ? '대상' : 'Eligible'}</option>
-                <option>{language === 'ko' ? '비대상' : 'Not Eligible'}</option>
-              </Select>
-            </Td>
-          </tr>
+          {[...Array(1)].map((_, rowIndex) => (  // rows 값을 1로 설정
+            <tr key={rowIndex}>
+              <Td>
+                <Input
+                  type="text"
+                  placeholder={language === 'ko' ? '예: 2018~2020' : 'e.g. 2018~2020'}
+                  style={{ width: '120px' }}
+                />
+              </Td>
+              <Td><Input type="text" style={{ width: '100px' }} /></Td>
+              <Td><Input type="text" style={{ width: '100px' }} /></Td>
+              <Td><Input type="text" style={{ width: '100px' }} /></Td>
+              <Td>
+                <Select style={{ width: '80px' }}>
+                  <option>{language === 'ko' ? '필' : 'Completed'}</option>
+                  <option>{language === 'ko' ? '미필' : 'Not Completed'}</option>
+                  <option>{language === 'ko' ? '면제' : 'Exempt'}</option>
+                </Select>
+              </Td>
+              <Td>
+                <Select style={{ width: '80px' }}>
+                  <option>{language === 'ko' ? '대상' : 'Eligible'}</option>
+                  <option>{language === 'ko' ? '비대상' : 'Not Eligible'}</option>
+                </Select>
+              </Td>
+            </tr>
+          ))}
         </tbody>
       </Table>
     );
   }
+  
 
   const renderCell = (colName) => {
     if (type === 'education') {

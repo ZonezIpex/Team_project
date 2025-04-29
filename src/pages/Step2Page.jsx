@@ -1,13 +1,22 @@
 // src/pages/Step2Page.jsx
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 import StyledTable from '../components/StepTable';
 
-const Step2Page = ({ language, onChangeLanguage }) => {
+const Step2Page = ({ language, onChangeLanguage, selectedTemplate }) => {
   const navigate = useNavigate();
+
+  // --- [ 추가된 부분 ] 선택된 템플릿이 없으면 Step1Page로 리다이렉트
+  useEffect(() => {
+    if (!selectedTemplate) {
+      alert("템플릿을 선택해주세요.");
+      navigate('/step1Page');
+    }
+  }, [selectedTemplate, navigate]);
+  // --------------------------------------------
 
   const text = {
     title: {
@@ -88,7 +97,7 @@ const Step2Page = ({ language, onChangeLanguage }) => {
 
   return (
     <PageWrapper>
-      <Header language={language} onChangeLanguage={onChangeLanguage}/>
+      <Header language={language} onChangeLanguage={onChangeLanguage} />
       <Container>
         <Title>{text.title[language]}</Title>
 
@@ -102,6 +111,14 @@ const Step2Page = ({ language, onChangeLanguage }) => {
             </Step>
           ))}
         </Stepper>
+
+        {/* --- [ 추가된 부분 ] 선택한 템플릿 이름 표시 --- */}
+        {selectedTemplate && (
+          <SelectedTemplateBox>
+            선택한 템플릿: {selectedTemplate.name}
+          </SelectedTemplateBox>
+        )}
+        {/* -------------------------------------------------- */}
 
         <ResumeInput>
           <InputTitle>{text.inputTitle[language]}</InputTitle>
@@ -196,6 +213,13 @@ const Title = styled.h1`
   margin-bottom: 30px;
 `;
 
+const SelectedTemplateBox = styled.div`
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #146c94;
+`;
+
 const InputTitle = styled.h1`
   margin-top: 0;
   font-size: 1.2rem;
@@ -219,10 +243,8 @@ const Circle = styled.div`
   min-width: 70px;
   height: 70px;
   border-radius: 50%;
-  background-color: ${props =>
-    props.index <= props.currentStep ? '#146c94' : 'white'};
-  color: ${props =>
-    props.index <= props.currentStep ? 'white' : '#146c94'};
+  background-color: ${props => props.index <= props.currentStep ? '#146c94' : 'white'};
+  color: ${props => props.index <= props.currentStep ? 'white' : '#146c94'};
   border: 3px solid #146c94;
   font-weight: bold;
   display: flex;
@@ -342,7 +364,7 @@ const LinkText = styled.div`
   color: white;
   background-color: #146c94;
   border: 1px solid #146c94;
-  border-radius:20px;
+  border-radius: 20px;
   font-size: 1rem;
   cursor: pointer;
   text-decoration: none;
@@ -359,7 +381,7 @@ const PreButton = styled(LinkText)`
 `;
 
 const NextButton = styled(LinkText)`
-  text-align:left;
+  text-align: left;
   margin-right: 30px;
 `;
 

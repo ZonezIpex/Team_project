@@ -120,7 +120,7 @@ function LoginPage({ language, onChangeLanguage }) {
     } catch (error) {
       console.error(error);
       alert(t.error); // 로그인 실패 시 에러 메시지
-    }
+    }    
 };
 
   return (
