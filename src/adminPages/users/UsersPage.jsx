@@ -43,6 +43,26 @@ const UserCard = styled.div`
   align-items: center;
 `;
 
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+const ActionButton = styled.button`
+  background-color: #157aac;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #125f8d;
+  }
+`;
+
 function UsersPage() {
   const [search, setSearch] = useState('');
 
@@ -70,10 +90,10 @@ function UsersPage() {
               <div><strong>{user.username}</strong> ({user.email})</div>
               <div>상태: {user.status === 'active' ? '활성' : '비활성'}</div>
             </div>
-            <div>
-              <button>수정</button>
-              <button>삭제</button>
-            </div>
+            <ButtonGroup>
+              <ActionButton>수정</ActionButton>
+              <ActionButton>삭제</ActionButton>
+            </ButtonGroup>
           </UserCard>
         ))}
         {filteredUsers.length === 0 && <div>검색 결과가 없습니다.</div>}
