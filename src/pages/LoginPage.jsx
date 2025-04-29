@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { users } from '../testUserProfile/users';
+import { login } from '../contexts/AuthService';
+import { useAuth } from '../contexts/AuthContext';
 
 const Wrapper = styled.div`
   background: linear-gradient(to bottom, #79A7D3, #C3DAF5);
@@ -71,6 +72,7 @@ function LoginPage({ language, onChangeLanguage }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const auth = useAuth();
 
   const text = {
     ko: {
@@ -93,24 +95,33 @@ function LoginPage({ language, onChangeLanguage }) {
 
   const t = text[language || 'ko'];
 
-  const handleLogin = () => {
-    const foundUser = users.find(user => user.email === email && user.password === password);
+  const handleLogin = async () => {
 
-    if (foundUser) {
-      localStorage.setItem('loggedIn', 'true');
-      localStorage.setItem('username', foundUser.username);
-      localStorage.setItem('role', foundUser.role || 'user'); // ✅ role이 없으면 기본값 'user'
+    try {
+      const { token, isAdmin } = await login(email, password); // 서버 요청
+      console.log("Token received:", token); // 토큰 값 확인
 
-      // ✅ 관리자이면 어드민 페이지로 이동
-      if (foundUser.role === 'admin') {
-        navigate('/admin');
+      if (token) {
+        // 로그인 성공 시 JWT 토큰을 localStorage에 저장
+        console.log("Saving token to localStorage...");
+        localStorage.setItem("token", token); // 토큰 저장
+        console.log("Token saved:", localStorage.getItem("token")); // 저장된 토큰 확인
+        auth.setUser({ loggedIn: true }); // 상태 업데이트
+  
+        // ✅ 관리자이면 어드민 페이지로 이동, 아니면 홈으로 이동
+        if (isAdmin) {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
       } else {
-        navigate('/');
+        throw new Error('Login failed');
       }
-    } else {
-      alert(t.error);
+    } catch (error) {
+      console.error(error);
+      alert(t.error); // 로그인 실패 시 에러 메시지
     }
-  };
+};
 
   return (
     <Wrapper>

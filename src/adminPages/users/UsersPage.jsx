@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { useState } from 'react';
-import { users as userList } from '../../testUserProfile/users';
+import { useState, useEffect  } from 'react';
+import axios from 'axios'; // axios import 추가
+
 
 const Wrapper = styled.div`
   padding: 40px;
@@ -65,11 +66,60 @@ const ActionButton = styled.button`
 
 function UsersPage() {
   const [search, setSearch] = useState('');
+  const [userList, setUserList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
+  useEffect(() => {
+    fetchUsers(); // 페이지 로드 시 유저 목록 불러오기
+  }, []);
+
+  const fetchUsers = async () => {
+    const token = localStorage.getItem("token"); // JWT 토큰 가져오기
+    try {
+        const response = await axios.get('http://sarm-server.duckdns.org:8888/api/user', {
+            headers: {
+                Authorization: `Bearer ${token}`, // 토큰 추가
+            },
+        });
+        setUserList(response.data); // 모든 유저 데이터를 상태에 저장
+        setLoading(false); // 로딩 상태를 false로 변경
+    } catch (err) {
+        console.error('Error fetching users:', err.message);
+        setError('Failed to load users.');
+        setLoading(false); // 로딩 상태를 false로 변경
+    }
+};
+
+const approveUser = async (user_no) => {
+  const token = localStorage.getItem("token"); // JWT 토큰 가져오기
+  try {
+      await axios.post(`http://sarm-server.duckdns.org:8888/api/user/approve-user/${user_no}`, {}, {
+          headers: { Authorization: `Bearer ${token}` },
+      });
+      alert('User approved successfully!');
+      fetchUsers();
+  } catch (err) {
+      console.error('Error approving user:', err.message);
+      alert('Failed to approve user.');
+  }
+};
+
+
+  // 검색 필터링
   const filteredUsers = userList.filter(user =>
-    user.username.toLowerCase().includes(search.toLowerCase()) ||
-    user.email.toLowerCase().includes(search.toLowerCase())
+    user.userName.toLowerCase().includes(search.toLowerCase()) ||
+    user.userEmail.toLowerCase().includes(search.toLowerCase())
   );
+
+  // 로딩 중일 때 표시할 텍스트
+  if (loading) {
+    return <div>로딩 중...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <Wrapper>
@@ -84,19 +134,23 @@ function UsersPage() {
       </TopBar>
 
       <UserList>
-        {filteredUsers.map(user => (
-          <UserCard key={user.id}>
-            <div>
-              <div><strong>{user.username}</strong> ({user.email})</div>
-              <div>상태: {user.status === 'active' ? '활성' : '비활성'}</div>
-            </div>
-            <ButtonGroup>
-              <ActionButton>수정</ActionButton>
-              <ActionButton>삭제</ActionButton>
-            </ButtonGroup>
-          </UserCard>
-        ))}
-        {filteredUsers.length === 0 && <div>검색 결과가 없습니다.</div>}
+        {filteredUsers.length > 0 ? (
+          filteredUsers.map(user => (
+            <UserCard key={user.userNo}>
+              <div>
+                <div><strong>{user.userName}</strong> ({user.userEmail})</div>
+                <div>상태: {user.isApproved ? '승인됨' : '미승인'}</div>
+              </div>
+              <div>
+                {!user.isApproved && (
+                  <button onClick={() => approveUser(user.userNo)}>승인</button>
+                )}
+              </div>
+            </UserCard>
+          ))
+        ) : (
+          <div>검색 결과가 없습니다.</div>
+        )}
       </UserList>
     </Wrapper>
   );
