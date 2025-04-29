@@ -65,104 +65,150 @@ const LinkText = styled.div`
 
 const TabContainer = styled.div`
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px;
 `;
 
 const TabHeader = styled.div`
   display: flex;
+  background-color: #d2ecfb;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
 `;
 
 const TabButton = styled.button`
   flex: 1;
-  padding: 15px 0;
-  background-color: ${({ active }) => (active ? 'white' : '#dbefff')};
-  color: ${({ active }) => (active ? '#333' : '#555')};
-  border: 2px solid #7fc6ff;
-  border-bottom: none;
-  border-radius: 12px 12px 0 0;
-  font-weight: ${({ active }) => (active ? 'bold' : 'normal')};
+  background-color: ${(props) => (props.active ? "#eaf8ff" : "#64a8f0")};
+  color: ${(props) => (props.active ? "#003049" : "#ffffff")};
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 0.8rem 1rem;
+  border: none;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.2s ease;
+
+  border-top-left-radius: ${(props) => (props.position === "left" ? "16px" : "0")};
+  border-top-right-radius: ${(props) => (props.position === "right" ? "16px" : "0")};
+  border-bottom: ${(props) => (props.active ? "none" : "1px solid #ccc")};
 
   &:hover {
-    background-color: white;
-    color: #333;
+    background-color: ${(props) => (props.active ? "#eaf8ff" : "#7fc6ff")};
   }
 `;
 
 const TabContentBox = styled.div`
-  background-color: white;
-  border: 2px solid #7fc6ff;
-  border-radius: 0 0 12px 12px;
-  padding: 40px 20px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 40px 30px;
 `;
 
 const CardList = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 20px;
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
 `;
 
 const ResumeCard = styled.div`
+  width: 200px;
   background-color: white;
-  border-radius: 12px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: 0.2s;
+  transition: all 0.3s ease;
 
   img {
     width: 100%;
-    height: 240px;
+    height: 260px;
     object-fit: cover;
+    border-bottom: 1px solid #eee;
   }
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
   }
 `;
 
 const ReviewCard = styled.div`
+  width: 200px;
   background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   padding: 20px;
-  min-height: 200px;
+  font-size: 0.95rem;
   line-height: 1.5;
-  transition: 0.2s;
+  transition: all 0.3s ease;
+
+  strong {
+    font-weight: bold;
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 5px;
+  }
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
   }
 `;
 
-const MyPage = ({ language, onChangeLanguage }) => {
+const MyPage = ({ language = 'ko', onChangeLanguage }) => {
   const [tab, setTab] = useState('resume');
   const navigate = useNavigate();
+
+  const t = {
+    ko: {
+      title: '마이페이지',
+      profileName: '고냥이',
+      info: '개인정보 🔗',
+      blog: '블로그 🔗',
+      resume: '이력서',
+      review: '리뷰',
+      reviewTitle: '진짜 최고의 이력서',
+      reviewContent: '이력서 내용이 너무 마음에 들어서 내용이 너무 좋아요 이력서 내용이 너무 마음에 들어서 내용이 너무 좋아요',
+    },
+    en: {
+      title: 'My Page',
+      profileName: 'Kitty',
+      info: 'Profile Info 🔗',
+      blog: 'Blog 🔗',
+      resume: 'Resume',
+      review: 'Review',
+      reviewTitle: 'Truly the Best Resume',
+      reviewContent: 'I really loved the content of this resume. It was so well done and impressive.',
+    },
+  }[language];
 
   return (
     <PageWrapper>
       <Header language={language} onChangeLanguage={onChangeLanguage} />
       <Content>
-        <Title>마이페이지</Title>
+        <Title>{t.title}</Title>
 
         <ProfileSection>
           <ProfileImage src={profileImg} alt="프로필" />
           <div>
-            <ProfileText>고냥이</ProfileText>
-            <LinkText onClick={() => navigate('/ProfilePage')}>개인정보 🔗</LinkText>
-            <LinkText onClick={() => navigate('/blog')}>블로그 🔗</LinkText>
+            <ProfileText>{t.profileName}</ProfileText>
+            <LinkText onClick={() => navigate('/ProfilePage')}>{t.info}</LinkText>
+            <LinkText onClick={() => navigate('/blog')}>{t.blog}</LinkText>
           </div>
         </ProfileSection>
 
         <TabContainer>
           <TabHeader>
-            <TabButton active={tab === 'resume'} onClick={() => setTab('resume')}>
-              이력서
+            <TabButton
+              active={tab === 'resume'}
+              onClick={() => setTab('resume')}
+              position="left"
+            >
+              {t.resume}
             </TabButton>
-            <TabButton active={tab === 'review'} onClick={() => setTab('review')}>
-              리뷰
+            <TabButton
+              active={tab === 'review'}
+              onClick={() => setTab('review')}
+              position="right"
+            >
+              {t.review}
             </TabButton>
           </TabHeader>
 
@@ -171,7 +217,7 @@ const MyPage = ({ language, onChangeLanguage }) => {
               <CardList>
                 {[...Array(3)].map((_, idx) => (
                   <ResumeCard key={idx}>
-                    <img src={resume1} alt="이력서" />
+                    <img src={resume1} alt="Resume" />
                   </ResumeCard>
                 ))}
               </CardList>
@@ -179,9 +225,9 @@ const MyPage = ({ language, onChangeLanguage }) => {
               <CardList>
                 {[...Array(3)].map((_, idx) => (
                   <ReviewCard key={idx}>
-                    <strong>진짜 최고의 이력서</strong><br />
-                    ⭐⭐⭐⭐⭐<br />
-                    이력서 내용이 너무 마음에 들어서 내용...
+                    <strong>{t.reviewTitle}</strong>
+                    ⭐⭐⭐⭐⭐ <br />
+                    {t.reviewContent}
                   </ReviewCard>
                 ))}
               </CardList>
