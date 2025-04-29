@@ -24,25 +24,36 @@ const ReviewWrite = () => {
     localStorage.setItem("language", language);
   }, [language]);
 
+  // 다국어 텍스트 정의
+  const text = {
+    pageTitle: language === "ko" ? "리뷰 작성하기" : "Write a Review",
+    placeholder: language === "ko" ? "이력서 사진 넣기" : "Upload Resume Image",
+    rating: language === "ko" ? "별점" : "Rating",
+    titleLabel: language === "ko" ? "리뷰 제목" : "Title",
+    contentLabel: language === "ko" ? "리뷰 내용" : "Content",
+    contentPlaceholder: language === "ko" ? "✏️ 리뷰를 작성해주세요." : "✏️ Write your review here.",
+    submit: language === "ko" ? "등록하기" : "Submit",
+  };
+
   return (
     <PageWrapper>
       <Header onChangeLanguage={setLanguage} language={language} />
       <Content>
-        <Title>리뷰 작성하기</Title>
+        <Title>{text.pageTitle}</Title>
 
         <ImageBox>
           <ImageLabel htmlFor="imageUpload">
             {image ? (
-              <PreviewImage src={image} alt="미리보기" />
+              <PreviewImage src={image} alt="preview" />
             ) : (
-              <PlaceholderText>이력서 사진 넣기</PlaceholderText>
+              <PlaceholderText>{text.placeholder}</PlaceholderText>
             )}
           </ImageLabel>
           <input type="file" id="imageUpload" accept="image/*" onChange={handleImageChange} hidden />
         </ImageBox>
 
         <RatingBox>
-          <Label>별점</Label>
+          <Label>{text.rating}</Label>
           {[...Array(5)].map((_, index) => (
             <Star
               key={index}
@@ -55,7 +66,7 @@ const ReviewWrite = () => {
         </RatingBox>
 
         <InputBox>
-          <Label>리뷰 제목</Label>
+          <Label>{text.titleLabel}</Label>
           <Input
             type="text"
             value={title}
@@ -69,9 +80,9 @@ const ReviewWrite = () => {
         </InputBox>
 
         <InputBox>
-          <Label>리뷰 내용</Label>
+          <Label>{text.contentLabel}</Label>
           <Textarea
-            placeholder="✏️ 리뷰를 작성해주세요."
+            placeholder={text.contentPlaceholder}
             value={content}
             onChange={(e) => {
               if (e.target.value.length <= maxContentLength) {
@@ -82,7 +93,7 @@ const ReviewWrite = () => {
           <CharCount>{content.length} / {maxContentLength}</CharCount>
         </InputBox>
 
-        <SubmitButton>등록하기</SubmitButton>
+        <SubmitButton>{text.submit}</SubmitButton>
       </Content>
       <Footer language={language} />
     </PageWrapper>
@@ -146,6 +157,7 @@ const Content = styled.div`
 `;
 
 const Title = styled.h1`
+  margin-top: 3rem;
   font-size: 1.6rem;
   text-align: center;
   margin-bottom: 2rem;
@@ -202,7 +214,10 @@ const SubmitButton = styled.button`
   font-size: 1rem;
   cursor: pointer;
 
+  transition: background-color 0.3s, color 0.3s;
+
   &:hover {
-    background-color: #125f8d;
+    background-color: white;
+    color: #146c94;
   }
 `;
