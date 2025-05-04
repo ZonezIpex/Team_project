@@ -1,3 +1,4 @@
+// src/pages/ProfilePage.jsx
 import React from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
@@ -78,58 +79,99 @@ const FooterText = styled.div`
   text-align: center;
 `;
 
-const ProfilePage = () => {
+const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
+  const t = {
+    ko: {
+      title: '마이페이지',
+      section1: '개인정보',
+      section2: '연락처',
+      section3: '주소',
+      name: '고냥이',
+      birthday: '2025년 4월 1일',
+      gender: '고양이',
+      email: 'cutecheeseCAT@cat.com',
+      phone: '010-1234-5678',
+      home: '대림대 전산관 5층 디지털미디어실습실',
+      company: '안양시청',
+      birthLabel: '생년월일',
+      genderLabel: '성별',
+      emailLabel: '이메일',
+      phoneLabel: '연락처',
+      homeLabel: '집',
+      companyLabel: '회사',
+      footer: `13916 경기도 안양시 동안구 임곡로 29 대림대학교 | 대표전화 : 031-467-4700
+Copyright 학사누 ALL RIGHTS RESERVED`,
+    },
+    en: {
+      title: 'My Page',
+      section1: 'Personal Info',
+      section2: 'Contact',
+      section3: 'Address',
+      name: 'Kitty',
+      birthday: 'April 1, 2025',
+      gender: 'Cat',
+      email: 'cutecheeseCAT@cat.com',
+      phone: '010-1234-5678',
+      home: 'Daelim Univ. IT Lab, 5F',
+      company: 'Anyang City Hall',
+      birthLabel: 'Birthday',
+      genderLabel: 'Gender',
+      emailLabel: 'Email',
+      phoneLabel: 'Phone',
+      homeLabel: 'Home',
+      companyLabel: 'Work',
+      footer: `13916 Daelim University, 29 Imgok-ro, Dongan-gu, Anyang-si, Gyeonggi-do | Tel: 031-467-4700
+Copyright © HaksaNU ALL RIGHTS RESERVED`,
+    },
+  }[language];
+
   return (
     <PageWrapper>
-      <Header />
+      <Header language={language} onChangeLanguage={onChangeLanguage} />
       <Content>
-        <Title>마이페이지</Title>
+        <Title>{t.title}</Title>
 
         <InfoCard>
-          <SectionTitle>개인정보</SectionTitle>
+          <SectionTitle>{t.section1}</SectionTitle>
           <InfoRow>
             <ProfileImage src={profileImg} alt="프로필 사진" />
-            <Value>고냥이</Value>
+            <Value>{t.name}</Value>
           </InfoRow>
           <InfoRow>
-            <Label>생년월일</Label>
-            <Value>2025년 4월 1일</Value>
+            <Label>{t.birthLabel}</Label>
+            <Value>{t.birthday}</Value>
           </InfoRow>
           <InfoRow>
-            <Label>성별</Label>
-            <Value>고양이</Value>
+            <Label>{t.genderLabel}</Label>
+            <Value>{t.gender}</Value>
           </InfoRow>
         </InfoCard>
 
         <InfoCard>
-          <SectionTitle>연락처</SectionTitle>
+          <SectionTitle>{t.section2}</SectionTitle>
           <InfoRow>
-            <Label>이메일</Label>
-            <Value>cutecheeseCAT@cat.com</Value>
+            <Label>{t.emailLabel}</Label>
+            <Value>{t.email}</Value>
           </InfoRow>
           <InfoRow>
-            <Label>연락처</Label>
-            <Value>010-1234-5678</Value>
+            <Label>{t.phoneLabel}</Label>
+            <Value>{t.phone}</Value>
           </InfoRow>
         </InfoCard>
 
         <InfoCard>
-          <SectionTitle>주소</SectionTitle>
+          <SectionTitle>{t.section3}</SectionTitle>
           <InfoRow>
-            <Label>집</Label>
-            <Value>대림대 전산관 5층 디지털미디어실습실</Value>
+            <Label>{t.homeLabel}</Label>
+            <Value>{t.home}</Value>
           </InfoRow>
           <InfoRow>
-            <Label>회사</Label>
-            <Value>안양시청</Value>
+            <Label>{t.companyLabel}</Label>
+            <Value>{t.company}</Value>
           </InfoRow>
         </InfoCard>
 
-        <FooterText>
-          13916 경기도 안양시 동안구 임곡로 29 대림대학교 | 대표전화 : 031-467-4700
-          <br />
-          Copyright 학사누 ALL RIGHTS RESERVED
-        </FooterText>
+        <FooterText>{t.footer}</FooterText>
       </Content>
       <Footer />
     </PageWrapper>

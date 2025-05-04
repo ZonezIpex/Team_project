@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const TopSection = styled.section`
-  min-height: 80vh;
+  min-height: 100vh; /* 80vh -> 100vh */
   padding: 4vh 5vw;
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: center; /* start -> center */
   align-items: center;
   color: white;
   text-align: center;
@@ -16,9 +16,10 @@ const TopSection = styled.section`
 const Greeting = styled.div`
   font-size: 1.2rem;
   font-weight: 500;
-  margin-top: 10vh;
+  margin-top: 0; /* 10vh -> 0 */
   color: #fff7d6;
 `;
+
 
 const Title = styled.h1`
   font-size: clamp(2rem, 5vw, 4rem);

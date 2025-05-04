@@ -1,7 +1,7 @@
+// src/adminPages/users/UsersPage.jsx
 import styled from 'styled-components';
-import { useState, useEffect  } from 'react';
-import axios from 'axios'; // axios import 추가
-
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Wrapper = styled.div`
   padding: 40px;
@@ -9,14 +9,21 @@ const Wrapper = styled.div`
 
 const TopBar = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 30px;
 `;
 
 const Title = styled.h2`
   font-size: 1.8rem;
   font-weight: bold;
+  margin-bottom: 10px;
+`;
+
+const FilterWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
 `;
 
 const SearchInput = styled.input`
@@ -25,7 +32,20 @@ const SearchInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 8px;
   width: 260px;
-  box-shadow: 1px 1px 4px rgba(0,0,0,0.05);
+`;
+
+const FilterButton = styled.button`
+  padding: 8px 14px;
+  background-color: #e0f7fa;
+  border: 1px solid #00acc1;
+  color: #007c91;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+
+  &:hover {
+    background-color: #b2ebf2;
+  }
 `;
 
 const UserList = styled.div`
@@ -35,7 +55,8 @@ const UserList = styled.div`
 `;
 
 const UserCard = styled.div`
-  background: white;
+  background: ${(props) =>
+    props.role === 'ADMIN' ? '#d0f0c0' : props.isApproved ? 'white' : '#ffe0e0'};
   padding: 16px 20px;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.06);
@@ -44,88 +65,146 @@ const UserCard = styled.div`
   align-items: center;
 `;
 
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+const ActionButton = styled.button`
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+`;
+
+const ApproveButton = styled(ActionButton)`
+  background-color: #157aac;
+  color: white;
+`;
+
+const DeleteButton = styled(ActionButton)`
+  background-color: #e74c3c;
+  color: white;
+`;
+
+const RoleButton = styled(ActionButton)`
+  background-color: #f1c40f;
+  color: black;
+`;
+
 function UsersPage() {
   const [search, setSearch] = useState('');
   const [userList, setUserList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [filter, setFilter] = useState('ALL');
 
   useEffect(() => {
-    fetchUsers(); // 페이지 로드 시 유저 목록 불러오기
+    fetchUsers();
   }, []);
 
   const fetchUsers = async () => {
-    const token = localStorage.getItem("token"); // JWT 토큰 가져오기
+    const token = localStorage.getItem('token');
     try {
-        const response = await axios.get('http://sarm-server.duckdns.org:8888/api/user', {
-            headers: {
-                Authorization: `Bearer ${token}`, // 토큰 추가
-            },
-        });
-        setUserList(response.data); // 모든 유저 데이터를 상태에 저장
-        setLoading(false); // 로딩 상태를 false로 변경
-    } catch (err) {
-        console.error('Error fetching users:', err.message);
-        setError('Failed to load users.');
-        setLoading(false); // 로딩 상태를 false로 변경
-    }
-};
-
-const approveUser = async (user_no) => {
-  const token = localStorage.getItem("token"); // JWT 토큰 가져오기
-  try {
-      await axios.post(`http://sarm-server.duckdns.org:8888/api/user/approve-user/${user_no}`, {}, {
-          headers: { Authorization: `Bearer ${token}` },
+      const response = await axios.get('http://sarm-server.duckdns.org:8888/api/user', {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      alert('User approved successfully!');
+      setUserList(response.data);
+    } catch (err) {
+      console.error('Error fetching users:', err.message);
+    }
+  };
+
+  const approveUser = async (userNo) => {
+    const token = localStorage.getItem('token');
+    try {
+      await axios.post(`http://sarm-server.duckdns.org:8888/api/user/approve-user/${userNo}`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert('승인되었습니다!');
       fetchUsers();
-  } catch (err) {
+    } catch (err) {
       console.error('Error approving user:', err.message);
-      alert('Failed to approve user.');
-  }
-};
+      alert('승인 실패');
+    }
+  };
 
+  const deleteUser = async (userNo) => {
+    const token = localStorage.getItem('token');
+    if (!window.confirm('정말 삭제하시겠습니까?')) return;
+    try {
+      await axios.delete(`http://sarm-server.duckdns.org:8888/api/user/${userNo}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert('삭제되었습니다!');
+      fetchUsers();
+    } catch (err) {
+      console.error('Error deleting user:', err.message);
+      alert('삭제 실패');
+    }
+  };
 
-  // 검색 필터링
-  const filteredUsers = userList.filter(user =>
-    user.userName.toLowerCase().includes(search.toLowerCase()) ||
-    user.userEmail.toLowerCase().includes(search.toLowerCase())
-  );
+  const toggleRole = (userNo) => {
+    setUserList(prevList =>
+      prevList.map(user =>
+        user.userNo === userNo
+          ? { ...user, userRole: user.userRole === 'USER' ? 'ADMIN' : 'USER' }
+          : user
+      )
+    );
+  };
 
-  // 로딩 중일 때 표시할 텍스트
-  if (loading) {
-    return <div>로딩 중...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
+  const filteredUsers = userList.filter(user => {
+    const matchesSearch = user.userName.toLowerCase().includes(search.toLowerCase()) || user.userEmail.toLowerCase().includes(search.toLowerCase());
+    const matchesFilter =
+      filter === 'ALL' ||
+      (filter === 'ADMIN' && user.userRole === 'ADMIN') ||
+      (filter === 'USER' && user.userRole === 'USER') ||
+      (filter === 'NOT_APPROVED' && !user.isApproved);
+    return matchesSearch && matchesFilter;
+  });
 
   return (
     <Wrapper>
       <TopBar>
         <Title>회원 관리</Title>
-        <SearchInput
-          type="text"
-          placeholder="이름 또는 이메일 검색"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <FilterWrapper>
+          <FilterButton onClick={() => setFilter('ALL')}>전체</FilterButton>
+          <FilterButton onClick={() => setFilter('ADMIN')}>관리자</FilterButton>
+          <FilterButton onClick={() => setFilter('USER')}>유저</FilterButton>
+          <FilterButton onClick={() => setFilter('NOT_APPROVED')}>미승인</FilterButton>
+          <SearchInput
+            type="text"
+            placeholder="이름 또는 이메일 검색"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </FilterWrapper>
       </TopBar>
 
       <UserList>
         {filteredUsers.length > 0 ? (
           filteredUsers.map(user => (
-            <UserCard key={user.userNo}>
+            <UserCard key={user.userNo} isApproved={user.isApproved} role={user.userRole}>
               <div>
                 <div><strong>{user.userName}</strong> ({user.userEmail})</div>
                 <div>상태: {user.isApproved ? '승인됨' : '미승인'}</div>
               </div>
-              <div>
-                {!user.isApproved && (
-                  <button onClick={() => approveUser(user.userNo)}>승인</button>
+              <ButtonGroup>
+                {/* ✅ 승인된 사용자만 역할 변경 버튼 보이게 */}
+                {user.isApproved && (
+                  <RoleButton onClick={() => toggleRole(user.userNo)}>
+                    {user.userRole === 'ADMIN' ? '관리자' : '유저'}
+                  </RoleButton>
                 )}
-              </div>
+
+                {/* ✅ 미승인된 사용자만 승인 버튼 보이게 */}
+                {!user.isApproved && (
+                  <ApproveButton onClick={() => approveUser(user.userNo)}>승인</ApproveButton>
+                )}
+
+                {/* ✅ 삭제 버튼은 모두 보이게 */}
+                <DeleteButton onClick={() => deleteUser(user.userNo)}>삭제</DeleteButton>
+              </ButtonGroup>
             </UserCard>
           ))
         ) : (
