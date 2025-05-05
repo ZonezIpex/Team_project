@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router-dom";
 import StyledTable from "../components/StepTable";
 
-export default function Step3Page({ language, onChangeLanguage }) {
+export default function Step3Page({ language, onChangeLanguage, setEducation, setCareer, setCertificate, setLanguageSkills }) {
   const navigate = useNavigate();
+
+  // 사용자 입력을 상태로 관리
+  const [education, setLocalEducation] = useState("");
+  const [career, setLocalCareer] = useState("");
+  const [certificate, setLocalCertificate] = useState("");
+  const [languageSkills, setLocalLanguageSkills] = useState("");
 
   const text = {
     title: {
@@ -43,6 +49,18 @@ export default function Step3Page({ language, onChangeLanguage }) {
 
   const currentStep = 2;
 
+  // "다음" 버튼 클릭 시 상태 전달
+  const handleNext = () => {
+    // 상위 컴포넌트로 상태를 전달
+    setEducation(education);
+    setCareer(career);
+    setCertificate(certificate);
+    setLanguageSkills(languageSkills);
+
+    // Step4로 이동
+    navigate("/step4Page");
+  };
+
   return (
     <PageWrapper>
       <Header language={language} onChangeLanguage={onChangeLanguage} />
@@ -68,6 +86,7 @@ export default function Step3Page({ language, onChangeLanguage }) {
             inputComponent={Input}
             selectComponent={Select}
             language={language}
+            setLocalEducation={setLocalEducation}
           />
 
           {/* 경력 */}
@@ -77,6 +96,7 @@ export default function Step3Page({ language, onChangeLanguage }) {
             inputComponent={Input}
             selectComponent={Select}
             language={language}
+            setLocalCareer={setLocalCareer}
           />
 
           {/* 자격증 */}
@@ -86,6 +106,7 @@ export default function Step3Page({ language, onChangeLanguage }) {
             inputComponent={Input}
             selectComponent={Select}
             language={language}
+            setLocalCertificate={setLocalCertificate}
           />
 
           {/* 외국어 */}
@@ -95,6 +116,7 @@ export default function Step3Page({ language, onChangeLanguage }) {
             inputComponent={Input}
             selectComponent={Select}
             language={language}
+            setLocalLanguageSkills={setLocalLanguageSkills}
           />
         </InputSection>
 
@@ -102,7 +124,7 @@ export default function Step3Page({ language, onChangeLanguage }) {
           <PreButton onClick={() => navigate("/step2Page")}>
             {text.prev[language]}
           </PreButton>
-          <NextButton onClick={() => navigate("/step4Page")}>
+          <NextButton onClick={handleNext}>
             {text.next[language]}
           </NextButton>
         </StepButton>
@@ -240,4 +262,3 @@ const StepButton = styled.div`
   align-items: center;
   margin-top: 40px;
 `;
-

@@ -1,21 +1,21 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-import MainPage from './pages/MainPage'; // ✅ 메인 페이지
-import MyPage from './pages/MyPage'; // ✅ 마이페이지
-import LoginPage from './pages/LoginPage'; // ✅ 로그인 페이지
-import SignupPage from './pages/SignupPage'; // ✅ 회원가입 페이지
-import ProfilePage from './pages/ProfilePage'; // ✅ 프로필 페이지
+import MainPage from './pages/MainPage';
+import MyPage from './pages/MyPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+import ProfilePage from './pages/ProfilePage';
 
-import ReviewList from './pages/ReviewList'; // ✅ 리뷰 리스트 페이지
-import ReviewWrite from './pages/ReviewWrite'; // ✅ 리뷰 작성 페이지
+import ReviewList from './pages/ReviewList';
+import ReviewWrite from './pages/ReviewWrite';
 
-import AdminDashboard from './adminPages/AdminDashboard'; // ✅ 어드민 대시보드 레이아웃
-import DashboardMain from './adminPages/dashboard/Index'; // ✅ 대시보드 본문
-import UsersPage from './adminPages/users/UsersPage'; // ✅ 유저 관리 페이지
-import ReviewsPage from './adminPages/reviews/ReviewsPage'; // ✅ 리뷰 관리 페이지
+import AdminDashboard from './adminPages/AdminDashboard';
+import DashboardMain from './adminPages/dashboard/Index';
+import UsersPage from './adminPages/users/UsersPage';
+import ReviewsPage from './adminPages/reviews/ReviewsPage';
 
-import Error400 from './errorPages/Error400'; // ✅ 에러 페이지들
+import Error400 from './errorPages/Error400';
 import Error401 from './errorPages/Error401';
 import Error403 from './errorPages/Error403';
 import Error404 from './errorPages/Error404';
@@ -30,14 +30,47 @@ import Step5Page from './pages/Step5Page';
 
 import { AuthProvider } from './contexts/AuthContext';
 
-
 function App() {
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'ko');
-  const [selectedTemplate, setSelectedTemplate] = useState(null);  // 템플릿 선택 상태 추가
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   useEffect(() => {
     localStorage.setItem('language', language);
   }, [language]);
+
+  // 모든 step에서 공유할 formData
+  const [formData, setFormData] = useState({
+    name: '',    
+    firstName:'',
+    nameEn: '',
+    firstNameEn:'',
+    email: '',
+    phone: '',
+    birthYear:'',
+    birthMonth:'',
+    birthDay:'',
+    address: '',
+    experience: [],
+    education: '',
+    skills: [],
+    military: {
+      servicePeriod: '',
+      branch: '',
+      rank: '',
+      occupation: '',
+      completed: '',
+      veteranStatus: '',
+    },
+    // 필요 시 추가 필드
+  });
+
+  // formData 갱신 함수
+  const handleFormDataChange = (newData) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      ...newData,
+    }));
+  };
 
   return (
     <AuthProvider>
@@ -49,35 +82,71 @@ function App() {
           <Route path="/signup" element={<SignupPage language={language} onChangeLanguage={setLanguage} />} />
           <Route path="/profilepage" element={<ProfilePage language={language} onChangeLanguage={setLanguage} />} />
 
-          {/* ✅ 이력서 작성 단계 경로들 */}
-          // App.js에서 Step1Page와 Step2Page에 selectedTemplate을 전달합니다.
+          {/* 이력서 작성 단계 */}
           <Route 
             path="/step1page" 
-            element={<Step1Page 
-              language={language} 
-              onChangeLanguage={setLanguage} 
-              selectedTemplate={selectedTemplate} 
-              setSelectedTemplate={setSelectedTemplate} 
-            />} 
+            element={
+              <Step1Page
+                language={language}
+                onChangeLanguage={setLanguage}
+                selectedTemplate={selectedTemplate}
+                setSelectedTemplate={setSelectedTemplate}
+              />
+            } 
           />
           <Route 
             path="/step2page" 
-            element={<Step2Page 
-              language={language} 
-              onChangeLanguage={setLanguage} 
-              selectedTemplate={selectedTemplate}  // selectedTemplate을 props로 전달
-            />} 
+            element={
+              <Step2Page
+                language={language}
+                onChangeLanguage={setLanguage}
+                selectedTemplate={selectedTemplate}
+                formData={formData}
+                handleFormDataChange={handleFormDataChange}
+              />
+            } 
+          />
+          <Route 
+            path="/step3page" 
+            element={
+              <Step3Page
+                language={language}
+                onChangeLanguage={setLanguage}
+                selectedTemplate={selectedTemplate}
+                formData={formData}
+                handleFormDataChange={handleFormDataChange}
+              />
+            } 
+          />
+          <Route 
+            path="/step4page" 
+            element={
+              <Step4Page
+                language={language}
+                onChangeLanguage={setLanguage}
+                selectedTemplate={selectedTemplate}
+                formData={formData}
+                handleFormDataChange={handleFormDataChange}
+              />
+            } 
+          />
+          <Route 
+            path="/step5page" 
+            element={
+              <Step5Page
+                language={language}
+                onChangeLanguage={setLanguage}
+                selectedTemplate={selectedTemplate}
+                formData={formData}
+              />
+            } 
           />
 
-          <Route path="/step3page" element={<Step3Page language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/step4page" element={<Step4Page language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/step5page" element={<Step5Page language={language} onChangeLanguage={setLanguage} />} />
-
-          {/* ✅ 리뷰 관련 라우트 추가 (친구 작업 반영) */}
+          {/* 리뷰 */}
           <Route path="/review" element={<ReviewList language={language} onChangeLanguage={setLanguage} />} />
           <Route path="/review/write" element={<ReviewWrite language={language} onChangeLanguage={setLanguage} />} />
 
-          {/* 어드민 라우트 */}
+          {/* 어드민 */}
           <Route path="/admin" element={<AdminDashboard language={language} onChangeLanguage={setLanguage} />}>
             <Route path="dashboard" element={<DashboardMain language={language} />} />
             <Route path="users" element={<UsersPage />} />
@@ -93,8 +162,7 @@ function App() {
           <Route path="*" element={<Error404 />} />
         </Routes>
       </Router>
-      </AuthProvider>
-
+    </AuthProvider>
   );
 }
 

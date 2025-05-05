@@ -2,11 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import StyledTable from "../components/StepTable";
 
-export default function Step4Page({ language = 'ko', onChangeLanguage }) {
+export default function Step4Page({ language = 'ko', onChangeLanguage,education, career, certificate, languageSkills   }) {
   const navigate = useNavigate();
+  const { state } = useLocation(); // useLocation 훅을 사용하여 location의 state를 가져옵니다.
+  const { formData } = state || {}; // state에서 formData를 가져옵니다. 기본값으로 빈 객체를 사용합니다.
+
   const currentLang = language || 'ko'; // fallback to 'ko' if undefined
 
   const text = {
@@ -118,6 +121,14 @@ export default function Step4Page({ language = 'ko', onChangeLanguage }) {
             </Step>
           ))}
         </Stepper>
+
+        <div>
+          <h2>{getText('title')}</h2>
+          <p>Name: {formData?.name}</p>
+          <p>Surname: {formData?.surname}</p>
+          <p>Email: {formData?.email}</p>
+          <p>Phone: {formData?.phone}</p>
+        </div>
 
         <ResumeInput>
           <InputTitle>{text.inputTitle[language]}</InputTitle>

@@ -5,6 +5,15 @@
 2. npm install styled-components
 3. npm install lucide-react
 
+## 5월 5일
+- step2 병역사항 input 수정함
+- step3->step4 오류
+- step1,2,3,4,5 props로 이전페이지 내용 전달 작업중
+
+## 5월 4일
+- step2 병역사항 input 안됨
+- step1,2,3,4,5 props로 이전페이지 내용 전달 작업중
+
 ## 4월 29일
 - step1Page 탬플릿 선택
 - step1,2,3,4,5 props로 이전페이지 내용 전달 작업중

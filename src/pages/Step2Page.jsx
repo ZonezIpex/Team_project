@@ -6,9 +6,10 @@ import Footer from '../components/Footer';
 import { useNavigate, useLocation } from 'react-router-dom';
 import StyledTable from '../components/StepTable';
 
-const Step2Page = ({ language, onChangeLanguage }) => {
+const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [localData, setLocalData] = useState(formData);
   const selectedTemplate = location.state?.selectedTemplate;
 
   const [photo, setPhoto] = useState(null);  // 사진 상태 추가
@@ -141,9 +142,10 @@ const Step2Page = ({ language, onChangeLanguage }) => {
     return days;
   };
 
-  const [birthYear, setBirthYear] = useState('년');
-  const [birthMonth, setBirthMonth] = useState('월');
-  const [birthDay, setBirthDay] = useState('일');
+  const [birthYear, setBirthYear] = useState(formData.birthYear || '년');
+  const [birthMonth, setBirthMonth] = useState(formData.birthMonth || '월');
+  const [birthDay, setBirthDay] = useState(formData.birthDay || '일');
+  
 
   return (
     <PageWrapper>
@@ -196,16 +198,40 @@ const Step2Page = ({ language, onChangeLanguage }) => {
             </PhotoBox>
             <InputsColumn>
               <InputRow>
-                <Input type="text" placeholder={text.name[language]} />
-                <Input type="text" placeholder={text.nameEn[language]} />
+                <Input
+                  type="text"
+                  placeholder={text.name[language]}
+                  value={formData.firstName || ""}
+                  onChange={(e) => handleFormDataChange({ ...formData, firstName: e.target.value })}
+                />
+                <Input
+                  type="text"
+                  placeholder={text.nameEn[language]}
+                  value={formData.firstNameEn || ""}
+                  onChange={(e) => handleFormDataChange({ ...formData, firstNameEn: e.target.value })}
+                />
               </InputRow>
               <InputRow marginTop="10px">
-                <Input type="text" placeholder={text.surname[language]} />
-                <Input type="text" placeholder={text.surnameEn[language]} />
+                <Input
+                  type="text"
+                  placeholder={text.surname[language]}
+                  value={formData.name || ""}
+                  onChange={(e) => handleFormDataChange({ ...formData, name: e.target.value })}
+                />
+                <Input
+                  type="text"
+                  placeholder={text.surnameEn[language]}
+                  value={formData.nameEn || ""}
+                  onChange={(e) => handleFormDataChange({ ...formData, nameEn: e.target.value })}
+                />
               </InputRow>
               <InputRow marginTop="10px">
-                <Input type="email" placeholder={text.email[language]} />
-                <Input type="tel" placeholder={text.phone[language]} />
+                <Input type="email" placeholder={text.email[language]} 
+                  value={formData.email || ""}
+                  onChange={(e) => handleFormDataChange({ ...formData, email: e.target.value })}/>
+                <Input type="tel" placeholder={text.phone[language]} 
+                  value={formData.phone || ""}
+                  onChange={(e) => handleFormDataChange({ ...formData, phone: e.target.value })}/>
               </InputRow>
             </InputsColumn>
           </InfoSection>
@@ -215,7 +241,10 @@ const Step2Page = ({ language, onChangeLanguage }) => {
               <BirthTitle>{text.birth[language]}</BirthTitle>
               <Select
                 value={birthYear}
-                onChange={(e) => setBirthYear(e.target.value)}
+                onChange={(e) => {
+                  setBirthYear(e.target.value);
+                  handleFormDataChange({ ...formData, birthYear: e.target.value });
+                }}
               >
                 <option value="년">년</option>
                 {getYearOptions().map((year) => (
@@ -224,7 +253,11 @@ const Step2Page = ({ language, onChangeLanguage }) => {
               </Select>
               <Select
                 value={birthMonth}
-                onChange={(e) => setBirthMonth(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setBirthMonth(value);
+                  handleFormDataChange({ ...formData, birthMonth: value });
+                }}
               >
                 <option value="월">월</option>
                 {getMonthOptions().map((month, index) => (
@@ -233,7 +266,11 @@ const Step2Page = ({ language, onChangeLanguage }) => {
               </Select>
               <Select
                 value={birthDay}
-                onChange={(e) => setBirthDay(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setBirthDay(value);
+                  handleFormDataChange({ ...formData, birthDay: value });
+                }}
               >
                 <option value="일">일</option>
                 {getDayOptions().map((day) => (
@@ -243,7 +280,12 @@ const Step2Page = ({ language, onChangeLanguage }) => {
             </div>
             <AddressSection>
               <AddressTitle>{text.address[language]}</AddressTitle>
-              <AddressInput type="text" placeholder={text.address[language]} />
+              <AddressInput
+                type="text"
+                placeholder={text.address[language]}
+                value={formData.address || ''}
+                onChange={(e) => handleFormDataChange({ ...formData, address: e.target.value })}
+              />
             </AddressSection>
           </BirthAddressSection>
 
@@ -251,10 +293,35 @@ const Step2Page = ({ language, onChangeLanguage }) => {
             <MilitaryTitle>{text.military[language]}</MilitaryTitle>
             <StyledTable
               type="military"
-              inputComponent={Input}
-              selectComponent={Select}
+              inputComponent={(props) => (
+                <Input
+                  {...props}
+                  value={formData.military?.[props.name] || ""}
+                  onChange={(e) => {
+                    const updatedData = {
+                      ...formData.military,
+                      [props.name]: e.target.value,
+                    };
+                    handleFormDataChange({ ...formData, military: updatedData });
+                  }}
+                />
+              )}
+              selectComponent={(props) => (
+                <Select
+                  {...props}
+                  value={formData.military?.[props.name] || ""}
+                  onChange={(e) => {
+                    const updatedData = {
+                      ...formData.military,
+                      [props.name]: e.target.value,
+                    };
+                    handleFormDataChange({ ...formData, military: updatedData });
+                  }}
+                />
+              )}
               showMore={false}
             />
+
           </MilitarySection>
         </ResumeInput>
 
@@ -273,6 +340,7 @@ const Step2Page = ({ language, onChangeLanguage }) => {
 };
 
 export default Step2Page;
+
 
 // -------------------- Styled Components --------------------
 const PhotoPreview = styled.img`
