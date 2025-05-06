@@ -5,6 +5,13 @@
 2. npm install styled-components
 3. npm install lucide-react
 
+## 5월 6일
+- step3 stepper 오류 수정
+- step2 사진 정보도 넘어가도록
+- step3 input 오류 수정 해야함함
+- step3->step4 오류
+- step1,2,3,4,5 props로 이전페이지 내용 전달 작업중
+
 ## 5월 5일
 - step2 병역사항 input 수정함
 - step3->step4 오류

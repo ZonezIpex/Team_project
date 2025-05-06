@@ -86,7 +86,8 @@ export default function Step3Page({ language, onChangeLanguage, setEducation, se
             inputComponent={Input}
             selectComponent={Select}
             language={language}
-            setLocalEducation={setLocalEducation}
+            value={education}
+            onChange={setLocalEducation}
           />
 
           {/* 경력 */}
@@ -96,7 +97,8 @@ export default function Step3Page({ language, onChangeLanguage, setEducation, se
             inputComponent={Input}
             selectComponent={Select}
             language={language}
-            setLocalCareer={setLocalCareer}
+            value={career}
+            onChanger={setLocalCareer}
           />
 
           {/* 자격증 */}
@@ -106,7 +108,8 @@ export default function Step3Page({ language, onChangeLanguage, setEducation, se
             inputComponent={Input}
             selectComponent={Select}
             language={language}
-            setLocalCertificate={setLocalCertificate}
+            value={certificate}
+            onChange={setLocalCertificate}
           />
 
           {/* 외국어 */}
@@ -116,7 +119,8 @@ export default function Step3Page({ language, onChangeLanguage, setEducation, se
             inputComponent={Input}
             selectComponent={Select}
             language={language}
-            setLocalLanguageSkills={setLocalLanguageSkills}
+            value={languageSkills}
+            onChange={setLocalLanguageSkills}
           />
         </InputSection>
 
@@ -175,8 +179,8 @@ const Circle = styled.div`
   min-width: 70px;
   height: 70px;
   border-radius: 50%;
-  background-color: ${(props) => (props.active ? "#146c94" : "white")};
-  color: ${(props) => (props.active ? "white" : "#146c94")};
+  background-color: ${props => props.index <= props.currentStep ? '#146c94' : 'white'};
+  color: ${props => props.index <= props.currentStep ? 'white' : '#146c94'};
   border: 3px solid #146c94;
   font-weight: bold;
   display: flex;
