@@ -98,7 +98,7 @@ export default function Step3Page({ language, onChangeLanguage, setEducation, se
             selectComponent={Select}
             language={language}
             value={career}
-            onChanger={setLocalCareer}
+            onChange={setLocalCareer}
           />
 
           {/* 자격증 */}
