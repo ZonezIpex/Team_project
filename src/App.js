@@ -40,30 +40,32 @@ function App() {
 
   // 모든 step에서 공유할 formData
   const [formData, setFormData] = useState({
-    name: '',    
-    firstName:'',
-    nameEn: '',
-    firstNameEn:'',
-    email: '',
-    phone: '',
-    birthYear:'',
-    birthMonth:'',
-    birthDay:'',
-    address: '',
-    experience: [],
-    education: '',
-    skills: [],
-    military: {
-      servicePeriod: '',
-      branch: '',
-      rank: '',
-      occupation: '',
-      completed: '',
-      veteranStatus: '',
+    name: '',            // 이름
+    firstName: '',       // 성
+    nameEn: '',          // 영문 이름
+    firstNameEn: '',     // 영문 성
+    email: '',           // 이메일
+    phone: '',           // 전화번호
+    birthYear: '',       // 생년 (년)
+    birthMonth: '',      // 생월 (월)
+    birthDay: '',        // 생일 (일)
+    address: '',         // 주소
+    experience: [],      // 경력 (Array of experiences)
+    education: '',       // 학력
+    career: '',          // 경력
+    certificate: '',     // 자격증
+    skills: [],          // 기술 (Array of skills)
+    military: {          // 군 복무 사항
+      servicePeriod: '',  // 복무 기간
+      branch: '',         // 병과
+      rank: '',           // 계급
+      occupation: '',     // 직책
+      completed: '',      // 복무 완료 여부
+      veteranStatus: '',  // 제대 여부
     },
-    // 필요 시 추가 필드
+    languageSkills: []   // 외국어 스킬 (Array of languages)
   });
-
+  
   // formData 갱신 함수
   const handleFormDataChange = (newData) => {
     setFormData((prevData) => ({

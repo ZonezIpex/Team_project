@@ -1,5 +1,5 @@
 // src/pages/Step2Page.jsx
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';

@@ -1,16 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate, useLocation } from "react-router-dom";
 import StyledTable from "../components/StepTable";
 
-export default function Step4Page({ language = 'ko', onChangeLanguage,education, career, certificate, languageSkills   }) {
+export default function Step4Page({ language = 'ko', onChangeLanguage, handleFormDataChange }) {
   const navigate = useNavigate();
   const { state } = useLocation(); // useLocation 훅을 사용하여 location의 state를 가져옵니다.
-  const { formData } = state || {}; // state에서 formData를 가져옵니다. 기본값으로 빈 객체를 사용합니다.
+  const [formData, setFormData] = useState(null); 
+
+  useEffect(() => {
+  if (state?.formData) {
+       setFormData(state.formData); // state에서 formData를 받아와서 상태 설정
+     }
+   }, [state]); // state가 변경될 때마다 formData를 업데이트
+
 
   const currentLang = language || 'ko'; // fallback to 'ko' if undefined
+
+  const { name, firstName, nameEn, firstNameEn, email, phone, birthYear, birthMonth, birthDay, address, experience, education, skills, career, certificate, languageSkills } = formData || {};
 
   const text = {
     title: {

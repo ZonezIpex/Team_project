@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router-dom";
 import StyledTable from "../components/StepTable";
 
-export default function Step3Page({ language, onChangeLanguage, setEducation, setCareer, setCertificate, setLanguageSkills }) {
+export default function Step3Page({ language, onChangeLanguage, setEducation, setCareer, setCertificate, setLanguageSkills, handleFormDataChange }) {
   const navigate = useNavigate();
 
   // 사용자 입력을 상태로 관리
@@ -52,11 +52,12 @@ export default function Step3Page({ language, onChangeLanguage, setEducation, se
   // "다음" 버튼 클릭 시 상태 전달
   const handleNext = () => {
     // 상위 컴포넌트로 상태를 전달
-    setEducation(education);
-    setCareer(career);
-    setCertificate(certificate);
-    setLanguageSkills(languageSkills);
-
+    handleFormDataChange({
+      education: education,
+      career: career,
+      certificate: certificate,
+      languageSkills: languageSkills,
+    });
     // Step4로 이동
     navigate("/step4Page");
   };
@@ -85,6 +86,7 @@ export default function Step3Page({ language, onChangeLanguage, setEducation, se
             type="education"
             inputComponent={Input}
             selectComponent={Select}
+            showMore={true}
             language={language}
             value={education}
             onChange={setLocalEducation}
@@ -96,6 +98,7 @@ export default function Step3Page({ language, onChangeLanguage, setEducation, se
             type="career"
             inputComponent={Input}
             selectComponent={Select}
+            showMore={true}
             language={language}
             value={career}
             onChange={setLocalCareer}
@@ -107,6 +110,7 @@ export default function Step3Page({ language, onChangeLanguage, setEducation, se
             type="certificate"
             inputComponent={Input}
             selectComponent={Select}
+            showMore={true}
             language={language}
             value={certificate}
             onChange={setLocalCertificate}
@@ -115,9 +119,10 @@ export default function Step3Page({ language, onChangeLanguage, setEducation, se
           {/* 외국어 */}
           <SectionTitle>{text.sectionTitles[language].language}</SectionTitle>
           <StyledTable
-            type="language"
+            type="languageSkills"
             inputComponent={Input}
             selectComponent={Select}
+            showMore={true}
             language={language}
             value={languageSkills}
             onChange={setLocalLanguageSkills}
