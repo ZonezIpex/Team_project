@@ -12,7 +12,7 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
   const [localData, setLocalData] = useState(formData);
   const selectedTemplate = location.state?.selectedTemplate;
 
-  const [photo, setPhoto] = useState(null);  // 사진 상태 추가
+  //const [photo, setPhoto] = useState(null);  // 사진 상태 추가
   const fileInputRef = useRef(null);  // fileInput 요소에 대한 ref 추가
 
   const handlePhotoChange = (event) => {
@@ -20,7 +20,8 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPhoto(reader.result); // 파일을 읽어와서 상태에 저장
+        handleFormDataChange({ ...formData, photo: reader.result });
+  //      setPhoto(reader.result); // 파일을 읽어와서 상태에 저장
       };
       reader.readAsDataURL(file); // 파일을 데이터 URL로 읽기
     }
@@ -180,11 +181,8 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
           <InputTitle>{text.inputTitle[language]}</InputTitle>
           <InfoSection>
             <PhotoBox onClick={handlePhotoClick}> {/* PhotoBox 클릭 시 파일 선택 창 열기 */}
-              {photo ? (
-                <PhotoPreview
-                  src={photo}
-                  alt="Profile"
-                />
+            {formData.photo ? (
+                <PhotoPreview src={formData.photo} alt="Profile" />
               ) : (
                 <label>{text.photo[language]}</label>
               )}
