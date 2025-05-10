@@ -7,9 +7,16 @@
 
 ## 5월 10일
 - step2 사진 정보도 넘어가도록 해야함(완)
+- step3까지 formData에 props 전달함(완)
+- step4에서 formData 가져오기(완)
+
 - step2 병역사항 한글자씩만 입력됨
-- step4 수정 필요(step2,3처럼)
+- step4 step3 부분이 수정이 반영되지 않음
+- step4 수정 필요(step2,3처럼) --> 간단해지는 법 찾는 중중
 - form 수정 필요(select 추가, 목록 변경)
+
+- step2 table 크기
+- step4 스타일
 
 ## 5월 8일
 - step1,2,3,4,5 props로 이전페이지 내용 전달 작업중

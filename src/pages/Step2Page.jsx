@@ -1,5 +1,5 @@
 // src/pages/Step2Page.jsx
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -21,7 +21,7 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
       const reader = new FileReader();
       reader.onloadend = () => {
         handleFormDataChange({ ...formData, photo: reader.result });
-  //      setPhoto(reader.result); // 파일을 읽어와서 상태에 저장
+
       };
       reader.readAsDataURL(file); // 파일을 데이터 URL로 읽기
     }
@@ -116,6 +116,10 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
     },
   };
 
+  const handleNext = () => {
+      navigate("/step3Page", { state: { formData } });
+  };
+
   const currentStep = 1;
 
   // 생년월일을 위한 옵션들
@@ -146,7 +150,48 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
   const [birthYear, setBirthYear] = useState(formData.birthYear || '년');
   const [birthMonth, setBirthMonth] = useState(formData.birthMonth || '월');
   const [birthDay, setBirthDay] = useState(formData.birthDay || '일');
-  
+  // Step2Page.jsx 내부에서
+
+// military 관련 입력을 관리하는 useRef 설정
+const militaryRefs = useRef({}); // military 항목에 대한 ref 객체
+
+const inputComponent = useCallback(
+  (props) => {
+    return (
+      <Input
+        {...props}
+        value={formData.military?.[props.name] || ""}
+        onChange={(e) => {
+          const updatedData = {
+            ...formData.military,
+            [props.name]: e.target.value,
+          };
+          handleFormDataChange({ ...formData, military: updatedData });
+        }}
+        ref={(el) => (militaryRefs.current[props.name] = el)} // ref 할당
+      />
+    );
+  },
+  [formData.military, handleFormDataChange]
+);
+
+const selectComponent = useCallback(
+  (props) => (
+    <Select
+      {...props}
+      value={formData.military?.[props.name] || ""}
+      onChange={(e) => {
+        const updatedData = {
+          ...formData.military,
+          [props.name]: e.target.value,
+        };
+        handleFormDataChange({ ...formData, military: updatedData });
+      }}
+      ref={(el) => (militaryRefs.current[props.name] = el)} // ref 할당
+    />
+  ),
+  [formData.military, handleFormDataChange]
+);
 
   return (
     <PageWrapper>
@@ -291,32 +336,8 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
             <MilitaryTitle>{text.military[language]}</MilitaryTitle>
             <StyledTable
               type="military"
-              inputComponent={(props) => (
-                <Input
-                  {...props}
-                  value={formData.military?.[props.name] || ""}
-                  onChange={(e) => {
-                    const updatedData = {
-                      ...formData.military,
-                      [props.name]: e.target.value,
-                    };
-                    handleFormDataChange({ ...formData, military: updatedData });
-                  }}
-                />
-              )}
-              selectComponent={(props) => (
-                <Select
-                  {...props}
-                  value={formData.military?.[props.name] || ""}
-                  onChange={(e) => {
-                    const updatedData = {
-                      ...formData.military,
-                      [props.name]: e.target.value,
-                    };
-                    handleFormDataChange({ ...formData, military: updatedData });
-                  }}
-                />
-              )}
+              inputComponent={inputComponent}
+              selectComponent={selectComponent}
               showMore={false}
             />
 
@@ -327,7 +348,7 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
           <PreButton onClick={() => navigate('/step1Page')}>
             {text.prev[language]}
           </PreButton>
-          <NextButton onClick={() => navigate('/step3Page')}>
+          <NextButton onClick={handleNext}>
             {text.next[language]}
           </NextButton>
         </StepButton>

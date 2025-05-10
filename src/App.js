@@ -71,6 +71,10 @@ function App() {
     setFormData((prevData) => ({
       ...prevData,
       ...newData,
+    military: {
+      ...prevData.military,
+      ...newData.military,  // military만 업데이트
+    },
     }));
   };
 
@@ -140,6 +144,7 @@ function App() {
                 onChangeLanguage={setLanguage}
                 selectedTemplate={selectedTemplate}
                 formData={formData}
+                handleFormDataChange={handleFormDataChange}
               />
             } 
           />

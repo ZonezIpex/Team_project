@@ -5,14 +5,15 @@ import Footer from '../components/Footer';
 import { useNavigate } from "react-router-dom";
 import StyledTable from "../components/StepTable";
 
-export default function Step3Page({ language, onChangeLanguage, setEducation, setCareer, setCertificate, setLanguageSkills, handleFormDataChange }) {
+export default function Step3Page({ language, onChangeLanguage, formData, setLanguageSkills, handleFormDataChange }) {
   const navigate = useNavigate();
+  console.log(formData); // formData 내용 확인
 
   // 사용자 입력을 상태로 관리
-  const [education, setLocalEducation] = useState("");
-  const [career, setLocalCareer] = useState("");
-  const [certificate, setLocalCertificate] = useState("");
-  const [languageSkills, setLocalLanguageSkills] = useState("");
+  const [education, setLocalEducation] = useState(formData.education || "");
+  const [career, setLocalCareer] = useState(formData.career || "");
+  const [certificate, setLocalCertificate] = useState(formData.certificate || "");
+  const [languageSkills, setLocalLanguageSkills] = useState(formData.languageSkills || "");
 
   const text = {
     title: {
@@ -53,10 +54,10 @@ export default function Step3Page({ language, onChangeLanguage, setEducation, se
   const handleNext = () => {
     // 상위 컴포넌트로 상태를 전달
     handleFormDataChange({
-      education: education,
-      career: career,
-      certificate: certificate,
-      languageSkills: languageSkills,
+      education,
+      career,
+      certificate,
+      languageSkills,
     });
     // Step4로 이동
     navigate("/step4Page");

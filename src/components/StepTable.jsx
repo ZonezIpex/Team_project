@@ -54,6 +54,15 @@ const AddRowButton = styled.button`
   }
 `;
 
+const Input = React.memo((props) => {
+  return <StyledInput {...props} />;
+});
+
+const Select = React.memo((props) => {
+  return <StyledSelect {...props} />;
+});
+
+export { Input, Select };
 
 // 컬럼 정의
 const columnConfigs = {
@@ -92,13 +101,42 @@ const columnConfigs = {
 };
 
 // 메인 컴포넌트
-const StyledTable = ({ type, inputComponent, selectComponent, showMore = false, language = 'ko' }) => {
-  const [rows, setRows] = useState(1);
+const StyledTable = ({ type,
+  inputComponent ,
+  selectComponent ,
+  showMore = false,
+  language = 'ko',
+  value = [],
+  onChange, }) => {
+  const [rows, setRows] = useState(value.length || 1); // 기본 1줄
+  const safeValue = Array.isArray(value) ? value : [];  
   const labels = Array.isArray(columnConfigs[type]?.[language])
-  ? columnConfigs[type][language]
-  : [];
+    ? columnConfigs[type][language]
+    : [];
 
-  const handleAddRow = () => setRows((prev) => prev + 1);
+  const handleAddRow = () => {
+    const newData = [...value, Array(labels.length).fill("")]; // 새 행 추가
+    setRows((prev) => prev + 1);
+    onChange?.(newData); // 상위에 전달
+  };
+
+  const handleCellChange = (rowIndex, colIndex, newValue) => {
+    const currentData = Array.isArray(value) ? value : [];
+
+    const updatedData = currentData.map((row, r) =>
+      r === rowIndex
+        ? row.map((cell, c) => (c === colIndex ? newValue : cell))
+        : row
+    );
+
+    // 새 행이 없을 경우 row 생성
+    while (updatedData.length <= rowIndex) {
+      updatedData.push(Array(labels.length).fill(""));
+    }
+
+    onChange?.(updatedData);
+  };
+
 
   return (
     <>
@@ -115,10 +153,16 @@ const StyledTable = ({ type, inputComponent, selectComponent, showMore = false, 
             <tr key={rowIndex}>
               {labels.map((_, colIndex) => {
                 const name = `${type}_${rowIndex}_${colIndex}`; // 예: career_0_1
-                const Component = colIndex === 2 && type === 'language' ? selectComponent : inputComponent;
+                const Component = colIndex === 2 && type === 'languageSkills' ? selectComponent : inputComponent;
                 return (
                   <Td key={colIndex}>
-                    <Component name={name} />
+                    <Component
+                      name={name}
+                      value={safeValue[rowIndex]?.[colIndex] || ""}
+                      onChange={(e) =>
+                        handleCellChange(rowIndex, colIndex, e.target.value)
+                      }
+                    />
                   </Td>
                 );
               })}
