@@ -95,6 +95,7 @@ export default function Step3Page({ language, onChangeLanguage, formData, setLan
             language={language}
             value={education}
             onChange={setLocalEducation}
+            fieldKeys={["school", "major", "period", "degree"]}
           />
 
           {/* 경력 */}

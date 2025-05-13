@@ -213,12 +213,18 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
     if (typeof langData === 'string') return langData;
     return key ? langData?.[key] || '' : langData || '';
   };
+  
+  const columnKeys = {
+    education: ['graduationDate', 'schoolName', 'graduationStatus', 'grade'],
+    // 다른 항목도 필요하면 추가
+  };
 
   return (
     <PageWrapper>
       <Header language={currentLang} onChangeLanguage={onChangeLanguage} />
       <Container>
         <Title>{getText('title')}</Title>
+        <pre>{JSON.stringify(formData, null, 2)}</pre>
 
         <Stepper>
           {text.steps[language].map((step, index) => (
@@ -237,7 +243,15 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
           <p>Surname: {formData?.firstName}</p>
           <p>Email: {formData?.email}</p>
           <p>Phone: {formData?.phone}</p>
-          <p>education: {formData?.education.Grade}</p>
+          <p>education: {formData.education.map((edu, index) => (
+            <div key={index}>
+              <p>학교 이름: {edu.SchoolName}</p>
+              <p>졸업 상태: {edu.GraduationStatus}</p>
+              <p>졸업 연도: {edu.GraduationDate}</p>
+              <p>학점: {edu.Grade}</p>
+            </div>))}
+            </p>
+          <p>career: {formData?.career}</p>
         </div>
 
         <ResumeInput>
@@ -363,53 +377,86 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
         </ResumeInput>
 
         <InputSection>
-          {/* 학력 */}
-          <SectionTitle>{text.sectionTitles[language].education}</SectionTitle>
-          <StyledTable
-            type="education"
-            inputComponent={Input}
-            selectComponent={Select}
-            showMore={false}
-            language={language}
-            value={education}
-            onChange={setLocalEducation}
-          />
 
-          {/* 경력 */}
-          <SectionTitle>{text.sectionTitles[language].career}</SectionTitle>
-          <StyledTable
-            type="career"
-            inputComponent={Input}
-            selectComponent={Select}
-            showMore={false}
-            language={language}
-            value={career}
-            onChange={setLocalCareer}
-          />
+      <div>
+        <strong>이름:</strong> {formData.name} {formData.firstName}
+      </div>
+      <div>
+        <strong>영문 이름:</strong> {formData.nameEn} {formData.firstNameEn}
+      </div>
+      <div>
+        <strong>이메일:</strong> {formData.email}
+      </div>
+      <div>
+        <strong>전화번호:</strong> {formData.phone}
+      </div>
+      <div>
+        <strong>생년월일:</strong> {formData.birthYear}-{formData.birthMonth}-{formData.birthDay}
+      </div>
+      <div>
+        <strong>주소:</strong> {formData.address}
+      </div>
 
-          {/* 자격증 */}
-          <SectionTitle>{text.sectionTitles[language].certificate}</SectionTitle>
-          <StyledTable
-            type="certificate"
-            inputComponent={Input}
-            selectComponent={Select}
-            showMore={false}
-            language={language}
-            value={certificate}
-            onChange={setLocalCertificate}
-          />
+      {/* 경력 */}
+      <div>
+        <strong>경력:</strong>
+        {formData.career && formData.career.length > 0 ? (
+          <ul>
+            {formData.career.map((career, index) => (
+              <li key={index}>{career}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>경력이 없습니다.</p>
+        )}
+      </div>
 
-          {/* 외국어 */}
-          <SectionTitle>{text.sectionTitles[language].language}</SectionTitle>
-          <StyledTable
-            type="languageSkills"
-            inputComponent={Input}
-            selectComponent={Select}
-            showMore={false}
-            language={language}
-            value={languageSkills}
-            onChange={setLocalLanguageSkills}
-          />
+      {/* 학력 */}
+      <di>
+      {formData.education && formData.education.length > 0 ? (
+        <ul>
+          {formData.education.map((edu, index) => (
+            <li key={index}>
+              <p>졸업일: {edu.graduationDate}</p>
+              <p>학교명: {edu.schoolName}</p>
+              <p>졸업 여부: {edu.graduationStatus}</p>
+              <p>성적: {edu.grade}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>학력이 없습니다.</p>
+      )}
+      </di>
+
+      {/* 군 복무 사항 */}
+      <div>
+        <strong>군 복무:</strong>
+        {formData.military && formData.military.length > 0 ? (
+          <ul>
+            {formData.military.map((military, index) => (
+              <li key={index}>{military}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>군 복무경경력이 없습니다.</p>
+        )}
+        {formData.military.military_0_0}
+      </div>
+
+      {/* 외국어 스킬 */}
+      <div>
+        <strong>외국어 스킬:</strong>
+        {formData.languageSkills && formData.languageSkills.length > 0 ? (
+          <ul>
+            {formData.languageSkills.map((language, index) => (
+              <li key={index}>{language}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>외국어 스킬이 없습니다.</p>
+        )}
+      </div>
         </InputSection>
 
         <StepButton>

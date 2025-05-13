@@ -51,13 +51,15 @@ function App() {
     birthDay: '',        // 생일 (일)
     address: '',         // 주소
     experience: [],      // 경력 (Array of experiences)
-    education: {
-      GraduationDate:'',
-      SchoolName:'',
-      GraduationStatus:'',
-      Grade:'',
-    },       // 학력
-    career: '',          // 경력
+    education: [
+      {
+        graduationDate: '',
+        schoolName: '',
+        graduationStatus: '',
+        grade: ''
+      }
+    ],     // 학력
+    career: [],          // 경력
     certificate: '',     // 자격증
     skills: [],          // 기술 (Array of skills)
     military: {          // 군 복무 사항
@@ -76,7 +78,11 @@ function App() {
     setFormData((prevData) => ({
       ...prevData,
       ...newData,
-      education: newData.education || prevData.education,
+      education: Array.isArray(newData.education)
+        ? newData.education
+        : newData.education
+        ? [newData.education]
+        : prevData.education,
       military: newData.military
         ? { ...prevData.military, ...newData.military }
         : prevData.military,

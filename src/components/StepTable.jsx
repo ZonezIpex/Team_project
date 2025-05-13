@@ -69,10 +69,12 @@ const columnConfigs = {
   education: {
     ko: ['졸업일', '학교명', '졸업여부', '성적'],
     en: ['Graduation Date', 'School Name', 'Graduation Status', 'Grade'],
+    keys: ['Graduation Date', 'School Name', 'Graduation Status', 'Grade'],
   },
   career: {
     ko: ['회사명', '근무기간', '최종직위', '담당업무'],
     en: ['Company Name', 'Employment Period', 'Final Position', 'Responsibilities'],
+    keys: ['Company Name', 'Employment Period', 'Final Position', 'Responsibilities'],
   },
   certificate: {
     ko: ['종류', '취득일', '발행처'],
