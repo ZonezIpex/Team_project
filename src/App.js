@@ -51,7 +51,12 @@ function App() {
     birthDay: '',        // 생일 (일)
     address: '',         // 주소
     experience: [],      // 경력 (Array of experiences)
-    education: '',       // 학력
+    education: {
+      GraduationDate:'',
+      SchoolName:'',
+      GraduationStatus:'',
+      Grade:'',
+    },       // 학력
     career: '',          // 경력
     certificate: '',     // 자격증
     skills: [],          // 기술 (Array of skills)
@@ -71,12 +76,17 @@ function App() {
     setFormData((prevData) => ({
       ...prevData,
       ...newData,
-    military: {
-      ...prevData.military,
-      ...newData.military,  // military만 업데이트
-    },
+      education: newData.education || prevData.education,
+      military: newData.military
+        ? { ...prevData.military, ...newData.military }
+        : prevData.military,
+      skills: newData.skills || prevData.skills,
+      languageSkills: newData.languageSkills || prevData.languageSkills,
+      experience: newData.experience || prevData.experience,
     }));
   };
+
+
 
   return (
     <AuthProvider>
@@ -97,6 +107,8 @@ function App() {
                 onChangeLanguage={setLanguage}
                 selectedTemplate={selectedTemplate}
                 setSelectedTemplate={setSelectedTemplate}
+                formData={formData}
+                handleFormDataChange={handleFormDataChange}
               />
             } 
           />

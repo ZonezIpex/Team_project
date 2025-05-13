@@ -45,6 +45,8 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
   //const [photo, setPhoto] = useState(null);  // 사진 상태 추가
   const fileInputRef = useRef(null);  // fileInput 요소에 대한 ref 추가
 
+  const currentStep = 3;
+
   // 생년월일을 위한 옵션들
   const getYearOptions = () => {
     const currentYear = new Date().getFullYear();
@@ -108,6 +110,13 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
     [formData.military, handleFormDataChange]
   );
   
+  const handleNext = () => {
+      navigate("/step5Page", { state: { formData } });
+  };
+
+  const handlePre = () => {
+      navigate("/step3Page", { state: { formData } });
+  };
 
   const currentLang = language || 'ko'; // fallback to 'ko' if undefined
   const text = {
@@ -212,10 +221,12 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
         <Title>{getText('title')}</Title>
 
         <Stepper>
-          {getText('steps').map((step, index) => (
+          {text.steps[language].map((step, index) => (
             <Step key={step}>
-              <Circle active={index === 3}>{step}</Circle>
-              {index < getText('steps').length - 1 && <Line />}
+              <Circle index={index} currentStep={currentStep}>
+                {step}
+              </Circle>
+              {index < text.steps[language].length - 1 && <Line />}
             </Step>
           ))}
         </Stepper>
@@ -223,9 +234,10 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
         <div>
           <h2>{getText('title')}</h2>
           <p>Name: {formData?.name}</p>
-          <p>Surname: {formData?.surname}</p>
+          <p>Surname: {formData?.firstName}</p>
           <p>Email: {formData?.email}</p>
           <p>Phone: {formData?.phone}</p>
+          <p>education: {formData?.education.Grade}</p>
         </div>
 
         <ResumeInput>
@@ -350,14 +362,14 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
           </MilitarySection>
         </ResumeInput>
 
-                <InputSection>
+        <InputSection>
           {/* 학력 */}
           <SectionTitle>{text.sectionTitles[language].education}</SectionTitle>
           <StyledTable
             type="education"
             inputComponent={Input}
             selectComponent={Select}
-            showMore={true}
+            showMore={false}
             language={language}
             value={education}
             onChange={setLocalEducation}
@@ -369,7 +381,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
             type="career"
             inputComponent={Input}
             selectComponent={Select}
-            showMore={true}
+            showMore={false}
             language={language}
             value={career}
             onChange={setLocalCareer}
@@ -381,7 +393,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
             type="certificate"
             inputComponent={Input}
             selectComponent={Select}
-            showMore={true}
+            showMore={false}
             language={language}
             value={certificate}
             onChange={setLocalCertificate}
@@ -393,7 +405,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
             type="languageSkills"
             inputComponent={Input}
             selectComponent={Select}
-            showMore={true}
+            showMore={false}
             language={language}
             value={languageSkills}
             onChange={setLocalLanguageSkills}
@@ -401,10 +413,10 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
         </InputSection>
 
         <StepButton>
-          <PreButton onClick={() => navigate("/step3Page")}>
+          <PreButton onClick={handlePre}>
             {getText('prev')}
           </PreButton>
-          <NextButton onClick={() => navigate("/step5Page")}>
+          <NextButton onClick={handleNext}>
             {getText('next')}
           </NextButton>
         </StepButton>
@@ -461,8 +473,8 @@ const Circle = styled.div`
   min-width: 80px;
   height: 80px;
   border-radius: 50%;
-  background-color: ${(props) => (props.active ? "#146c94" : "white")};
-  color: ${(props) => (props.active ? "white" : "#146c94")};
+  background-color: ${props => props.index <= props.currentStep ? '#146c94' : 'white'};
+  color: ${props => props.index <= props.currentStep ? 'white' : '#146c94'};
   border: 3px solid #146c94;
   font-weight: bold;
   display: flex;

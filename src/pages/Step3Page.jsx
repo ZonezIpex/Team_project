@@ -50,6 +50,10 @@ export default function Step3Page({ language, onChangeLanguage, formData, setLan
 
   const currentStep = 2;
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    handleFormDataChange({ [name]: value });
+  };
   // "다음" 버튼 클릭 시 상태 전달
   const handleNext = () => {
     // 상위 컴포넌트로 상태를 전달
