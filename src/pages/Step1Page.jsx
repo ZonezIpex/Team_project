@@ -1,11 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router-dom";
 
+import resume1 from "../assets/resume1.png";
+import resume2 from "../assets/resume2.png";
+import resume3 from "../assets/resume3.png";
+import resume4 from "../assets/resume4.png";
+import resume5 from "../assets/resume5.png";
+import resume6 from "../assets/resume6.png";
+
+const resumeImages = [resume1, resume2, resume3, resume4, resume5, resume6];
+const resumeDescriptions = [
+  "깔끔한 흑백 레이아웃으로 기본 정보 위주로 구성된 템플릿입니다.",
+  "파란색 강조 포인트가 있는 이력서로, 경력 중심에 적합합니다.",
+  "사진과 자기소개가 강조된 템플릿으로 신입 이력서에 좋습니다.",
+  "컬러 포인트가 있는 세련된 디자인, 포트폴리오 포함 시 적합합니다.",
+  "심플하고 조용한 인상을 주는 템플릿, 무난하게 사용 가능.",
+  "경력과 자격 사항을 강조한 실무형 이력서 템플릿입니다.",
+];
+
 export default function Step1Page({ language, onChangeLanguage, selectedTemplate, setSelectedTemplate }) {
-  const [templateDescription, setTemplateDescription] = useState(""); // 템플릿 설명 상태
+  const [showPreview, setShowPreview] = useState(false);
   const navigate = useNavigate();
 
   const text = {
@@ -13,29 +30,9 @@ export default function Step1Page({ language, onChangeLanguage, selectedTemplate
       ko: "이력서 양식 선택",
       en: "Select Resume Template",
     },
-    steps: {
-      ko: ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"],
-      en: ["Template", "Personal\nInfo", "Experience", "Edit", "Complete"],
-    },
-    exampleTitle: {
-      ko: "이력서 양식 예시",
-      en: "Resume Template Examples",
-    },
-    recentTitle: {
-      ko: "최근 사용",
-      en: "Recently Used",
-    },
     templateLabel: {
       ko: (n) => `양식 ${n}`,
       en: (n) => `Template ${n}`,
-    },
-    recentLabel: {
-      ko: (n) => `최근 ${n}`,
-      en: (n) => `Recent ${n}`,
-    },
-    next: {
-      ko: "다음",
-      en: "Next",
     },
     select: {
       ko: "선택",
@@ -44,13 +41,17 @@ export default function Step1Page({ language, onChangeLanguage, selectedTemplate
   };
 
   const handleTemplateSelect = (n) => {
-    setSelectedTemplate(n);  // 템플릿을 선택하면 selectedTemplate 상태를 업데이트
-    setTemplateDescription(`템플릿 ${n}에 대한 설명입니다.`);
+    setSelectedTemplate(n);
+    setShowPreview(true);
+  };
+
+  const handleClosePreview = () => {
+    setShowPreview(false);
   };
 
   const handleNext = () => {
     if (selectedTemplate) {
-      navigate('/step2page', { state: { selectedTemplate } });    // 템플릿을 선택한 경우에만 다음 페이지로 이동
+      navigate('/step2page', { state: { selectedTemplate } });
     } else {
       alert('템플릿을 선택해주세요.');
     }
@@ -59,75 +60,36 @@ export default function Step1Page({ language, onChangeLanguage, selectedTemplate
   return (
     <PageWrapper>
       <Header language={language} onChangeLanguage={onChangeLanguage} />
-      <Container>
+      <MainContent>
         <Title>{text.title[language]}</Title>
 
-        <Stepper>
-          {text.steps[language].map((step, index) => (
-            <Step key={step}>
-              <Circle active={index === 0}>{step}</Circle>
-              {index < text.steps[language].length - 1 && <Line />}
-            </Step>
+        <TemplateGrid>
+          {resumeImages.map((img, index) => (
+            <TemplateCard
+              key={index}
+              onClick={() => handleTemplateSelect(index + 1)}
+              selected={selectedTemplate === index + 1}
+            >
+              <TemplateImage src={img} alt={`Template ${index + 1}`} />
+              <Label>{text.templateLabel[language](index + 1)}</Label>
+            </TemplateCard>
           ))}
-        </Stepper>
+        </TemplateGrid>
 
-        <Section>
-          <SectionTitle>{text.exampleTitle[language]}</SectionTitle>
-          <TemplateGrid>
-            {[1, 2, 3].map((n) => (
-              <Template
-                key={n}
-                onClick={() => handleTemplateSelect(n)}
-                style={{
-                  backgroundColor: selectedTemplate === n ? "#d1e9f7" : "#fff",
-                }}
-              >
-                {text.templateLabel[language](n)}
-              </Template>
-            ))}
-            <TemplateAdd>+</TemplateAdd>
-          </TemplateGrid>
-        </Section>
+        <SelectedTemplateModal show={showPreview}>
+          <ModalContent>
+            <CloseButton onClick={handleClosePreview}>×</CloseButton>
+            <ModalImage src={resumeImages[selectedTemplate - 1]} alt={`Template ${selectedTemplate}`} />
+            <Label>{text.templateLabel[language](selectedTemplate)}</Label>
+            <Description>{resumeDescriptions[selectedTemplate - 1]}</Description>
+            <SelectButtonContainer>
+              <SelectButton onClick={handleNext}>{text.select[language]}</SelectButton>
+            </SelectButtonContainer>
+          </ModalContent>
+        </SelectedTemplateModal>
 
-        <Section>
-          <SectionTitle>{text.recentTitle[language]}</SectionTitle>
-          <TemplateBox>
-            <TemplateGrid>
-              {[1, 2, 3].map((n) => (
-                <Template key={n} style={{ backgroundColor: "#f1f1f1" }}>
-                  {text.recentLabel[language](n)}
-                </Template>
-              ))}
-            </TemplateGrid>
-          </TemplateBox>
-        </Section>
-
-        {/* 선택된 템플릿과 설명을 보여주는 영역 */}
-        <SelectedTemplateContainer display={selectedTemplate ? 'flex' : 'none'}>
-          <SelectedTemplateWrapper>
-            <SelectedTemplateImage>
-              <img
-                src={`template${selectedTemplate}.png`}
-                alt={`Template ${selectedTemplate}`}
-                width="300px"
-              />
-            </SelectedTemplateImage>
-            <SelectedTemplateDescription>
-              <h3>{text.templateLabel[language](selectedTemplate)}</h3>
-              <p>{templateDescription}</p>
-            </SelectedTemplateDescription>
-          </SelectedTemplateWrapper>
-          <Button onClick={handleNext}>
-            {text.select[language]}
-          </Button>
-        </SelectedTemplateContainer>
-
-        <ButtonWrapper>
-          <Button onClick={handleNext}>
-            {text.next[language]}
-          </Button>
-        </ButtonWrapper>
-      </Container>
+        <FooterSpacer />
+      </MainContent>
       <Footer language={language} />
     </PageWrapper>
   );
@@ -140,161 +102,152 @@ const PageWrapper = styled.div`
   flex-direction: column;
 `;
 
-const Container = styled.div`
+const MainContent = styled.div`
   flex: 1;
   padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: sans-serif;
-  text-align: center;
+  padding-top: 120px;
+  max-width: 1400px;
+  margin: auto;
 `;
 
 const Title = styled.h1`
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
-  color: white;
-  margin-top: 100px;
-  margin-bottom: 30px;
-`;
-
-const Stepper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 3rem;
-`;
-
-const Step = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const Circle = styled.div`
-  min-width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background-color: ${(props) => (props.active ? '#146c94' : 'white')};
-  color: ${(props) => (props.active ? 'white' : '#146c94')};
-  border: 3px solid #146c94;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #0d2f45;
   text-align: center;
-  white-space: pre-line;
-  padding: 5px;
-  box-sizing: border-box;
-`;
-
-const Line = styled.div`
-  width: 30px;
-  height: 5px;
-  background-color: #146c94;
-`;
-
-const Section = styled.div`
-  width: 100%;
-  max-width: 900px;
-`;
-
-const SectionTitle = styled.h3`
-  font-size: 1.25rem;
-  text-align: left;
-  margin: 2rem 0 1rem 0;
-  border-bottom: 3px solid #176B87;
-  padding-bottom: 0.3rem;
-`;
-
-const TemplateBox = styled.div`
-  background: rgba(243, 251, 255, 0.8);
-  padding: 20px 70px;
-  border-radius: 10px;
+  margin-bottom: 2rem;
 `;
 
 const TemplateGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 20px;
-  justify-items: center;
-`;
-
-const Template = styled.div`
-  width: 100%;
-  max-width: 150px;
-  height: 200px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: white;
-  display: flex;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
   justify-content: center;
-  align-items: center;
+`;
+
+const TemplateCard = styled.div`
+  background: white;
+  border-radius: 14px;
+  box-shadow: ${(props) =>
+    props.selected ? '0 0 0 3px #146c94' : '0 2px 8px rgba(0,0,0,0.08)'};
+  padding: 1rem;
   cursor: pointer;
-`;
-
-const TemplateAdd = styled(Template)`
-  border: 2px dashed #aaa;
-  font-size: 24px;
-  color: #aaa;
-`;
-
-const ButtonWrapper = styled.div`
-  width: 100%;
-  max-width: 900px;
+  transition: 0.2s;
+  text-align: center;
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 40px;
-  margin-bottom: 60px;
-`;
-
-const Button = styled.button`
-  color: white;
-  background-color: #146c94;
-  border: 1px solid #146c94;
-  border-radius: 20px;
-  font-size: 1rem;
-  cursor: pointer;
-  text-decoration: none;
-  padding: 8px 20px;
+  flex-direction: column;
+  align-items: center;
 
   &:hover {
-    color: #146c94;
-    background-color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 `;
 
-const SelectedTemplateContainer = styled.div`
-  position: fixed;  // 페이지 전체에서 고정 위치
-  top: 50%;  // 화면 세로 가운데
-  left: 50%;  // 화면 가로 가운데
-  transform: translate(-50%, -50%);  // 정확하게 가운데 정렬
-  width: 80%;  // 원하는 너비
-  max-width: 900px;
-  height: 70%;
-  max-height: 900px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.9);  // 배경색을 반투명하게
-  border-radius: 10px;
-  z-index: 100;  // 다른 요소들 위에 표시되도록
-  display: ${(props) => (props.display === 'flex' ? 'flex' : 'none')};
-  justify-content: center;  // 내용이 가로로 가운데 정렬
-  align-items: center;  // 내용이 세로로 가운데 정렬
+const TemplateImage = styled.img`
+  width: 100%;
+  height: 240px;
+  object-fit: contain;
+  border-radius: 12px;
+  background-color: #f6faff;
+  padding: 10px;
 `;
 
-const SelectedTemplateWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const SelectedTemplateImage = styled.div`
-  flex: 1;
+const Label = styled.div`
+  font-weight: 600;
+  font-size: 1rem;
   text-align: center;
+  margin-top: 0.5rem;
 `;
 
-const SelectedTemplateDescription = styled.div`
-  flex: 2;
-  padding-left: 20px;
-  text-align: left;
+const SelectedTemplateModal = styled.div`
+  position: fixed;
+  display: ${(props) => (props.show ? 'flex' : 'none')};
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 4vh 2rem;  // ✅ 상단/하단에 여백 확보 (기존: 2rem)
+  overflow-y: auto;
+`;
+
+
+const ModalContent = styled.div`
+  position: relative;
+  background: white;
+  border-radius: 24px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 90%;
+  max-height: 85vh;       // ✅ 전체 모달 높이 제한
+  overflow: hidden;       // ✅ 내부 스크롤 제거
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+`;
+
+
+const ModalImage = styled.img`
+  width: 100%;
+  max-height: 60vh;  // ✅ 화면의 60%까지만 표시
+  object-fit: contain;
+  border-radius: 10px;
+  background: #fafafa;
+  margin-bottom: 1.5rem;
+`;
+
+
+const Description = styled.p`
+  font-size: 1.1rem;
+  color: #444;
+  text-align: center;
+  margin: 1rem 0 1.5rem 0;
+  line-height: 1.6;
+  padding: 0 1rem;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #444;
+  cursor: pointer;
+  z-index: 1001;
+
+  &:hover {
+    color: #146c94;
+  }
+`;
+
+const SelectButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const SelectButton = styled.button`
+  padding: 0.7rem 2rem;
+  border-radius: 10px;
+  border: none;
+  background-color: #146c94;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: white;
+    color: #146c94;
+    border: 1px solid #146c94;
+  }
+`;
+
+const FooterSpacer = styled.div`
+  height: 100px;
 `;
