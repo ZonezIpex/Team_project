@@ -161,9 +161,9 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
     if (typeof langData === 'string') return langData;
     return key ? langData?.[key] || '' : langData || '';
   };
-useEffect(() => {
-  console.log("📦 formData 값 확인:", formData);
-}, [formData]);
+  useEffect(() => {
+    console.log("📦 formData 값 확인:", formData);
+  }, [formData]);
 
   return (
     
@@ -356,10 +356,10 @@ useEffect(() => {
         </InputSection>
 
         <StepButton>
-          <PreButton onClick={() => navigate("/step3Page")}>
+          <PreButton onClick={() => navigate("/step3page")}>
             {getText("prev")}
           </PreButton>
-          <NextButton onClick={() => navigate("/step5Page")}>
+          <NextButton onClick={() => navigate("/generating")}>
             {getText("next")}
           </NextButton>
         </StepButton>
@@ -477,6 +477,7 @@ const Line = styled.div`
 `;
 
 const InputSection = styled.div`
+  width: 850px;
   background-color: white;
   padding: 0 20px 20px 20px;
   border-radius: 20px;
@@ -507,7 +508,7 @@ const InfoSection = styled.div`
 const PhotoBox = styled.div`
   width: 120px;
   height: 150px;
-  border: 2px dashed #aaa;
+  border: 2px solid #aaa;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -515,6 +516,7 @@ const PhotoBox = styled.div`
 `;
 
 const ResumeInput = styled.div`
+  width: 830px;
   background-color: white;
   padding: 20px 30px;
   border-radius: 20px;
