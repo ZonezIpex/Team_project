@@ -66,6 +66,28 @@ export default function Step3Page({ language, onChangeLanguage, formData, setLan
     // Step4로 이동
     navigate("/step4Page");
   };
+  
+
+const StyledSelect = styled.select`
+  flex: 1;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  margin-right: 10px;
+`;
+
+const Select = React.memo(({ options = [], ...props }) => (
+  <StyledSelect {...props}>
+    <option value="">선택</option>
+    {options.map((opt) => (
+      <option key={opt} value={opt}>
+        {opt}
+      </option>
+    ))}
+  </StyledSelect>
+));
 
   return (
     <PageWrapper>
@@ -95,7 +117,6 @@ export default function Step3Page({ language, onChangeLanguage, formData, setLan
             language={language}
             value={education}
             onChange={setLocalEducation}
-            fieldKeys={["school", "major", "period", "degree"]}
           />
 
           {/* 경력 */}
@@ -148,6 +169,16 @@ export default function Step3Page({ language, onChangeLanguage, formData, setLan
     </PageWrapper>
   );
 }
+
+const StyledSelect = styled.select`
+  flex: 1;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  margin-right: 10px;
+`;
 
 // Styled-components
 const PageWrapper = styled.div`

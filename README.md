@@ -5,6 +5,14 @@
 2. npm install styled-components
 3. npm install lucide-react
 
+## 5월 17일
+- step4Page 디자인
+- step4Page 영문
+- form 구성 변경
+
+## 5월 15일
+- step3Page military처럼 다 세분화 (component 제작)
+
 ## 5월 14일
 - step4Page 디자인 구성(테이블로?)
 - step4Page 학력, 경력, 자격증, 외국어능력 부분 정리

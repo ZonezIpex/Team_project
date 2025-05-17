@@ -179,18 +179,35 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
 
           <MilitarySection>
             <MilitaryTitle>{text.military[language]}</MilitaryTitle>
-            <InputRow>
-              <Input
-                type="text"
-                placeholder="복무기간"
-                value={formData.military?.servicePeriod || ""}
-                onChange={(e) =>
-                  handleFormDataChange({
-                    ...formData,
-                    military: { ...formData.military, servicePeriod: e.target.value },
-                  })
-                }
-              />
+            <InputRow><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                <Input
+                  type="date"
+                  value={formData.military?.serviceStart || ""}
+                  onChange={(e) =>
+                    handleFormDataChange({
+                      ...formData,
+                      military: {
+                        ...formData.military,
+                        serviceStart: e.target.value,
+                      },
+                    })
+                  }
+                />
+                ~
+                <Input
+                  type="date"
+                  value={formData.military?.serviceEnd || ""}
+                  onChange={(e) =>
+                    handleFormDataChange({
+                      ...formData,
+                      military: {
+                        ...formData.military,
+                        serviceEnd: e.target.value,
+                      },
+                    })
+                  }
+                />
+              </div>
               <Input
                 type="text"
                 placeholder="군별"
@@ -237,8 +254,13 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
                 }
               >
                 <option value="">병역여부</option>
-                <option value="예">예</option>
-                <option value="아니오">아니오</option>
+                <option value="미필">미필</option>
+                <option value="현역필">현역필</option>
+                <option value="방위필">방위필</option>
+                <option value="공익익">공익</option>
+                <option value="면제">면제</option>
+                <option value="직업군인">직업군인</option>
+                <option value="단기사병">단기사병</option>
               </Select>
 
               <Select
@@ -251,8 +273,8 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
                 }
               >
                 <option value="">보훈대상</option>
-                <option value="예">예</option>
-                <option value="아니오">아니오</option>
+                <option value="대상">대상</option>
+                <option value="비대상">비대상</option>
               </Select>
             </InputRow>
           </MilitarySection>

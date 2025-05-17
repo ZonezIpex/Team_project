@@ -97,6 +97,24 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
         military: "Military Service",
       },
     },
+    nullText:{
+      ko:{
+        education: "입력된 학력 정보가 없습니다.",
+        career: "입력된 경력 정보가 없습니다.",
+        certificate: "입력된 자격증 정보가 없습니다.",
+        language: "입력된 외국어 정보가 없습니다.",
+        military: "입력된 병역 정보가 없습니다.",
+        photo: "사진없음",
+      },
+      en:{
+        education: "No education information has been entered.",
+        career: "No career information has been entered.",
+        certificate: "No certificate information has been entered.",
+        language: "No language skills have been entered.",
+        military: "No military information has been entered.",
+        photo: "No photo",
+      }
+    },
     next: { ko: "다음", en: "Next" },
     prev: { ko: "이전", en: "Previous" },
     title: { ko: "신상 정보 입력", en: "Enter Personal Information" },
@@ -111,8 +129,32 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
     birth: { ko: "생년월일", en: "Date of Birth" },
     address: { ko: "주소", en: "Address" },
     military: { ko: "병역 사항", en: "Military Service" },
-    birth: { ko: "생년월일", en: "Birth" },
-  };
+    militaryService: {ko: "복무기간", en:"Service Period"},
+    militaryBranch: { ko: "군별", en: "Branch" },
+    militaryRank: {ko: "계급", en:"Rank"},
+    militarySpecialty: {ko: "병과", en:"Military Specialty"},
+    militaryServiceStatus: { ko: "병역여부", en: "Service Status" },
+    militaryVeteranStatus: {ko: "보훈대상", en:"Veteran Status"},
+
+    graduationDate: {ko: "졸업일", en:"Graduation Date"},
+    schoolName: {ko: "학교명", en:"School Name"},
+    graduationStatus: {ko: "졸업여부", en:"Graduation Status"},
+    grade: {ko: "성적", en:"Grade"},
+
+    employmentPeriod: {ko:"근무기간", en:"Employment Period"},
+    companyName: {ko:"회사명", en:"Company Name"},
+    finalPosition: {ko:"최종직위", en:"Final Position"},
+    responsibilities: {ko:"담당업무", en:"Responsibilities"},
+
+    dateAcquisition: {ko:"취득일", en:"Date of Acquisition"},
+    eertificateName: {ko:"자격명", en:"Eertificate Name"},
+    Issuer: {ko:"발행처", en:"Issuer"},
+
+    language: {ko:"언어명", en:"Language"},
+    proficiency: {ko:"구사정도", en:"Proficiency"},
+    testName: {ko:"시험명", en:"Test Name"},
+    score: {ko:"점수", en:"Score"},
+  }
 
   const getText = (section, key) => {
     const langData = text[section]?.[language] || text[section]?.ko;
@@ -125,7 +167,7 @@ useEffect(() => {
 
   return (
     
-    <PageWrapper><pre>{JSON.stringify(formData, null, 2)}</pre>
+    <PageWrapper>
 
       <Header language={language} onChangeLanguage={onChangeLanguage} />
       <Container>
@@ -143,19 +185,12 @@ useEffect(() => {
         </Stepper>
 
         <ResumeInput>
-          <PhotoBox onClick={handlePhotoClick}>
+          <PhotoBox>
             {formData.photo ? (
               <PhotoPreview src={formData.photo} alt="Profile" />
             ) : (
-              <label>+ 사진 추가</label>
+              <label>{getText("nullText", "photo")}</label>
             )}
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              onChange={handlePhotoChange}
-              hidden
-            />
           </PhotoBox>
           <InputsColumn>
           {/* */}
@@ -189,75 +224,134 @@ useEffect(() => {
 
         <InputSection>
           <SectionTitle>{getText("sectionTitles", "military")}</SectionTitle>
-          {formData.military ? (
-            <div style={{ marginBottom: "10px" }}>
-              <div>복무기간: {formData.military.servicePeriod || "-"}</div>
-              <div>군별: {formData.military.branch || "-"}</div>
-              <div>계급: {formData.military.rank || "-"}</div>
-              <div>병과: {formData.military.specialty || "-"}</div>
-              <div>병역여부: {formData.military.served || "-"}</div>
-              <div>보훈대상: {formData.military.veteran || "-"}</div>
-            </div>
-          ) : (
-            <div>입력된 병역 정보가 없습니다.</div>
+          {Array.isArray(formData.military) && formData.military.length > 0 ? (
+          <Table>
+            <thead>
+              <tr>
+                <Th>{getText('militaryService')}</Th>
+                <Th>{getText('militaryBranch')}</Th>
+                <Th>{getText('militaryRank')}</Th>
+                <Th>{getText('militarySpecialty')}</Th>
+                <Th>{getText('militaryServiceStatus')}</Th>
+                <Th>{getText('militaryVeteranStatus')}</Th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <Td>
+                  <ValueBox>
+                    {formData.military.serviceStart || "-"} ~ {formData.military.serviceEnd || "-"}
+                  </ValueBox>
+                </Td>
+                <Td><ValueBox>{formData.military.branch || "-"}</ValueBox></Td>
+                <Td><ValueBox>{formData.military.rank || "-"}</ValueBox></Td>
+                <Td><ValueBox>{formData.military.specialty || "-"}</ValueBox></Td>
+                <Td><ValueBox>{formData.military.served || "-"}</ValueBox></Td>
+                <Td><ValueBox>{formData.military.veteran || "-"}</ValueBox></Td>
+              </tr>
+            </tbody>
+          </Table>
+        ) : (
+            <div>{getText("nullText", "military")}</div>
           )}
 
           <SectionTitle>{getText("sectionTitles", "education")}</SectionTitle>
           {Array.isArray(formData.education) && formData.education.length > 0 ? (
-            formData.education.map((row, idx) => (
-              <div key={idx} style={{ marginBottom: "10px" }}>
-                {row.map((col, colIdx) => (
-                  <div key={colIdx}>{col || "-"}</div>
+            <Table>
+              <thead>
+                <tr>
+                  <Th>{getText('graduationDate')}</Th>
+                  <Th>{getText('schoolName')}</Th>
+                  <Th>{getText('graduationStatus')}</Th>
+                  <Th>{getText('grade')}</Th>
+                </tr>
+              </thead>
+              <tbody>
+                {formData.education.map((row, idx) => (
+                  <tr key={idx}>
+                    {row.map((col, colIdx) => (
+                      <Td key={colIdx}><ValueBox>{col || "-"}</ValueBox></Td>
+                    ))}
+                  </tr>
                 ))}
-                <hr style={{ marginTop: "5px", marginBottom: "5px" }} />
-              </div>
-            ))
+              </tbody>
+            </Table>
           ) : (
-            <div>입력된 학력 정보가 없습니다.</div>
+            <div>{getText("nullText", "education")}</div>
           )}
-
 
           <SectionTitle>{getText("sectionTitles", "career")}</SectionTitle>
           {Array.isArray(formData.career) && formData.career.length > 0 ? (
-            formData.career.map((row, idx) => (
-              <div key={idx} style={{ marginBottom: "10px" }}>
-                {row.map((col, colIdx) => (
-                  <div key={colIdx}>{col || "-"}</div>
+            <Table>
+              <thead>
+                <tr>
+                  <Th>{getText('employmentPeriod')}</Th>
+                  <Th>{getText('companyName')}</Th>
+                  <Th>{getText('finalPosition')}</Th>
+                  <Th>{getText('responsibilities')}</Th>
+                </tr>
+              </thead>
+              <tbody>
+                {formData.career.map((row, idx) => (
+                  <tr key={idx}>
+                    {row.map((col, colIdx) => (
+                      <Td key={colIdx}><ValueBox>{col || "-"}</ValueBox></Td>
+                    ))}
+                  </tr>
                 ))}
-                <hr style={{ marginTop: "5px", marginBottom: "5px" }} />
-              </div>
-            ))
+              </tbody>
+            </Table>
           ) : (
-            <div>입력된 경력 정보가 없습니다.</div>
+            <div>{getText("nullText", "career")}</div>
           )}
-
 
           <SectionTitle>{getText("sectionTitles", "certificate")}</SectionTitle>
           {Array.isArray(formData.certificate) && formData.certificate.length > 0 ? (
-            formData.certificate.map((row, idx) => (
-              <div key={idx} style={{ marginBottom: "10px" }}>
-                {row.map((col, colIdx) => (
-                  <div key={colIdx}>{col || "-"}</div>
+            <Table>
+              <thead>
+                <tr>
+                  <Th>{getText('dateAcquisition')}</Th>
+                  <Th>{getText('eertificateName')}</Th>
+                  <Th>{getText('Issuer')}</Th>
+                </tr>
+              </thead>
+              <tbody>
+                {formData.certificate.map((row, idx) => (
+                  <tr key={idx}>
+                    {row.map((col, colIdx) => (
+                      <Td key={colIdx}><ValueBox>{col || "-"}</ValueBox></Td>
+                    ))}
+                  </tr>
                 ))}
-                <hr style={{ marginTop: "5px", marginBottom: "5px" }} />
-              </div>
-            ))
+              </tbody>
+            </Table>
           ) : (
-            <div>입력된 경력 정보가 없습니다.</div>
+            <div>{getText("nullText", "certificate")}</div>
           )}
 
           <SectionTitle>{getText("sectionTitles", "language")}</SectionTitle>
           {Array.isArray(formData.languageSkills) && formData.languageSkills.length > 0 ? (
-            formData.languageSkills.map((row, idx) => (
-              <div key={idx} style={{ marginBottom: "10px" }}>
-                {row.map((col, colIdx) => (
-                  <div key={colIdx}>{col || "-"}</div>
+            <Table>
+              <thead>
+                <tr>
+                  <Th>{getText('language')}</Th>
+                  <Th>{getText('proficiency')}</Th>
+                  <Th>{getText('testName')}</Th>
+                  <Th>{getText('score')}</Th>
+                </tr>
+              </thead>
+              <tbody>
+                {formData.languageSkills.map((row, idx) => (
+                  <tr key={idx}>
+                    {row.map((col, colIdx) => (
+                      <Td key={colIdx}><ValueBox>{col || "-"}</ValueBox></Td>
+                    ))}
+                  </tr>
                 ))}
-                <hr style={{ marginTop: "5px", marginBottom: "5px" }} />
-              </div>
-            ))
+              </tbody>
+            </Table>
           ) : (
-            <div>입력된 경력 정보가 없습니다.</div>
+            <div>{getText("nullText", "language")}</div>
           )}
         </InputSection>
 
@@ -280,6 +374,33 @@ useEffect(() => {
 
 // Styled-components
 // 텍스트 출력용 스타일
+
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+`;
+
+const Th = styled.th`
+  border: 1px solid #ccc;
+  padding: 12px;
+  background-color: #fafafa;
+  text-align: center;
+`;
+
+const Td = styled.td`
+  border: 1px solid #ccc;
+  padding: 12px;
+  text-align: center;
+`;
+
+const ValueBox = styled.div`
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background-color: #fff;
+  color: #333;
+`;
 const TextDisplay = styled.div`
   flex: 1;
   padding: 10px;
@@ -391,7 +512,6 @@ const PhotoBox = styled.div`
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-  cursor: pointer;
 `;
 
 const ResumeInput = styled.div`
