@@ -24,11 +24,17 @@ const resumeDescriptions = [
 export default function Step1Page({ language, onChangeLanguage, selectedTemplate, setSelectedTemplate }) {
   const [showPreview, setShowPreview] = useState(false);
   const navigate = useNavigate();
+  const currentStep = 0;
+
 
   const text = {
     title: {
       ko: "이력서 양식 선택",
       en: "Select Resume Template",
+    },
+    steps: {
+      ko: ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"],
+      en: ["Template", "Personal\nInfo", "Experience", "Edit", "Complete"],
     },
     templateLabel: {
       ko: (n) => `양식 ${n}`,
@@ -62,6 +68,17 @@ export default function Step1Page({ language, onChangeLanguage, selectedTemplate
       <Header language={language} onChangeLanguage={onChangeLanguage} />
       <MainContent>
         <Title>{text.title[language]}</Title>
+
+        <Stepper>
+          {text.steps[language].map((step, index) => (
+            <Step key={step}>
+              <Circle index={index} currentStep={currentStep}>
+                {step}
+              </Circle>
+              {index < text.steps[language].length - 1 && <Line />}
+            </Step>
+          ))}
+        </Stepper>
 
         <TemplateGrid>
           {resumeImages.map((img, index) => (
@@ -250,4 +267,39 @@ const SelectButton = styled.button`
 
 const FooterSpacer = styled.div`
   height: 100px;
+`;
+const Stepper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3rem;
+`;
+
+const Step = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Circle = styled.div`
+  min-width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: ${props => props.index <= props.currentStep ? '#146c94' : 'white'};
+  color: ${props => props.index <= props.currentStep ? 'white' : '#146c94'};
+  border: 3px solid #146c94;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  text-align: center;
+  white-space: pre-line;
+  padding: 5px;
+  box-sizing: border-box;
+`;
+
+const Line = styled.div`
+  width: 30px;
+  height: 5px;
+  background-color: #146c94;
 `;

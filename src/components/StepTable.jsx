@@ -59,7 +59,13 @@ const Input = React.memo((props) => {
 });
 
 const Select = React.memo((props) => {
-  return <StyledSelect {...props} />;
+  return (
+    <StyledSelect {...props}>
+      <option value="">선택</option>
+      <option value="예">예</option>
+      <option value="아니오">아니오</option>
+    </StyledSelect>
+  );
 });
 
 export { Input, Select };
@@ -69,10 +75,12 @@ const columnConfigs = {
   education: {
     ko: ['졸업일', '학교명', '졸업여부', '성적'],
     en: ['Graduation Date', 'School Name', 'Graduation Status', 'Grade'],
+    keys: ['Graduation Date', 'School Name', 'Graduation Status', 'Grade'],
   },
   career: {
     ko: ['회사명', '근무기간', '최종직위', '담당업무'],
     en: ['Company Name', 'Employment Period', 'Final Position', 'Responsibilities'],
+    keys: ['Company Name', 'Employment Period', 'Final Position', 'Responsibilities'],
   },
   certificate: {
     ko: ['종류', '취득일', '발행처'],
@@ -101,15 +109,17 @@ const columnConfigs = {
 };
 
 // 메인 컴포넌트
-const StyledTable = ({ type,
-  inputComponent ,
-  selectComponent ,
+const StyledTable = ({
+  type,
+  inputComponent,
+  selectComponent,
   showMore = false,
   language = 'ko',
   value = [],
-  onChange, }) => {
+  onChange,
+}) => {
   const [rows, setRows] = useState(value.length || 1); // 기본 1줄
-  const safeValue = Array.isArray(value) ? value : [];  
+  const safeValue = Array.isArray(value) ? value : [];
   const labels = Array.isArray(columnConfigs[type]?.[language])
     ? columnConfigs[type][language]
     : [];
@@ -129,14 +139,12 @@ const StyledTable = ({ type,
         : row
     );
 
-    // 새 행이 없을 경우 row 생성
     while (updatedData.length <= rowIndex) {
       updatedData.push(Array(labels.length).fill(""));
     }
 
     onChange?.(updatedData);
   };
-
 
   return (
     <>
@@ -152,8 +160,17 @@ const StyledTable = ({ type,
           {[...Array(rows)].map((_, rowIndex) => (
             <tr key={rowIndex}>
               {labels.map((_, colIndex) => {
-                const name = `${type}_${rowIndex}_${colIndex}`; // 예: career_0_1
-                const Component = colIndex === 2 && type === 'languageSkills' ? selectComponent : inputComponent;
+                const name = `${type}_${rowIndex}_${colIndex}`;
+                let Component = inputComponent;
+
+                // 조건: 특정 열만 select로 처리
+                if (
+                  (type === 'languageSkills' && colIndex === 2) ||
+                  (type === 'military' && (colIndex === 4 || colIndex === 5))
+                ) {
+                  Component = selectComponent;
+                }
+
                 return (
                   <Td key={colIndex}>
                     <Component

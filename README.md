@@ -5,6 +5,19 @@
 2. npm install styled-components
 3. npm install lucide-react
 
+## 5월 14일
+- step4Page 디자인 구성(테이블로?)
+- step4Page 학력, 경력, 자격증, 외국어능력 부분 정리
+- step5Page 양식1대로 구성하기
+
+## 5월 13일
+- formData 꺼 가져오는 중 
+- step2 병역사항 한글자씩만 입력됨 ------------------------------ step2Page 수정 필요
+- step4 step3 부분이 수정이 반영되지 않음 ---------------------- step4Page 확인페이지로 변경
+- step4 수정 필요(step2,3처럼) --> 간단해지는 법 찾는 중------- step4Page 확인페이지로 변경
+- form 수정 필요(select 추가, 목록 변경) ------------------------- 수정 필요
+- 양식에 맞춰서 step5 완성보여주기 ------------------------------ step5Page 제작, 양식 넣기
+
 ## 5월 10일
 - step2 사진 정보도 넘어가도록 해야함(완)
 - step3까지 formData에 props 전달함(완)
