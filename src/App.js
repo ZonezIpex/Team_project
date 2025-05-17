@@ -27,7 +27,7 @@ import Step1Page from './pages/Step1Page';
 import Step2Page from './pages/Step2Page';
 import Step3Page from './pages/Step3Page';
 import Step4Page from './pages/Step4Page';
-import Step5Page from './pages/Step5Page';
+import Step5Page from './pages/Step5'; //
 
 import { AuthProvider } from './contexts/AuthContext';
 

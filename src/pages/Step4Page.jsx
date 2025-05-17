@@ -11,10 +11,6 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
   const militaryRefs = useRef({});
   const currentStep = 3;
 
-  const birthYear = formData.birthYear || '년';
-  const birthMonth = formData.birthMonth || '월';
-  const birthDay = formData.birthDay || '일';
-
   const [education, setLocalEducation] = useState(formData.education || []);
   const [career, setLocalCareer] = useState(formData.career || []);
   const [certificate, setLocalCertificate] = useState(formData.certificate || []);
@@ -83,6 +79,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
     },
     sectionTitles: {
       ko: {
+        personal: "인적 사항",
         education: "학력",
         career: "경력",
         certificate: "자격증",
@@ -90,6 +87,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
         military: "병역 사항",
       },
       en: {
+        personal: "Personal Information",
         education: "Education",
         career: "Career",
         certificate: "Certificates",
@@ -119,6 +117,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
     prev: { ko: "이전", en: "Previous" },
     title: { ko: "신상 정보 입력", en: "Enter Personal Information" },
     inputTitle: { ko: "신상정보", en: "Personal Details" },
+
     photo: { ko: "+ 사진 추가", en: "+ Add Photo" },
     name: { ko: "이름", en: "First Name" },
     nameEn: { ko: "영문 이름", en: "First Name (EN)" },
@@ -128,6 +127,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
     phone: { ko: "전화번호", en: "Phone Number" },
     birth: { ko: "생년월일", en: "Date of Birth" },
     address: { ko: "주소", en: "Address" },
+
     military: { ko: "병역 사항", en: "Military Service" },
     militaryService: {ko: "복무기간", en:"Service Period"},
     militaryBranch: { ko: "군별", en: "Branch" },
@@ -185,41 +185,55 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
         </Stepper>
 
         <ResumeInput>
-          <PhotoBox>
-            {formData.photo ? (
-              <PhotoPreview src={formData.photo} alt="Profile" />
-            ) : (
-              <label>{getText("nullText", "photo")}</label>
-            )}
-          </PhotoBox>
-          <InputsColumn>
-          {/* */}
+          <SectionTitle>{getText("sectionTitles", "personal")}</SectionTitle>
           <InputRow>
-            {getText("surname")}<TextDisplay>{formData.firstName || ""}</TextDisplay>
-            {getText("name")}<TextDisplay>{formData.firstNameEn || ""}</TextDisplay>
-          </InputRow>
-          <InputRow marginTop="10px">
-            {getText("surnameEn")}<TextDisplay>{formData.name || ""}</TextDisplay>
-            {getText("nameEn")}<TextDisplay>{formData.nameEn || ""}</TextDisplay>
-          </InputRow>
-          <InputRow marginTop="10px">
-            {getText("email")}<TextDisplay>{formData.email || ""}</TextDisplay>
-            {getText("phone")}<TextDisplay>{formData.phone || ""}</TextDisplay>
-          </InputRow>
-        </InputsColumn>
+            <PhotoBox>
+              {formData.photo ? (
+                <PhotoPreview src={formData.photo} alt="Profile" />
+              ) : (
+                <label>{getText("nullText", "photo")}</label>
+              )}
+            </PhotoBox>
+              <div style={{display:'flex', flexDirection: 'column', gap: '10px', flex: 1, marginTop:"13px" }}>
+                <LabeledDisplay>
+                  <span>{getText("surname")}</span>
+                  <TextDisplay>{formData.firstName || ""}</TextDisplay>
+                </LabeledDisplay>
+                <LabeledDisplay>
+                  <span>{getText("name")}</span>
+                  <TextDisplay>{formData.name || ""}</TextDisplay>
+                </LabeledDisplay>
+                <LabeledDisplay>
+                  <span>{getText("email")}</span>
+                  <TextDisplay>{formData.email || ""}</TextDisplay>
+                </LabeledDisplay>
+                <LabeledDisplay>
+                  <span>{getText('birth')}</span>
+                  <TextDisplay>{formData.birthYear || ''}</TextDisplay>
+                  <TextDisplay>{formData.birthMonth || ''}</TextDisplay>
+                  <TextDisplay>{formData.birthDay || ''}</TextDisplay>
+                </LabeledDisplay>
+              </div>
 
-          <BirthAddressSection>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              {getText('birth')}
-              <TextDisplay>{birthYear}</TextDisplay>
-              <TextDisplay>{birthMonth}</TextDisplay>
-              <TextDisplay>{birthDay}</TextDisplay>
-            </div>
-            {getText('address')}
-            <AddressSection>
-              <TextDisplay>{formData.address || ""}</TextDisplay>
-            </AddressSection>
-          </BirthAddressSection>
+              <div style={{display:'flex', flexDirection: 'column', gap: '10px', flex: 1, marginTop:"13px" }}>
+                <LabeledDisplay>
+                  <span>{getText("surnameEn")}</span>
+                  <TextDisplay>{formData.firstNameEn || ""}</TextDisplay>
+                </LabeledDisplay>
+                <LabeledDisplay>
+                  <span>{getText("nameEn")}</span>
+                  <TextDisplay>{formData.nameEn || ""}</TextDisplay>
+                </LabeledDisplay>
+                <LabeledDisplay>
+                  <span>{getText("phone")}</span>
+                  <TextDisplay>{formData.phone || ""}</TextDisplay>
+                </LabeledDisplay>
+                <LabeledDisplay>
+                  <span>{getText("address")}</span>
+                  <TextDisplay>{formData.address || ""}</TextDisplay>
+                </LabeledDisplay>
+              </div>
+          </InputRow>
         </ResumeInput>
 
         <InputSection>
@@ -374,7 +388,6 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
 
 // Styled-components
 // 텍스트 출력용 스타일
-
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -487,6 +500,7 @@ const InputSection = styled.div`
 const SectionTitle = styled.h4`
   margin-top: 30px;
   text-align: left;
+  font-size: 1.2rem;
   border-bottom: 1px solid black;
   padding-bottom: 0.3rem;
 `;
@@ -518,7 +532,7 @@ const PhotoBox = styled.div`
 const ResumeInput = styled.div`
   width: 830px;
   background-color: white;
-  padding: 20px 30px;
+  padding: 0 20px 30px 30px;
   border-radius: 20px;
   box-shadow: 3px 3px 10px -3px gray;
   margin-bottom: 30px;
@@ -548,6 +562,12 @@ const BirthTitle = styled.h4`
   margin-bottom: 10px;
   margin-left: 5px;
   text-align: left;
+`;
+
+const LabeledDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
 `;
 
 const BirthAddressSection = styled.div`

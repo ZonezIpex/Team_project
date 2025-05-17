@@ -6,9 +6,9 @@
 3. npm install lucide-react
 
 ## 5월 17일
+- 예외처리
 - step4Page 디자인
-- step4Page 영문
-- form 구성 변경
+- step4Page ->step5Page 로딩화면
 
 ## 5월 15일
 - step3Page military처럼 다 세분화 (component 제작)

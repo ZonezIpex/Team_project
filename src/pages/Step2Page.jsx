@@ -29,8 +29,8 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
       ko: ["이력서\n양식", "신상\n정보", "경력", "수정", "완성"],
       en: ["Template", "Personal\nInfo", "Experience", "Edit", "Complete"],
     },
-    title: { ko: "신상 정보 입력", en: "Enter Personal Information" },
-    inputTitle: { ko: "신상정보", en: "Personal Details" },
+    title: { ko: "인적 사항 입력", en: "Enter Personal Information" },
+    inputTitle: { ko: "인적 사항", en: "Personal Information" },
     photo: { ko: "+ 사진 추가", en: "+ Add Photo" },
     name: { ko: "이름", en: "First Name" },
     nameEn: { ko: "영문 이름", en: "First Name (EN)" },
@@ -77,7 +77,7 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
         </Stepper>
 
         <ResumeInput>
-          <InputTitle>{text.inputTitle[language]}</InputTitle>
+          <SectionTitle>{text.inputTitle[language]}</SectionTitle>
           <InfoSection>
             <PhotoBox onClick={handlePhotoClick}>
               {formData.photo ? (
@@ -361,3 +361,11 @@ const Line = styled.div`
   height: 5px;
   background-color: #146c94;
 `;
+const SectionTitle = styled.h4`
+  margin-top: 10px;
+  text-align: left;
+  font-size: 1.2rem;
+  border-bottom: 1px solid black;
+  padding-bottom: 0.3rem;
+`;
+
