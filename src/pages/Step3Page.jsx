@@ -251,6 +251,7 @@ const InputSection = styled.div`
 const SectionTitle = styled.h4`
   margin-top: 30px;
   text-align: left;
+  font-size: 1.2rem;
   border-bottom: 1px solid black;
   padding-bottom: 0.3rem;
 `;

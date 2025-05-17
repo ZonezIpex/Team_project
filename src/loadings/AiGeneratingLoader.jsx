@@ -43,7 +43,7 @@ function AiGeneratingLoader() {
         <Dot delay="0.2s" />
         <Dot delay="0.4s" />
       </Dots>
-      <Message>AI가 이력서를 생성 중입니다...</Message>
+      <Message>이력서를 생성 중입니다...</Message>
     </LoaderWrapper>
   );
 }
