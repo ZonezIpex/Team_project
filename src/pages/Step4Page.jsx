@@ -113,7 +113,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
         photo: "No photo",
       }
     },
-    next: { ko: "다음", en: "Next" },
+    next: { ko: "이력서 생성", en: "Create Resume" },
     prev: { ko: "이전", en: "Previous" },
     title: { ko: "신상 정보 입력", en: "Enter Personal Information" },
     inputTitle: { ko: "신상정보", en: "Personal Details" },

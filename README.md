@@ -4,8 +4,14 @@
 1. npm install framer-motion
 2. npm install styled-components
 3. npm install lucide-react
-
+ 
 project03
+
+- 스탭3 경력부분에서 추가입력을 위해 + 더 쓰기 누르고 나면 삭제 버튼이 없어서 계속 추가만 가능함 수정필요
+
+- 스탭4: 스탭5로 넘어갈 떄 (ai가 작성중일 때) 새로운 페이지 말고 스탭4위에서 생성중을 표시하고 완성되면 스탭5로 넘어가기
+
+
 ## 5월 18일
 - step5Page 양식1에 맞춰서 디자인
 - 예외처리

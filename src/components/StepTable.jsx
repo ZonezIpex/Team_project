@@ -224,7 +224,7 @@ const StyledTable = ({
 
                         handleCellChange(rowIndex, colIndex, newValue)
                       }}
-                      options={options}  // 여기 옵션 전달 꼭!
+                      options={options}
                       placeholder={
                       type === 'education' && colIndex === 0
                         ? (language === 'ko' ? '예: 2025.02' : 'e.g. 2025.02')
@@ -234,6 +234,8 @@ const StyledTable = ({
                         ? (language === 'ko' ? '예: 2020.02 ~ 2025.02' : 'e.g. 2020.02 ~ 2025.02')
                         : type === 'certificate' && colIndex === 0
                         ? (language === 'ko' ? '예: 2020.02' : 'e.g. 2020.02')
+                        : type === 'languageSkills' && colIndex === 3
+                        ? (language === 'ko' ? '예: 70/100 또는 700/1000' : 'e.g. 70/100 or 700/1000')
                         :undefined
                       }
                     />

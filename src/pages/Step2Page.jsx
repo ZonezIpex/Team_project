@@ -99,8 +99,8 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
                 <Input
                   type="text"
                   placeholder={text.name[language]}
-                  value={formData.firstName || ""}
-                  onChange={(e) => handleFormDataChange({ ...formData, firstName: e.target.value })}
+                  value={formData.name || ""}
+                  onChange={(e) => handleFormDataChange({ ...formData, name: e.target.value })}
                 />
                 <Input
                   type="text"
@@ -113,8 +113,8 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
                 <Input
                   type="text"
                   placeholder={text.surname[language]}
-                  value={formData.name || ""}
-                  onChange={(e) => handleFormDataChange({ ...formData, name: e.target.value })}
+                  value={formData.firstName || ""}
+                  onChange={(e) => handleFormDataChange({ ...formData, firstName: e.target.value })}
                 />
                 <Input
                   type="text"
@@ -257,7 +257,7 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
                 <option value="미필">미필</option>
                 <option value="현역필">현역필</option>
                 <option value="방위필">방위필</option>
-                <option value="공익익">공익</option>
+                <option value="공익">공익</option>
                 <option value="면제">면제</option>
                 <option value="직업군인">직업군인</option>
                 <option value="단기사병">단기사병</option>
