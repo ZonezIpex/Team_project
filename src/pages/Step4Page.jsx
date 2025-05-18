@@ -147,7 +147,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
     responsibilities: {ko:"담당업무", en:"Responsibilities"},
 
     dateAcquisition: {ko:"취득일", en:"Date of Acquisition"},
-    eertificateName: {ko:"자격명", en:"Eertificate Name"},
+    certificateName: {ko:"자격명", en:"Eertificate Name"},
     Issuer: {ko:"발행처", en:"Issuer"},
 
     language: {ko:"언어명", en:"Language"},
@@ -238,7 +238,8 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
 
         <InputSection>
           <SectionTitle>{getText("sectionTitles", "military")}</SectionTitle>
-          {Array.isArray(formData.military) && formData.military.length > 0 ? (
+          {formData.military && 
+  Object.values(formData.military).some(value => value && value.trim() !== "") ? (
           <Table>
             <thead>
               <tr>
@@ -254,7 +255,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
               <tr>
                 <Td>
                   <ValueBox>
-                    {formData.military.serviceStart || "-"} ~ {formData.military.serviceEnd || "-"}
+                    {(formData.military.serviceStart || "-").replace(/-/g, ".")} ~ {(formData.military.serviceEnd || "-").replace(/-/g, ".")}
                   </ValueBox>
                 </Td>
                 <Td><ValueBox>{formData.military.branch || "-"}</ValueBox></Td>
@@ -325,7 +326,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
               <thead>
                 <tr>
                   <Th>{getText('dateAcquisition')}</Th>
-                  <Th>{getText('eertificateName')}</Th>
+                  <Th>{getText('certificateName')}</Th>
                   <Th>{getText('Issuer')}</Th>
                 </tr>
               </thead>

@@ -5,6 +5,8 @@
 2. npm install styled-components
 3. npm install lucide-react
 
+project03
+
 ## 5월 17일
 - 예외처리
 - step4Page 디자인
