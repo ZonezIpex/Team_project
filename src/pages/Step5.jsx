@@ -261,42 +261,38 @@ const ResumePreview = ({  language = 'ko', formData }) => {
               )}
             </PhotoBox>
         <NameSection>
-          <NameKo>{`'바른사나이' ${name}`}</NameKo>
+          <NameKo>{`${firstName} ${name}`}</NameKo>
           <NameEn>{`${nameEn} ${firstNameEn}`}</NameEn>
-          <p>{`${birthYear}.${birthMonth}.${birthDay}`}</p>
-          <p>{phone}</p>
-          <p>{email}</p>
         </NameSection>
       </TopSection>
 
       <Section>
         <SectionTitle>기본사항</SectionTitle>
-        <p>생년월일: {`${birthYear}.${birthMonth}.${birthDay}`}</p>
+        <p>생년월일: {formData.birthYear.length && formData.birthMonth.length && formData.birthDay.length > 0 ? (`${birthYear}.${birthMonth}.${birthDay}`):null}</p>
         <p>전화번호: {phone}</p>
         <p>이메일: {email}</p>
       </Section>
 
-<Section>
-  <SectionTitle>자격증</SectionTitle>
-  {Array.isArray(formData.certificate) && formData.certificate.length > 0 ? (
-    <Table>
-      <RowTitle>
-          <span>{getText('dateAcquisition')}</span>
-          <span>{getText('certificateName')}</span>
-          <span>{getText('Issuer')}</span>
-      </RowTitle>
-        {formData.certificate.map((cert, i) => (
-          <Row key={i}>
-            {cert.map((col, colIdx) => (
-              <Row key={colIdx}><Row>{col || "-"}</Row></Row>
-            ))}
-          </Row>
-        ))}
-    </Table>
-  ) : (
-    <p>{getText("nullText", "certificate")}</p>
-  )}
-</Section>
+      <Section>
+        {Array.isArray(formData.certificate) && formData.certificate.length > 0 ? (
+          <>
+        <SectionTitle>자격증</SectionTitle>
+          <Table>
+            <RowTitle>
+                <span>{getText('dateAcquisition')}</span>
+                <span>{getText('certificateName')}</span>
+                <span>{getText('Issuer')}</span>
+            </RowTitle>
+              {formData.certificate.map((cert, i) => (
+                <Row key={i}>
+                  {cert.map((col, colIdx) => (
+                    <Row key={colIdx}><Row>{col || "-"}</Row></Row>
+                  ))}
+                </Row>
+              ))}
+          </Table></>
+        ) : null}
+      </Section>
 
 
 

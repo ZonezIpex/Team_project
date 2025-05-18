@@ -6,6 +6,10 @@
 3. npm install lucide-react
 
 project03
+## 5월 18일
+- step5Page 양식1에 맞춰서 디자인
+- 예외처리
+- 다른 양식1도도 디자인
 
 ## 5월 17일
 - 예외처리
