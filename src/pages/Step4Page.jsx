@@ -3,9 +3,11 @@ import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router-dom";
-import StyledTable from "../components/StepTable";
+import AiGeneratingLoader from '../loadings/AiGeneratingLoader'; // 경로 예시
+
 
 export default function Step4Page({ language = 'ko', formData, onChangeLanguage, handleFormDataChange }) {
+  const [isGeneratingModalOpen, setIsGeneratingModalOpen] = useState(false);
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
   const militaryRefs = useRef({});
@@ -70,6 +72,37 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
     ),
     [formData, handleFormDataChange]
   );
+
+  const Modal = ({ children, onClose }) => {
+    // 모달 배경 클릭 시 닫히게 (선택사항)
+    const handleOverlayClick = (e) => {
+      if (e.target === e.currentTarget) {
+        onClose && onClose();
+      }
+    };
+
+    return (
+      <ModalOverlay onClick={handleOverlayClick}>
+        {children}
+      </ModalOverlay>
+    );
+  };
+  const handleStartGenerating = () => {
+    setIsGeneratingModalOpen(true);
+    
+    // 3초 후에 모달 닫고 다음 페이지 이동 (GeneratingPage 역할 대신 여기서 처리)
+    setTimeout(() => {
+      setIsGeneratingModalOpen(false);
+      // 필요한 데이터 넘기기
+      const resumeData = {/* Step4Page에서 준비한 데이터 */};
+      navigate('/step5Page', { state: resumeData });
+    }, 3000);
+  };
+
+  const handleGeneratingComplete = () => {
+    setIsGeneratingModalOpen(false);
+    navigate('/step5Page');
+  };
 
   const text = {
     title: { ko: "경력 입력", en: "Enter Experience" },
@@ -366,7 +399,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
               </tbody>
             </Table>
           ) : (
-            <div>{getText("nullText", "language")}</div>
+            <div style={{marginBottom:"30px"}}>{getText("nullText", "language")}</div>
           )}
         </InputSection>
 
@@ -374,9 +407,14 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
           <PreButton onClick={() => navigate("/step3page")}>
             {getText("prev")}
           </PreButton>
-          <NextButton onClick={() => navigate("/generating")}>
+          <NextButton onClick={handleStartGenerating}>
             {getText("next")}
           </NextButton>
+      {isGeneratingModalOpen && (
+        <Modal>
+          <AiGeneratingLoader />
+        </Modal>
+      )}
         </StepButton>
       </Container>
       <Footer language={language} />
@@ -389,6 +427,21 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
 
 // Styled-components
 // 텍스트 출력용 스타일
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  z-index: 999;
+`;
+
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;

@@ -7,8 +7,11 @@ const bounce = keyframes`
 `;
 
 const LoaderWrapper = styled.div`
+  top: 0;
+  left: 0;
   height: 100vh;
-  background: #f2f8ff;
+  width: 100vw;
+  background: rgba(242, 248, 255, 0.9);
   display: flex;
   flex-direction: column;
   justify-content: center;
