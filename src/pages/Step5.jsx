@@ -1,15 +1,85 @@
 import React from "react";
 import styled from "styled-components";
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { useNavigate } from "react-router-dom";
 
 import html2pdf from 'html2pdf.js';
 
-const ResumeWrapper = styled.div`
+const PageWrapper = styled.div`
+  background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  width: 800px;
+`;
+
+const MainContent = styled.div`
+  flex: 1;
+  padding: 2rem;
+  padding-top: 120px;
+  max-width: 1400px;
   margin: auto;
+`;
+
+const Title = styled.h1`
+  font-size: 2.2rem;
+  font-weight: 700;
+  color:rgb(255, 255, 255);
+  text-align: center;
+  margin-bottom: 2rem;
+`;
+
+const FooterSpacer = styled.div`
+  height: 100px;
+`;
+const Stepper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3rem;
+`;
+
+const Step = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Circle = styled.div`
+  min-width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: ${props => props.index <= props.currentStep ? '#146c94' : 'white'};
+  color: ${props => props.index <= props.currentStep ? 'white' : '#146c94'};
+  border: 3px solid #146c94;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  text-align: center;
+  white-space: pre-line;
+  padding: 5px;
+  box-sizing: border-box;
+`;
+
+const Line = styled.div`
+  width: 30px;
+  height: 5px;
+  background-color: #146c94;
+`;
+
+const ResumeWrapper = styled.div`
+  padding: 20px;  
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  width: 794px;
+  min-height: 1123px;
+  height: auto;
   font-family: 'Noto Sans KR', sans-serif;
   color: #333;
+  background-color:white;
+  box-shadow: 3px 3px 10px -3px gray;
 `;
 
 const TopSection = styled.div`
@@ -17,14 +87,6 @@ const TopSection = styled.div`
   padding: 20px;
   background-color: #f5f5f5;
   align-items: center;
-`;
-
-const Photo = styled.img`
-  width: 120px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-right: 20px;
 `;
 
 const NameSection = styled.div`
@@ -54,26 +116,18 @@ const SectionTitle = styled.h2`
 
 const Row = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin-bottom: 5px;
+  text-align:center;
 `;
 
 const RowTitle = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin-bottom: 5px;
   font-size: 1.2rem;
 `;
-
-const DotLevel = styled.span`
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  background-color: ${({ active }) => (active ? "#333" : "#ccc")};
-  border-radius: 50%;
-  margin-right: 5px;
-`;
-
+ 
 const PhotoBox = styled.div`
   width: 120px;
   height: 150px;
@@ -96,34 +150,40 @@ const Table = styled.table`
   margin-bottom: 10px;
 `;
 
-const Th = styled.th`
-  border: 1px solid #ccc;
-  padding: 12px;
-  background-color: #fafafa;
-  text-align: center;
+const LinkText = styled.div`
+  color: white;
+  background-color: #146c94;
+  border: 1px solid #146c94;
+  border-radius: 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 8px 20px;
+
+  &:hover {
+    color: #146c94;
+    background-color: white;
+  }
 `;
 
-const Td = styled.td`
-  border: 1px solid #ccc;
-  padding: 12px;
-  text-align: center;
+const PreButton = styled(LinkText)`
+  margin-left: 30px;
 `;
 
-const ValueBox = styled.div`
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 10px 12px;
-  background-color: #fff;
-  color: #333;
+const NextButton = styled(LinkText)`
+  text-align: left;
+  margin-right: 30px;]
 `;
 
-const Button = styled.div`
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 10px 12px;
-  background-color: #fff;
-  color: #333;
+const StepButton = styled.div`
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
 `;
+
   const text = {
     title: { ko: "경력 입력", en: "Enter Experience" },
     steps: {
@@ -132,15 +192,15 @@ const Button = styled.div`
     },
     sectionTitles: {
       ko: {
-        personal: "인적 사항",
-        education: "학력",
+        personal: "기본 사항",
+        education: "학력 사항",
         career: "경력",
         certificate: "자격증",
         language: "외국어",
         military: "병역 사항",
       },
       en: {
-        personal: "Personal Information",
+        personal: "Personal",
         education: "Education",
         career: "Career",
         certificate: "Certificates",
@@ -166,7 +226,9 @@ const Button = styled.div`
         photo: "No photo",
       }
     },
-    next: { ko: "이력서 생성", en: "Create Resume" },
+    next: { ko: "PDF 다운", en: "PDF DOWNLOAD" },
+
+    next: { ko: "PDF 다운", en: "PDF DOWNLOAD" },
     prev: { ko: "이전", en: "Previous" },
     title: { ko: "신상 정보 입력", en: "Enter Personal Information" },
     inputTitle: { ko: "신상정보", en: "Personal Details" },
@@ -209,7 +271,11 @@ const Button = styled.div`
     score: {ko:"점수", en:"Score"},
   }
 
-const ResumePreview = ({  language = 'ko', formData }) => {
+const ResumePreview = ({  language = 'ko', formData,onChangeLanguage }) => {
+ 
+  const currentStep = 4;
+  const navigate = useNavigate();
+
   const {
     name,
     firstName,
@@ -250,6 +316,22 @@ const ResumePreview = ({  language = 'ko', formData }) => {
   };
 
   return (
+    <PageWrapper>
+      <Header language={language} onChangeLanguage={onChangeLanguage} />
+      <MainContent>
+        <Title>{text.title[language]}</Title>
+
+        <Stepper>
+          {text.steps[language].map((step, index) => (
+            <Step key={step}>
+              <Circle index={index} currentStep={currentStep}>
+                {step}
+              </Circle>
+              {index < text.steps[language].length - 1 && <Line />}
+            </Step>
+          ))}
+        </Stepper>
+        
     <ResumeWrapper>
       <div id="pdf-download" className="toast-editor-viewer">
       <TopSection>
@@ -266,11 +348,12 @@ const ResumePreview = ({  language = 'ko', formData }) => {
         </NameSection>
       </TopSection>
 
+<div style={{padding:'20px'}}>
       <Section>
         <SectionTitle>기본사항</SectionTitle>
-        <p>생년월일: {formData.birthYear.length && formData.birthMonth.length && formData.birthDay.length > 0 ? (`${birthYear}.${birthMonth}.${birthDay}`):null}</p>
-        <p>전화번호: {phone}</p>
-        <p>이메일: {email}</p>
+        <p>{getText('birth')}: {formData.birthYear.length && formData.birthMonth.length && formData.birthDay.length > 0 ? (`${birthYear}.${birthMonth}.${birthDay}`):null}</p>
+        <p>{getText('phone')}: {phone}</p>
+        <p>{getText('email')}: {email}</p>
       </Section>
 
       <Section>
@@ -286,7 +369,7 @@ const ResumePreview = ({  language = 'ko', formData }) => {
               {formData.certificate.map((cert, i) => (
                 <Row key={i}>
                   {cert.map((col, colIdx) => (
-                    <Row key={colIdx}><Row>{col || "-"}</Row></Row>
+                    <span key={colIdx}>{col || "-"}</span>
                   ))}
                 </Row>
               ))}
@@ -294,66 +377,121 @@ const ResumePreview = ({  language = 'ko', formData }) => {
         ) : null}
       </Section>
 
-
-
       <Section>
+        {Array.isArray(formData.education) && formData.education.length > 0 ? (
+          <>
         <SectionTitle>학력사항</SectionTitle>
-        {Array.isArray(education)
-          ? education.map((edu, i) => (
-              <Row key={i}>
-                <span>{edu.period}</span>
-                <span>{edu.school}</span>
-                <span>{edu.major}</span>
-              </Row>
-            ))
-          : null}
-      </Section>
-
-      <Section>
-        <SectionTitle>기술</SectionTitle>
-        {skills.map((skill, i) => (
-          <Row key={i}>
-            <span>{skill.name}</span>
-            <span>
-              {[...Array(5)].map((_, j) => (
-                <DotLevel key={j} active={j < skill.level} />
+          <Table>
+            <RowTitle>
+                <span>{getText('graduationDate')}</span>
+                <span>{getText('schoolName')}</span>
+                <span>{getText('graduationStatus')}</span>
+                <span>{getText('grade')}</span>
+            </RowTitle>
+              {formData.education.map((cert, i) => (
+                <Row key={i}>
+                  {cert.map((col, colIdx) => (
+                    <span key={colIdx}>{col || "-"}</span>
+                  ))}
+                </Row>
               ))}
+          </Table></>
+        ) : null}
+      </Section>
+ 
+      <Section>
+        {Array.isArray(formData.career) && formData.career.length > 0 ? (
+          <>
+        <SectionTitle>{getText('career')}</SectionTitle>
+          <Table>
+            <RowTitle>
+                <span>{getText('employmentPeriod')}</span>
+                <span>{getText('companyName')}</span>
+                <span>{getText('finalPosition')}</span>
+                <span>{getText('responsibilities')}</span>
+            </RowTitle>
+              {formData.career.map((cert, i) => (
+                <Row key={i}>
+                  {cert.map((col, colIdx) => (
+                    <span key={colIdx}>{col || "-"}</span>
+                  ))}
+                </Row>
+              ))}
+          </Table></>
+        ) : null}
+      </Section>
+ 
+      <Section>
+          {formData.military && Object.keys(formData.military).length > 0 ? (
+          <>
+        <SectionTitle>{getText('military')}</SectionTitle>
+          <Table>
+            <RowTitle>
+                <span>{getText('militaryService')}</span>
+                <span>{getText('militaryBranch')}</span>
+                <span>{getText('militaryRank')}</span>
+                <span>{getText('militarySpecialty')}</span>
+                <span>{getText('militaryServiceStatus')}</span>
+                <span>{getText('militaryVeteranStatus')}</span>
+            </RowTitle><Row>
+            <span> 
+              {(formData.military.serviceStart || "-").replace(/-/g, ".")} ~ {(formData.military.serviceEnd || "-").replace(/-/g, ".")}
             </span>
-          </Row>
-        ))}
+            <span>
+              {formData.military.branch || "-"}
+            </span>
+            <span>
+              {formData.military.rank || "-"}
+            </span>
+            <span>
+              {formData.military.specialty || "-"}
+            </span>
+            <span>
+              {formData.military.served || "-"}
+            </span>
+            <span>
+              {formData.military.veteran || "-"}
+            </span></Row>
+          </Table></>
+        ) : null}
       </Section>
-
+ 
       <Section>
-        <SectionTitle>대외활동</SectionTitle>
-        {experience.map((exp, i) => (
-          <Row key={i}>
-            <span>{exp.organization}</span>
-            <span>{exp.period}</span>
-            <span>{exp.description}</span>
-          </Row>
-        ))}
-      </Section>
-
-      <Section>
-        <SectionTitle>경력사항</SectionTitle>
-        {career.map((job, i) => (
-          <Row key={i}>
-            <span>{job.company} ({job.position})</span>
-            <span>{job.period}</span>
-            <span>{job.description}</span>
-          </Row>
-        ))}
+        {Array.isArray(formData.languageSkills) && formData.languageSkills.length > 0 ? (
+          <>
+        <SectionTitle>{getText("language")}</SectionTitle>
+          <Table>
+            <RowTitle>
+                <span>{getText('language')}</span>
+                <span>{getText('proficiency')}</span>
+                <span>{getText('testName')}</span>
+                <span>{getText('score')}</span>
+            </RowTitle>
+              {formData.languageSkills.map((cert, i) => (
+                <Row key={i}>
+                  {cert.map((col, colIdx) => (
+                    <Row key={colIdx}>{col || "-"}</Row>
+                  ))}
+                </Row>
+              ))}
+          </Table></>
+        ) : null}
       </Section>
       </div>
-        <Button
-          variant="outlined"
-          color="warning"
-          sx={{ m: 1 }}
-          onClick={downloadPDF}
-        >
-          PDF Download
-        </Button>
+      </div>
     </ResumeWrapper>
+        <StepButton>
+          <PreButton onClick={() => navigate("/step4page")}>
+            {getText("prev")}
+          </PreButton>
+          <NextButton onClick={downloadPDF}>
+            {getText("next")}
+          </NextButton>
+        </StepButton>
+        <FooterSpacer />
+      </MainContent>
+      <Footer language={language} />
+    </PageWrapper>
   );
 };
 

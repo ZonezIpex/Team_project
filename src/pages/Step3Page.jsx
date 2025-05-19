@@ -242,6 +242,7 @@ const Line = styled.div`
 `;
 
 const InputSection = styled.div`
+  width:850px;
   background-color: white;
   padding: 0 20px 20px 20px;
   border-radius: 20px;

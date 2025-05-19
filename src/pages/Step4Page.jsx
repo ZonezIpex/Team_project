@@ -304,7 +304,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
           )}
 
           <SectionTitle>{getText("sectionTitles", "education")}</SectionTitle>
-          {Array.isArray(formData.education) && formData.education.length > 0 ? (
+          {Array.isArray(formData.education) && formData.education.some(row => row.some(col => col)) ?  (
             <Table>
               <thead>
                 <tr>
@@ -329,7 +329,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
           )}
 
           <SectionTitle>{getText("sectionTitles", "career")}</SectionTitle>
-          {Array.isArray(formData.career) && formData.career.length > 0 ? (
+          {Array.isArray(formData.career) && formData.career.some(row => row.some(col => col)) ? (
             <Table>
               <thead>
                 <tr>
@@ -354,7 +354,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
           )}
 
           <SectionTitle>{getText("sectionTitles", "certificate")}</SectionTitle>
-          {Array.isArray(formData.certificate) && formData.certificate.length > 0 ? (
+          {Array.isArray(formData.certificate) && formData.certificate.some(row => row.some(col => col)) ? (
             <Table>
               <thead>
                 <tr>
@@ -378,7 +378,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
           )}
 
           <SectionTitle>{getText("sectionTitles", "language")}</SectionTitle>
-          {Array.isArray(formData.languageSkills) && formData.languageSkills.length > 0 ? (
+          {Array.isArray(formData.languageSkills) && formData.languageSkills.some(row => row.some(col => col)) ? (
             <Table>
               <thead>
                 <tr>
