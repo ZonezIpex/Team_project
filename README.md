@@ -1,6 +1,5 @@
 <h2>📍이력서 과정 1,2,3,4,5 제작 예정</h2>
 
-<img src="https://ghchart.rshah.org/219138/yejin0117"/>
 📍 설치해야하는 거 📍
 1. npm install framer-motion
 2. npm install styled-components
