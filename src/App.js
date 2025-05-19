@@ -27,6 +27,7 @@ import Step2Page from './pages/Step2Page';
 import Step3Page from './pages/Step3Page';
 import Step4Page from './pages/Step4Page';
 import Step5Page from './pages/Step5'; //
+import AiGeneratingLoader from './loadings/AiGeneratingLoader';
 
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -98,6 +99,10 @@ function App() {
           <Route path="/profilepage" element={<ProfilePage language={language} onChangeLanguage={setLanguage} />} />
 
           {/* 이력서 작성 단계 */}
+          <Route
+            path="/loading" 
+            element={<AiGeneratingLoader
+            language={language}/>}/>
           <Route 
             path="/step1page" 
             element={

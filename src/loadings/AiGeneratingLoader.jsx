@@ -37,8 +37,17 @@ const Message = styled.p`
   font-size: 1.2rem;
   color: #333;
 `;
+const text = {
+    CreatResume: { ko: "이력서를 생성 중입니다...", en: "Creating your resume..." },
+  }
 
-function AiGeneratingLoader() {
+
+function AiGeneratingLoader({language="ko"}) {
+  const getText = (section, key) => {
+    const langData = text[section]?.[language] || text[section]?.ko;
+    if (typeof langData === 'string') return langData;
+    return key ? langData?.[key] || '' : langData || '';
+  };
   return (
     <LoaderWrapper>
       <Dots>
@@ -46,7 +55,7 @@ function AiGeneratingLoader() {
         <Dot delay="0.2s" />
         <Dot delay="0.4s" />
       </Dots>
-      <Message>이력서를 생성 중입니다...</Message>
+      <Message>{getText("CreatResume")}</Message>
     </LoaderWrapper>
   );
 }

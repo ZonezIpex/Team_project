@@ -59,7 +59,7 @@ export default function Step1Page({ language, onChangeLanguage, selectedTemplate
 
   const handleNext = () => {
     if (selectedTemplate) {
-      navigate('/step2page', { state: { selectedTemplate } });
+      navigate('/step2page', { state: { selectedTemplate, language } });
     } else {
       alert('템플릿을 선택해주세요.');
     }
@@ -161,24 +161,6 @@ export default function Step1Page({ language, onChangeLanguage, selectedTemplate
     </PageWrapper>
   );
 }
-
-const ConfirmButton = styled.button`
-  margin: 10px;
-  padding: 0.7rem 2rem;
-  border-radius: 30px;
-  border: none;
-  background-color: #00a86b;
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-
-  &:hover {
-    background: white;
-    color: #00a86b;
-    border: 1px solid #00a86b;
-  }
-`;
 
 const HiddenInput = styled.input`
   display: none;

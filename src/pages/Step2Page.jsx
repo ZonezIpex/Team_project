@@ -57,7 +57,7 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
   const [birthMonth, setBirthMonth] = useState(formData.birthMonth || '월');
   const [birthDay, setBirthDay] = useState(formData.birthDay || '일');
 
-  const handleNext = () => navigate("/step3Page", { state: { formData } });
+  const handleNext = () => navigate("/step3Page", { state: { formData, language } });
 
   return (
     <PageWrapper>

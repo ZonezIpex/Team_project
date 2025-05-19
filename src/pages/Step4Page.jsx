@@ -6,72 +6,12 @@ import { useNavigate } from "react-router-dom";
 import AiGeneratingLoader from '../loadings/AiGeneratingLoader'; // 경로 예시
 
 
-export default function Step4Page({ language = 'ko', formData, onChangeLanguage, handleFormDataChange }) {
+export default function Step4Page({ selectedTemplate, language = 'ko', formData, onChangeLanguage, handleFormDataChange }) {
   const [isGeneratingModalOpen, setIsGeneratingModalOpen] = useState(false);
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
   const militaryRefs = useRef({});
   const currentStep = 3;
-
-  const [education, setLocalEducation] = useState(formData.education || []);
-  const [career, setLocalCareer] = useState(formData.career || []);
-  const [certificate, setLocalCertificate] = useState(formData.certificate || []);
-  const [languageSkills, setLocalLanguageSkills] = useState(formData.languageSkills || []);
-
-  const handlePhotoClick = () => fileInputRef.current?.click();
-
-  const handlePhotoChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        handleFormDataChange({ ...formData, photo: reader.result });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const getYearOptions = () => {
-    const currentYear = new Date().getFullYear();
-    return Array.from({ length: currentYear - 1900 + 1 }, (_, i) => currentYear - i);
-  };
-
-
-  const inputComponent = useCallback(
-    (props) => (
-      <Input
-        {...props}
-        value={formData.military?.[props.name] || ""}
-        onChange={(e) => {
-          const updatedData = {
-            ...formData.military,
-            [props.name]: e.target.value,
-          };
-          handleFormDataChange({ ...formData, military: updatedData });
-        }}
-        ref={(el) => (militaryRefs.current[props.name] = el)}
-      />
-    ),
-    [formData, handleFormDataChange]
-  );
-
-  const selectComponent = useCallback(
-    (props) => (
-      <Select
-        {...props}
-        value={formData.military?.[props.name] || ""}
-        onChange={(e) => {
-          const updatedData = {
-            ...formData.military,
-            [props.name]: e.target.value,
-          };
-          handleFormDataChange({ ...formData, military: updatedData });
-        }}
-        ref={(el) => (militaryRefs.current[props.name] = el)}
-      />
-    ),
-    [formData, handleFormDataChange]
-  );
 
   const Modal = ({ children, onClose }) => {
     // 모달 배경 클릭 시 닫히게 (선택사항)
@@ -95,13 +35,8 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
       setIsGeneratingModalOpen(false);
       // 필요한 데이터 넘기기
       const resumeData = {/* Step4Page에서 준비한 데이터 */};
-      navigate('/step5Page', { state: resumeData });
+      navigate('/step5Page', { state: { selectedTemplate, language } });
     }, 3000);
-  };
-
-  const handleGeneratingComplete = () => {
-    setIsGeneratingModalOpen(false);
-    navigate('/step5Page');
   };
 
   const text = {
@@ -412,7 +347,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
           </NextButton>
       {isGeneratingModalOpen && (
         <Modal>
-          <AiGeneratingLoader />
+          <AiGeneratingLoader selectedTemplate={selectedTemplate} language={language} />
         </Modal>
       )}
         </StepButton>
@@ -592,11 +527,6 @@ const ResumeInput = styled.div`
   margin-bottom: 30px;
 `;
 
-const InputsColumn = styled.div`
-  flex: 1;
-  margin-top: 20px;
-`;
-
 const Input = styled.input`
   width: 100%;
   box-sizing: border-box;
@@ -607,71 +537,10 @@ const Input = styled.input`
   font-size: 14px;
 `;
 
-const InputTitle = styled.h1`
-  margin-top: 0;
-  font-size: 1.2rem;
-`;
-
-const BirthTitle = styled.h4`
-  margin-bottom: 10px;
-  margin-left: 5px;
-  text-align: left;
-`;
-
 const LabeledDisplay = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-`;
-
-const BirthAddressSection = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-top: 20px;
-  width: 100%;
-  max-width: 1000px;
-`;
-
-const AddressSection = styled.div`
-  margin-left: 20px;
-  flex: 1;
-  max-width: 600px;
-`;
-
-const AddressTitle = styled.h4`
-  margin-bottom: 10px;
-  margin-left: 5px;
-  text-align: left;
-`;
-
-const AddressInput = styled(Input)`
-  flex: 1;
-  width: 100%;
-  min-width: 0;
-`;
-
-const MilitarySection = styled.div`
-  width: 100%;
-  overflow-x: auto;
-  max-width: 100%;
-  margin-top: 30px;
-  text-align: left;
-`;
-
-const MilitaryTitle = styled.h4`
-  margin-bottom: 10px;
-  margin-left: 5px;
-`;
-
-const Select = styled.select`
-  flex: 1;
-  padding: 10px 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
-  box-sizing: border-box;
-  margin-right: 10px;
 `;
 
 const LinkText = styled.div`
