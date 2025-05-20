@@ -1,42 +1,95 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-import MainPage from './pages/MainPage'; // ✅ 메인 페이지
-import MyPage from './pages/MyPage'; // ✅ 마이페이지
-import LoginPage from './pages/LoginPage'; // ✅ 로그인 페이지
-import SignupPage from './pages/SignupPage'; // ✅ 회원가입 페이지
-import ProfilePage from './pages/ProfilePage'; // ✅ 프로필 페이지
+import MainPage from './pages/MainPage';
+import MyPage from './pages/MyPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+import ProfilePage from './pages/ProfilePage';
 
-import ReviewList from './pages/ReviewList'; // ✅ 리뷰 리스트 페이지
-import ReviewWrite from './pages/ReviewWrite'; // ✅ 리뷰 작성 페이지
+import ReviewList from './pages/ReviewList';
+import ReviewWrite from './pages/ReviewWrite';
 
-import AdminDashboard from './adminPages/AdminDashboard'; // ✅ 어드민 대시보드 레이아웃
-import DashboardMain from './adminPages/dashboard/Index'; // ✅ 대시보드 본문
-import UsersPage from './adminPages/users/UsersPage'; // ✅ 유저 관리 페이지
-import ReviewsPage from './adminPages/reviews/ReviewsPage'; // ✅ 리뷰 관리 페이지
+import AdminDashboard from './adminPages/AdminDashboard';
+import DashboardMain from './adminPages/dashboard/Index';
+import UsersPage from './adminPages/users/UsersPage';
+import ReviewsPage from './adminPages/reviews/ReviewsPage';
 
-import Error400 from './errorPages/Error400'; // ✅ 에러 페이지들
+import Error400 from './errorPages/Error400';
 import Error401 from './errorPages/Error401';
 import Error403 from './errorPages/Error403';
 import Error404 from './errorPages/Error404';
 import Error500 from './errorPages/Error500';
 import Error503 from './errorPages/Error503';
 
+import GeneratingPage from './pages/GeneratingPage';
 import Step1Page from './pages/Step1Page';
 import Step2Page from './pages/Step2Page';
-import Step3 from './pages/Step3';
-import Step4 from './pages/Step4';
-import Step5 from './pages/Step5';
+import Step3Page from './pages/Step3Page';
+import Step4Page from './pages/Step4Page';
+import Step5Page from './pages/Step5'; //
 
+import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'ko');
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   useEffect(() => {
     localStorage.setItem('language', language);
   }, [language]);
 
+  // 모든 step에서 공유할 formData
+  const [formData, setFormData] = useState({
+    name: '',            // 이름
+    firstName: '',       // 성
+    nameEn: '',          // 영문 이름
+    firstNameEn: '',     // 영문 성
+    email: '',           // 이메일
+    phone: '',           // 전화번호
+    birthYear: '',       // 생년 (년)
+    birthMonth: '',      // 생월 (월)
+    birthDay: '',        // 생일 (일)
+    address: '',         // 주소
+    experience: [],      // 경력 (Array of experiences)
+    education: '',     // 학력
+    career: [],          // 경력
+    certificate: '',     // 자격증
+    skills: [],          // 기술 (Array of skills)
+    military: {          // 군 복무 사항
+      servicePeriod: '',  // 복무 기간
+      branch: '',         // 병과
+      rank: '',           // 계급
+      occupation: '',     // 직책
+      completed: '',      // 복무 완료 여부
+      veteranStatus: '',  // 제대 여부
+    },
+    languageSkills: []   // 외국어 스킬 (Array of languages)
+  });
+  
+  // formData 갱신 함수
+  const handleFormDataChange = (newData) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      ...newData,
+      education: Array.isArray(newData.education)
+        ? newData.education
+        : newData.education
+        ? [newData.education]
+        : prevData.education,
+      military: newData.military
+        ? { ...prevData.military, ...newData.military }
+        : prevData.military,
+      skills: newData.skills || prevData.skills,
+      languageSkills: newData.languageSkills || prevData.languageSkills,
+      experience: newData.experience || prevData.experience,
+    }));
+  };
+
+
+
   return (
+    <AuthProvider>
       <Router>
         <Routes>
           <Route path="/" element={<MainPage language={language} onChangeLanguage={setLanguage} />} />
@@ -45,18 +98,75 @@ function App() {
           <Route path="/signup" element={<SignupPage language={language} onChangeLanguage={setLanguage} />} />
           <Route path="/profilepage" element={<ProfilePage language={language} onChangeLanguage={setLanguage} />} />
 
-          {/* ✅ 이력서 작성 단계 경로들 */}
-          <Route path="/step1page" element={<Step1Page language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/step2page" element={<Step2Page language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/step3" element={<Step3 language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/step4" element={<Step4 language={language} onChangeLanguage={setLanguage} />} />
-          <Route path="/step5" element={<Step5 language={language} onChangeLanguage={setLanguage} />} />
+          {/* 이력서 작성 단계 */}
+          <Route path="/generating" element={<GeneratingPage />} />
+          <Route 
+            path="/step1page" 
+            element={
+              <Step1Page
+                language={language}
+                onChangeLanguage={setLanguage}
+                selectedTemplate={selectedTemplate}
+                setSelectedTemplate={setSelectedTemplate}
+                formData={formData}
+                handleFormDataChange={handleFormDataChange}
+              />
+            } 
+          />
+          <Route 
+            path="/step2page" 
+            element={
+              <Step2Page
+                language={language}
+                onChangeLanguage={setLanguage}
+                selectedTemplate={selectedTemplate}
+                formData={formData}
+                handleFormDataChange={handleFormDataChange}
+              />
+            } 
+          />
+          <Route 
+            path="/step3page" 
+            element={
+              <Step3Page
+                language={language}
+                onChangeLanguage={setLanguage}
+                selectedTemplate={selectedTemplate}
+                formData={formData}
+                handleFormDataChange={handleFormDataChange}
+              />
+            } 
+          />
+          <Route 
+            path="/step4page" 
+            element={
+              <Step4Page
+                language={language}
+                onChangeLanguage={setLanguage}
+                selectedTemplate={selectedTemplate}
+                formData={formData}
+                handleFormDataChange={handleFormDataChange}
+              />
+            } 
+          />
+          <Route 
+            path="/step5page" 
+            element={
+              <Step5Page
+                language={language}
+                onChangeLanguage={setLanguage}
+                selectedTemplate={selectedTemplate}
+                formData={formData}
+                handleFormDataChange={handleFormDataChange}
+              />
+            } 
+          />
 
-          {/* ✅ 리뷰 관련 라우트 추가 (친구 작업 반영) */}
+          {/* 리뷰 */}
           <Route path="/review" element={<ReviewList language={language} onChangeLanguage={setLanguage} />} />
           <Route path="/review/write" element={<ReviewWrite language={language} onChangeLanguage={setLanguage} />} />
 
-          {/* 어드민 라우트 */}
+          {/* 어드민 */}
           <Route path="/admin" element={<AdminDashboard language={language} onChangeLanguage={setLanguage} />}>
             <Route path="dashboard" element={<DashboardMain language={language} />} />
             <Route path="users" element={<UsersPage />} />
@@ -72,7 +182,7 @@ function App() {
           <Route path="*" element={<Error404 />} />
         </Routes>
       </Router>
-
+    </AuthProvider>
   );
 }
 

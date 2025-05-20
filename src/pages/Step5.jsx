@@ -1,67 +1,180 @@
-// src/components/Step5.jsx
 import React from "react";
+import styled from "styled-components";
+import Header from '../components/Header';
+import Footer from '../components/Footer'
+import { useNavigate } from 'react-router-dom';
 
-const Step5 = () => {
-  const sectionStyle = {
-    marginBottom: "20px",
-    padding: "20px",
-    border: "1px solid #ccc",
-    borderRadius: "10px",
-    backgroundColor: "#fff",
-  };
 
+const ResumeWrapper = styled.div`
+  width: 800px;
+  padding: 40px;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #222;
+  background: #fff;
+  display: flex;
+  border: 1px solid #ccc;
+`;
+
+const LeftColumn = styled.div`
+  width: 30%;
+  text-align: center;
+`;
+
+const ProfileImage = styled.img`
+  width: 100px;
+  height: 120px;
+  border-radius: 8px;
+  object-fit: cover;
+`;
+
+const RightColumn = styled.div`
+  width: 70%;
+  padding-left: 20px;
+`;
+
+const NameBox = styled.div`
+  text-align: right;
+  margin-bottom: 20px;
+`;
+
+const Name = styled.h1`
+  font-size: 24px;
+  margin: 0;
+`;
+
+const Slogan = styled.p`
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+`;
+
+const Section = styled.div`
+  margin-bottom: 20px;
+`;
+
+const SectionTitle = styled.h3`
+  font-size: 16px;
+  border-bottom: 1px solid #000;
+  margin-bottom: 8px;
+`;
+
+const Row = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Label = styled.span`
+  font-weight: bold;
+`;
+
+const Table = styled.table`
+  width: 100%;
+  border-spacing: 4px;
+  font-size: 14px;
+
+  td {
+    padding: 4px 0;
+  }
+`;
+
+const Dot = styled.span`
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: ${props => props.filled ? '#000' : '#ccc'};
+  border-radius: 50%;
+  margin-right: 2px;
+`;
+
+const ResumePreview = ({ data }) => {
   return (
-    <div style={{ padding: "30px", maxWidth: "800px", margin: "0 auto" }}>
-      <h2 style={{ textAlign: "center", marginBottom: "30px" }}>5단계: 이력서 미리보기</h2>
+    <ResumeWrapper>
+      <LeftColumn>
+        <ProfileImage src={data.photoUrl || '/default-photo.png'} />
+        <Section>
+          <Label>기본사항</Label>
+          <p>{data.birth} ({data.age}세)</p>
+          <p>{data.phone}</p>
+          <p>{data.email}</p>
+        </Section>
+      </LeftColumn>
 
-      <div style={sectionStyle}>
-        <h3>기본 정보</h3>
-        <p><strong>이름:</strong> 홍길동</p>
-        <p><strong>이메일:</strong> hong@example.com</p>
-        <p><strong>전화번호:</strong> 010-1234-5678</p>
-        <p><strong>주소:</strong> 서울시 강남구</p>
-      </div>
+      <RightColumn>
+        <NameBox>
+          <Slogan>{data.slogan}</Slogan>
+          <Name>{data.name}</Name>
+        </NameBox>
 
-      <div style={sectionStyle}>
-        <h3>학력</h3>
-        <p><strong>학교:</strong> OO대학교 / 컴퓨터공학 / 졸업</p>
-      </div>
+        <Section>
+          <SectionTitle>자격증</SectionTitle>
+          <Table>
+            {data.licenses.map((item, i) => (
+              <tr key={i}>
+                <td>{item.name}</td>
+                <td>{item.year}</td>
+                <td>{item.issuer}</td>
+              </tr>
+            ))}
+          </Table>
+        </Section>
 
-      <div style={sectionStyle}>
-        <h3>경력</h3>
-        <p><strong>회사:</strong> ABC회사 / 프론트엔드 개발자 (2020~2023)</p>
-        <p><strong>업무:</strong> 웹서비스 개발 및 유지보수</p>
-      </div>
+        <Section>
+          <SectionTitle>학력사항</SectionTitle>
+          <Table>
+            {data.education.map((item, i) => (
+              <tr key={i}>
+                <td>{item.period}</td>
+                <td>{item.school}</td>
+                <td>{item.major}</td>
+              </tr>
+            ))}
+          </Table>
+        </Section>
 
-      <div style={sectionStyle}>
-        <h3>자격증</h3>
-        <p>정보처리기사 (2022)</p>
-      </div>
+        <Section>
+          <SectionTitle>기술</SectionTitle>
+          <Table>
+            {data.skills.map((item, i) => (
+              <tr key={i}>
+                <td>{item.name}</td>
+                <td>
+                  {[1, 2, 3, 4, 5].map(level => (
+                    <Dot key={level} filled={level <= item.level} />
+                  ))}
+                </td>
+              </tr>
+            ))}
+          </Table>
+        </Section>
 
-      <div style={sectionStyle}>
-        <h3>외국어</h3>
-        <p>영어 / TOEIC 850점</p>
-      </div>
+        <Section>
+          <SectionTitle>대외활동</SectionTitle>
+          <Table>
+            {data.experience.map((item, i) => (
+              <tr key={i}>
+                <td>{item.name}</td>
+                <td>{item.period}</td>
+                <td>{item.detail}</td>
+              </tr>
+            ))}
+          </Table>
+        </Section>
 
-      {/* 완료 버튼 */}
-      <div style={{ textAlign: "center", marginTop: "30px" }}>
-        <button
-          style={{
-            padding: "12px 30px",
-            fontSize: "16px",
-            borderRadius: "8px",
-            backgroundColor: "#28a745",
-            color: "#fff",
-            border: "none",
-            cursor: "pointer",
-          }}
-          onClick={() => alert("이력서 저장이 완료되었습니다!")}
-        >
-          이력서 완료
-        </button>
-      </div>
-    </div>
+        <Section>
+          <SectionTitle>경력사항</SectionTitle>
+          <Table>
+            {data.career.map((item, i) => (
+              <tr key={i}>
+                <td>{item.company} ({item.position})</td>
+                <td>{item.period}</td>
+                <td>{item.duty}</td>
+              </tr>
+            ))}
+          </Table>
+        </Section>
+      </RightColumn>
+    </ResumeWrapper>
   );
 };
 
-export default Step5;
+export default ResumePreview;

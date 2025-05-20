@@ -1,6 +1,7 @@
+// src/adminPages/users/UsersPage.jsx
 import styled from 'styled-components';
-import { useState } from 'react';
-import { users as userList } from '../../testUserProfile/users';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 
 const Wrapper = styled.div`
@@ -11,8 +12,8 @@ const Wrapper = styled.div`
 
 const TopBar = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 30px;
 `;
 
@@ -20,6 +21,13 @@ const Title = styled.h2`
   font-size: 2rem;
   font-weight: bold;
   color: #333;
+  margin-bottom: 10px;
+`;
+
+const FilterWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
 `;
 
 const SearchInput = styled.input`
@@ -29,6 +37,21 @@ const SearchInput = styled.input`
   border-radius: 8px;
   width: 260px;
   box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+
+`;
+
+const FilterButton = styled.button`
+  padding: 8px 14px;
+  background-color: #e0f7fa;
+  border: 1px solid #00acc1;
+  color: #007c91;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+
+  &:hover {
+    background-color: #b2ebf2;
+  }
 `;
 
 const UserList = styled.div`
@@ -38,7 +61,8 @@ const UserList = styled.div`
 `;
 
 const UserCard = styled.div`
-  background: white;
+  background: ${(props) =>
+    props.role === 'ADMIN' ? '#d0f0c0' : props.isApproved ? 'white' : '#ffe0e0'};
   padding: 16px 20px;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -46,6 +70,7 @@ const UserCard = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
+
 
 const Button = styled.button`
   margin-left: 8px;
@@ -132,11 +157,103 @@ function UsersPage() {
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 8px;
+`;
 
-  const filteredUsers = userList.filter(user =>
-    user.username.toLowerCase().includes(search.toLowerCase()) ||
-    user.email.toLowerCase().includes(search.toLowerCase())
-  );
+const ActionButton = styled.button`
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+`;
+
+const ApproveButton = styled(ActionButton)`
+  background-color: #157aac;
+  color: white;
+`;
+
+const DeleteButton = styled(ActionButton)`
+  background-color: #e74c3c;
+  color: white;
+`;
+
+const RoleButton = styled(ActionButton)`
+  background-color: #f1c40f;
+  color: black;
+`;
+
+function UsersPage() {
+  const [search, setSearch] = useState('');
+  const [userList, setUserList] = useState([]);
+  const [filter, setFilter] = useState('ALL');
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await axios.get('http://sarm-server.duckdns.org:8888/api/user', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUserList(response.data);
+    } catch (err) {
+      console.error('Error fetching users:', err.message);
+    }
+  };
+
+  const approveUser = async (userNo) => {
+    const token = localStorage.getItem('token');
+    try {
+      await axios.post(`http://sarm-server.duckdns.org:8888/api/user/approve-user/${userNo}`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert('승인되었습니다!');
+      fetchUsers();
+    } catch (err) {
+      console.error('Error approving user:', err.message);
+      alert('승인 실패');
+    }
+  };
+
+  const deleteUser = async (userNo) => {
+    const token = localStorage.getItem('token');
+    if (!window.confirm('정말 삭제하시겠습니까?')) return;
+    try {
+      await axios.delete(`http://sarm-server.duckdns.org:8888/api/user/${userNo}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert('삭제되었습니다!');
+      fetchUsers();
+    } catch (err) {
+      console.error('Error deleting user:', err.message);
+      alert('삭제 실패');
+    }
+  };
+
+  const toggleRole = (userNo) => {
+    setUserList(prevList =>
+      prevList.map(user =>
+        user.userNo === userNo
+          ? { ...user, userRole: user.userRole === 'USER' ? 'ADMIN' : 'USER' }
+          : user
+      )
+    );
+  };
+
+  const filteredUsers = userList.filter(user => {
+    const matchesSearch = user.userName.toLowerCase().includes(search.toLowerCase()) || user.userEmail.toLowerCase().includes(search.toLowerCase());
+    const matchesFilter =
+      filter === 'ALL' ||
+      (filter === 'ADMIN' && user.userRole === 'ADMIN') ||
+      (filter === 'USER' && user.userRole === 'USER') ||
+      (filter === 'NOT_APPROVED' && !user.isApproved);
+    return matchesSearch && matchesFilter;
+  });
 
   const handleEditClick = (user) => {
     setSelectedUser(user);
@@ -157,12 +274,18 @@ function UsersPage() {
     <Wrapper>
       <TopBar>
         <Title>회원 관리</Title>
-        <SearchInput
-          type="text"
-          placeholder="이름 또는 이메일 검색"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <FilterWrapper>
+          <FilterButton onClick={() => setFilter('ALL')}>전체</FilterButton>
+          <FilterButton onClick={() => setFilter('ADMIN')}>관리자</FilterButton>
+          <FilterButton onClick={() => setFilter('USER')}>유저</FilterButton>
+          <FilterButton onClick={() => setFilter('NOT_APPROVED')}>미승인</FilterButton>
+          <SearchInput
+            type="text"
+            placeholder="이름 또는 이메일 검색"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </FilterWrapper>
       </TopBar>
 
       <UserList>
@@ -179,6 +302,36 @@ function UsersPage() {
           </UserCard>
         ))}
         {filteredUsers.length === 0 && <div>검색 결과가 없습니다.</div>}
+
+        {filteredUsers.length > 0 ? (
+          filteredUsers.map(user => (
+            <UserCard key={user.userNo} isApproved={user.isApproved} role={user.userRole}>
+              <div>
+                <div><strong>{user.userName}</strong> ({user.userEmail})</div>
+                <div>상태: {user.isApproved ? '승인됨' : '미승인'}</div>
+              </div>
+              <ButtonGroup>
+                {/* ✅ 승인된 사용자만 역할 변경 버튼 보이게 */}
+                {user.isApproved && (
+                  <RoleButton onClick={() => toggleRole(user.userNo)}>
+                    {user.userRole === 'ADMIN' ? '관리자' : '유저'}
+                  </RoleButton>
+                )}
+
+                {/* ✅ 미승인된 사용자만 승인 버튼 보이게 */}
+                {!user.isApproved && (
+                  <ApproveButton onClick={() => approveUser(user.userNo)}>승인</ApproveButton>
+                )}
+
+                {/* ✅ 삭제 버튼은 모두 보이게 */}
+                <DeleteButton onClick={() => deleteUser(user.userNo)}>삭제</DeleteButton>
+              </ButtonGroup>
+            </UserCard>
+          ))
+        ) : (
+          <div>검색 결과가 없습니다.</div>
+        )}
+
       </UserList>
 
       {isModalOpen && (
@@ -197,5 +350,5 @@ function UsersPage() {
     </Wrapper>
   );
 }
-
+}
 export default UsersPage;

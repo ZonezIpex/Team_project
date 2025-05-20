@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import axios from 'axios';
 
 const Wrapper = styled.div`
   background: linear-gradient(to bottom, #79A7D3, #C3DAF5);
@@ -98,15 +99,29 @@ function SignupPage({ language, onChangeLanguage }) {
 
   const t = text[language || 'ko'];
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (password !== confirm) {
       alert(t.mismatch);
       return;
     }
 
-    localStorage.setItem('loggedIn', 'true');
-    localStorage.setItem('username', nickname);
-    navigate('/login'); // 로그인 페이지로 이동
+    const payload = {
+      email,
+      password,
+      name: nickname,  // name을 nickname으로 매핑
+    };
+
+    try {
+      console.log('Sending request to backend...');
+      const response = await axios.post('http://sarm-server.duckdns.org:8888/api/user/register', payload);
+      console.log('Response from server:', response);
+      alert(response.data); // 성공 메시지
+      navigate('/login'); // 로그인 페이지로 이동
+    } catch (error) {
+      console.error('회원가입 실패:', error);
+      console.error('Error details:', error.response?.data);
+      alert('회원가입 실패: ' + (error.response?.data || '서버 오류'));
+    }
   };
 
   return (
