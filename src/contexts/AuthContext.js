@@ -1,32 +1,39 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../api/axios';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState({ loggedIn: false });
+    const [user, setUser] = useState({
+        loggedIn: false,
+        isAdmin: false,
+        username: null
+    });
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        console.log("Sending token in request:", token);
+        // 세션 기반 로그인 여부 확인
+        const checkSession = async () => {
+            try {
+                const res = await api.get('/api/user/data'); // or /api/auth/check
+                const { isAdmin, username } = res.data;
 
-        fetch("http://sarm-server.duckdns.org:8888/api/data", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`  // Bearer 토큰 형식
+                setUser({
+                    loggedIn: true,
+                    isAdmin: !!isAdmin,
+                    username: username || null
+                });
+            } catch (err) {
+                console.log('User is not logged in:', err.message);
+                setUser({
+                    loggedIn: false,
+                    isAdmin: false,
+                    username: null
+                });
             }
-        })
-            .then(response => response.json())
-            .catch(err => console.error("Fetch error:", err));
+        };
 
-
-        if (token) {
-            setUser({ loggedIn: true });
-        } else {
-            setUser({ loggedIn: false }); // 토큰이 없을 경우 상태를 명확히 설정
-        }
+        checkSession();
     }, []);
-
 
     return (
         <AuthContext.Provider value={{ user, setUser }}>
