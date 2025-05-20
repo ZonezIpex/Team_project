@@ -99,8 +99,6 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
       phoneLabel: '연락처',
       homeLabel: '집',
       companyLabel: '회사',
-      footer: `13916 경기도 안양시 동안구 임곡로 29 대림대학교 | 대표전화 : 031-467-4700
-Copyright 학사누 ALL RIGHTS RESERVED`,
     },
     en: {
       title: 'My Page',
@@ -173,7 +171,7 @@ Copyright © HaksaNU ALL RIGHTS RESERVED`,
 
         <FooterText>{t.footer}</FooterText>
       </Content>
-      <Footer />
+      <Footer language={language} />
     </PageWrapper>
   );
 };
