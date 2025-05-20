@@ -3,6 +3,8 @@ import styled from "styled-components";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
 
 const texts = {
   ko: {
@@ -12,8 +14,8 @@ const texts = {
     reviewTitle: "리뷰 제목",
     reviewTitlePlaceholder: "리뷰 제목을 입력하세요 (최대 50자)",
     reviewContent: "리뷰 내용",
-    reviewContentPlaceholder: "리뷰 내용을 입력하세요 (최대 300자)",
-    submit: "제출하기",
+    reviewContentPlaceholder: "리뷰 내용을 입력하세요 (최대 500자)",
+    submit: "등록하기",
     scoreUnit: "점",
   },
   en: {
@@ -23,8 +25,8 @@ const texts = {
     reviewTitle: "Review Title",
     reviewTitlePlaceholder: "Enter review title (max 50 characters)",
     reviewContent: "Review Content",
-    reviewContentPlaceholder: "Enter review content (max 300 characters)",
-    submit: "Submit",
+    reviewContentPlaceholder: "Enter review content (max 500 characters)",
+    submit: "Register",
     scoreUnit: "pts",
   },
 };
@@ -64,6 +66,9 @@ const ReviewWrite = () => {
       fileInputRef.current.value = null;
     }
   };
+
+  const navigate = useNavigate();
+
 
   return (
     <PageWrapper>
@@ -133,7 +138,7 @@ const ReviewWrite = () => {
       <ContentInputSection>
         <Label>{t.reviewContent}</Label>
         <Textarea
-          maxLength={300}
+          maxLength={500}
           placeholder={t.reviewContentPlaceholder}
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -141,9 +146,42 @@ const ReviewWrite = () => {
       </ContentInputSection>
 
       <SubmitSection>{/*제출하기 버튼 및 백엔드 연동 예정이여서 빈 함수 넣음*/}
-  <SubmitButton onClick={() => console.log("제출됨", { title, content, rating })}>
-    {t.submit}
-  </SubmitButton>
+  <SubmitButton
+  onClick={() => {
+    if (!imagePreview) {
+      alert("이미지를 등록해주십시오.");
+      return;
+    }
+    if (rating === 0) {
+      alert("별점을 정해주십시오.");
+      return;
+    }
+    if (title.trim() === "") {
+      alert("제목을 입력해주십시오.");
+      return;
+    }
+    if (content.trim() === "") {
+      alert("내용을 입력해주십시오.");
+      return;
+    }
+
+    const data = {
+      title,
+      content,
+      rating,
+      image: imagePreview,
+    };
+
+    console.log("📤 리뷰 등록 요청 (백엔드 연동 예정)", data);
+    alert("✅ 등록되었습니다."); // ✅ 임시 알림 표시
+    navigate("/review"); // ✅ 알림 확인 후 페이지 이동
+
+    // 나중에 여기에 fetch POST 요청 추가 예정
+    // 예: fetch("/api/reviews", { method: "POST", body: JSON.stringify(data) })
+  }}
+>
+  {t.submit}
+</SubmitButton>
 </SubmitSection>
 
       <Footer language={language} />
@@ -197,17 +235,27 @@ const ImageBox = styled.div`
 
 const RemoveButton = styled.button`
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(0, 0, 0, 0.6);
+  top: 10px;
+  right: 10px;
+  background: #ff4d4f;
   color: white;
   border: none;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  font-size: 20px;
+  font-weight: bold;
   cursor: pointer;
   z-index: 2;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #d9363e;
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
 `;
 
 const PlaceholderText = styled.div`
@@ -296,6 +344,11 @@ const Input = styled.input`
     "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
   border: 3px solid rgb(129, 215, 255);
   border-radius: 8px;  // ✅ 모서리 둥글게
+
+  &:focus {
+    outline: none; /* 기본 포커스 제거 */
+    border-color: rgb(0, 162, 255); /* 원하는 색상 */
+  }
 `;
 
 const Textarea = styled.textarea`
@@ -310,6 +363,11 @@ const Textarea = styled.textarea`
   resize: none;
   border: 3px solid rgb(129, 215, 255);
   border-radius: 8px;  // ✅ 동일하게 둥글게
+
+  &:focus {
+    outline: none; /* 브라우저 기본 포커스 제거 */
+    border-color: rgb(0, 162, 255); /* 원하는 포커스 색으로 */
+  }
 `;
 
 const SubmitSection = styled.div`

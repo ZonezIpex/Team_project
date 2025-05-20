@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import resumeImage from "../assets/이력서이미지.jpg";
 import { useNavigate } from "react-router-dom";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 const TOTAL_PER_TYPE = 12;
 
@@ -58,6 +59,9 @@ const ReviewList = () => {
   const [bottomLikeCountMap, setBottomLikeCountMap] = useState({});
 
   const [selectedReview, setSelectedReview] = useState(null);
+
+  const [offset, setOffset] = useState(0);
+
 
   const text = {
     popular: language === "ko" ? "인기 리뷰" : "Popular",
@@ -132,6 +136,25 @@ const ReviewList = () => {
   );
   const totalPages = Math.ceil(sliderReviews.length / imagesPerPage);
 
+  useEffect(() => {
+    const cardWidth = 240 + 16; // 카드 너비 + gap
+    setOffset(page * cardWidth * imagesPerPage);
+  }, [page, imagesPerPage]);
+
+  const renderStars = (rating) => {
+    const stars = [];
+    const full = Math.floor(rating);
+    const half = rating % 1 >= 0.5;
+    const empty = 5 - full - (half ? 1 : 0);
+
+    for (let i = 0; i < full; i++) stars.push(<FaStar color="rgb(255, 230, 0)" key={`full-${i}`} />);
+    if (half) stars.push(<FaStarHalfAlt color="rgb(255, 230, 0)" key="half" />);
+    for (let i = 0; i < empty; i++) stars.push(<FaRegStar color="#ccc" key={`empty-${i}`} />);
+
+    return stars;
+  };
+
+
   return (
     <PageWrapper>
       <Header onChangeLanguage={setLanguage} language={language} />
@@ -157,14 +180,19 @@ const ReviewList = () => {
               
                 <SliderCardTextWrapper>
                   <HeartRow>
-                  <HeartButton onClick={(e) => {
-  e.stopPropagation(); // 카드 클릭 방지
-  toggleSliderLike(review.id);
-}}>
-  {sliderLikedMap[review.id] ? <FaHeart /> : <FaRegHeart />}
-</HeartButton>
-                    <LikeCountText>{sliderLikedMap[review.id] ? "1명" : "0명"}</LikeCountText>
-                  </HeartRow>
+  <HeartButton onClick={(e) => {
+    e.stopPropagation(); // 클릭 이벤트 막기
+    toggleSliderLike(review.id);
+  }}>
+    {sliderLikedMap[review.id] ? <FaHeart /> : <FaRegHeart />}
+  </HeartButton>
+  <LikeCountText>{sliderLikedMap[review.id] ? "1명" : "0명"}</LikeCountText>
+  <RatingWrapper>
+    {renderStars(4.5)} {/* ⭐ 별 렌더링 */}
+    <RatingValue>4.5</RatingValue> {/* 🔢 점수 텍스트 */}
+  </RatingWrapper>
+</HeartRow>
+
               
                   <CardTitle>
   {review.title.length > 10
@@ -193,17 +221,19 @@ const ReviewList = () => {
               
               <CardRightContent>
                 <HeartRow>
-                <HeartButton onClick={(e) => {
-  e.stopPropagation(); // 카드 클릭 이벤트 방지
-  toggleBottomLike(review.id);
-}}>
-  {bottomLikedMap[review.id] ? <FaHeart /> : <FaRegHeart />}
-</HeartButton>
+  <HeartButton onClick={(e) => {
+    e.stopPropagation(); // 클릭 이벤트 막기
+    toggleBottomLike(review.id);
+  }}>
+    {sliderLikedMap[review.id] ? <FaHeart /> : <FaRegHeart />}
+  </HeartButton>
+  <LikeCountText>{sliderLikedMap[review.id] ? "1명" : "0명"}</LikeCountText>
+  <RatingWrapper>
+    {renderStars(4.5)} {/* ⭐ 별 렌더링 */}
+    <RatingValue>4.5</RatingValue> {/* 🔢 점수 텍스트 */}
+  </RatingWrapper>
+</HeartRow>
 
-                  <LikeCountText>
-                    {bottomLikedMap[review.id] ? "1명" : "0명"}
-                  </LikeCountText>
-                </HeartRow>
             
                 <BottomCardTextWrapper>
   <CardTitle>
@@ -339,8 +369,9 @@ const ImageGrid = styled.div`
   display: flex;
   gap: 1rem;
   flex-wrap: nowrap;
-  transition: transform 0.4s ease-in-out;
   width: calc(240px * ${props => props.perPage} + 1rem * (${props => props.perPage} - 1));
+  transform: translateX(${props => `-${props.offset}px`});
+  transition: transform 0.4s ease-in-out; /* ✅ 부드럽게 이동 */
 `;
 
 const ImageCard = styled.div`
@@ -394,6 +425,25 @@ const LikeCountText = styled.span`
   font-size: 0.85rem;
   color: rgb(0, 0, 0);
   margin-top: 0.2rem;
+`;
+
+const RatingWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-left: 0.4rem;
+`;
+
+const RatingValue = styled.span`
+  font-size: 0.85rem;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+`;
+
+const RatingText = styled.span`
+  font-size: 0.85rem;
+  color: rgb(255, 230, 0);
+  margin-left: 0.3rem;
 `;
 
 // 상단 슬라이더용 텍스트 영역
