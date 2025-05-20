@@ -461,8 +461,8 @@ const ScrollableList = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #64a8f0;
-    border-radius: 8px;
+    background-color: rgb(129, 215, 255);
+    border-radius: 16px;
     border: 4px solid transparent;
     background-clip: content-box;
     transition: background-color 0.2s ease;
@@ -552,13 +552,36 @@ const ModalContent = styled.div`
   border-radius: 16px;
   max-width: 600px;
   width: 90%;
+  max-height: 90vh; /* ✅ 최대 높이 제한 */
+  overflow-y: auto;  /* ✅ 내부 스크롤 가능하게 */
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
   text-align: center;
+  box-sizing: border-box; /* ✅ 중요 */
 
   img {
     width: 100%;
     height: auto;
     margin-bottom: 1rem;
+  }
+
+  /* ✅ 스크롤바 꾸미기 */
+  &::-webkit-scrollbar {
+    width: 12px;                  /* 스크롤바 너비 */
+  }
+
+  &::-webkit-scrollbar-track {
+    background:rgb(255, 255, 255);          /* 트랙 배경색 */
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgb(129, 215, 255);       /* 스크롤바 색 */
+    border-radius: 12px;
+    border: 1.5px solid white;      /* 안쪽 간격처럼 보이게 */
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #217dbb;          /* hover 시 색 변경 */
   }
 `;
 
