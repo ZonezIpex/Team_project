@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -10,8 +10,10 @@ import resume3 from "../assets/resume3.png";
 import resume4 from "../assets/resume4.png";
 import resume5 from "../assets/resume5.png";
 import resume6 from "../assets/resume6.png";
+import resume7 from "../assets/resume7.png";
+import resume8 from "../assets/resume8.png";
 
-const resumeImages = [resume1, resume2, resume3, resume4, resume5, resume6];
+const resumeImages = [resume1, resume2, resume3, resume4, resume5, resume6, resume7, resume8];
 const resumeDescriptions = [
   "깔끔한 흑백 레이아웃으로 기본 정보 위주로 구성된 템플릿입니다.",
   "파란색 강조 포인트가 있는 이력서로, 경력 중심에 적합합니다.",
@@ -21,7 +23,7 @@ const resumeDescriptions = [
   "경력과 자격 사항을 강조한 실무형 이력서 템플릿입니다.",
 ];
 
-export default function Step1Page({ language, onChangeLanguage, selectedTemplate, setSelectedTemplate }) {
+export default function Step1Page({ language, onChangeLanguage, selectedTemplate, setSelectedTemplate, formData, handleFormDataChange }) {
   const [showPreview, setShowPreview] = useState(false);
   const navigate = useNavigate();
   const currentStep = 0;
@@ -57,11 +59,34 @@ export default function Step1Page({ language, onChangeLanguage, selectedTemplate
 
   const handleNext = () => {
     if (selectedTemplate) {
-      navigate('/step2page', { state: { selectedTemplate } });
+      navigate('/step2page', { state: { selectedTemplate, language } });
     } else {
       alert('템플릿을 선택해주세요.');
     }
   };
+
+    const fileInputRef = useRef(null);
+
+    const handleButtonClick = () => {
+      fileInputRef.current.click();
+    };
+
+    const handleFileChange = (e) => {
+      const file = e.target.files[0];
+      if (file && file.type !== "application/pdf") {
+        alert("PDF 파일만 업로드할 수 있습니다.");
+        e.target.value = ""; // 잘못된 파일 초기화
+        return;
+      } else {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setSelectedTemplate(reader.result);
+            setShowPreview(true);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
 
   return (
     <PageWrapper>
@@ -80,6 +105,16 @@ export default function Step1Page({ language, onChangeLanguage, selectedTemplate
           ))}
         </Stepper>
 
+        <ButtonContainer>
+          <AddButton onClick={handleButtonClick}>PDF파일 첨부</AddButton>
+          <HiddenInput
+            type="file"
+            accept="application/pdf"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+          />
+        </ButtonContainer>
+
         <TemplateGrid>
           {resumeImages.map((img, index) => (
             <TemplateCard
@@ -96,9 +131,24 @@ export default function Step1Page({ language, onChangeLanguage, selectedTemplate
         <SelectedTemplateModal show={showPreview}>
           <ModalContent>
             <CloseButton onClick={handleClosePreview}>×</CloseButton>
-            <ModalImage src={resumeImages[selectedTemplate - 1]} alt={`Template ${selectedTemplate}`} />
-            <Label>{text.templateLabel[language](selectedTemplate)}</Label>
-            <Description>{resumeDescriptions[selectedTemplate - 1]}</Description>
+            {/* PDF가 있으면 PDF 미리보기 */}
+            {typeof selectedTemplate === "string" && selectedTemplate.startsWith("data:application/pdf") ? (
+              <embed
+                src={selectedTemplate}
+                type="application/pdf"
+                width="100%"
+                height="600px"
+              />
+            ) : selectedTemplate ? (
+              // 이미지 템플릿 미리보기
+              <>
+                <ModalImage src={resumeImages[selectedTemplate - 1]} alt={`Template ${selectedTemplate}`} />
+                <Label>{text.templateLabel[language](selectedTemplate)}</Label>
+                <Description>{resumeDescriptions[selectedTemplate - 1]}</Description>
+              </>
+            ) : (
+              <Description>선택된 템플릿이나 첨부 파일이 없습니다.</Description>
+            )}
             <SelectButtonContainer>
               <SelectButton onClick={handleNext}>{text.select[language]}</SelectButton>
             </SelectButtonContainer>
@@ -111,6 +161,33 @@ export default function Step1Page({ language, onChangeLanguage, selectedTemplate
     </PageWrapper>
   );
 }
+
+const HiddenInput = styled.input`
+  display: none;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const AddButton = styled.button`
+  margin: 10px;
+  padding: 0.7rem 2rem;
+  border-radius: 30px;
+  border: none;
+  background-color: #146c94;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: right;
+
+  &:hover {
+    background: white;
+    color: #146c94;
+  }
+`;
 
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
@@ -130,7 +207,7 @@ const MainContent = styled.div`
 const Title = styled.h1`
   font-size: 2.2rem;
   font-weight: 700;
-  color: #0d2f45;
+  color:rgb(255, 255, 255);
   text-align: center;
   margin-bottom: 2rem;
 `;

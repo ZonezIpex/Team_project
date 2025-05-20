@@ -47,6 +47,22 @@ const AddRowButton = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #0d5477;
+  }
+`;
+
+const DeleteRowButton = styled.button`
+  font-weight:bold;
+  text-align: center;
+  margin-top: 10px;
+  margin-left: 10px;
+  padding: 6px 12px;
+  color: rgb(203, 73, 73);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
   font-size: 0.9rem;
 
   &:hover {
@@ -96,18 +112,6 @@ const columnConfigs = {
     ko: ['복무기간', '군별', '계급', '병과', '병역여부', '보훈대상'],
     en: ['Service Period', 'Branch', 'Rank', 'Military Specialty', 'Service Status', 'Veteran Status'],
   },
-  // skills: {
-  //   ko: ['기술명', '수준', '설명'],
-  //   en: ['Skill Name', 'Level', 'Description'],
-  // },
-  // awards: {
-  //   ko: ['수상명', '일자', '기관'],
-  //   en: ['Award Name', 'Date', 'Organization'],
-  // },
-  // reference: {
-  //   ko: ['이름', '연락처', '관계'],
-  //   en: ['Name', 'Contact', 'Relation'],
-  // },
 };
 
 // 메인 컴포넌트
@@ -120,31 +124,44 @@ const StyledTable = ({
   value = [],
   onChange,
 }) => {
-  const [rows, setRows] = useState(value.length || 1); // 기본 1줄
   const safeValue = Array.isArray(value) ? value : [];
-  const labels = Array.isArray(columnConfigs[type]?.[language])
-    ? columnConfigs[type][language]
-    : [];
 
+  // 초기값이 빈 배열이면 기본 한 행 생성
+  const [internalValue, setInternalValue] = useState(() => {
+    if (!Array.isArray(value) || value.length === 0) {
+      return [Array(columnConfigs[type][language].length).fill("")];
+    }
+    return value;
+  });
+
+  // 부모 value가 변경되면 내부 값 동기화
+  React.useEffect(() => {
+    if (Array.isArray(value) && value.length > 0) {
+      setInternalValue(value);
+    }
+  }, [value]);
+
+  const labels = Array.isArray(columnConfigs[type]?.[language]) ? columnConfigs[type][language] : [];
+
+  // 행 추가
   const handleAddRow = () => {
-    const newData = [...value, Array(labels.length).fill("")]; // 새 행 추가
-    setRows((prev) => prev + 1);
-    onChange?.(newData); // 상위에 전달
+    const newData = [...internalValue, Array(labels.length).fill("")];
+    setInternalValue(newData);
+    onChange?.(newData);
+  };
+
+  // 행 삭제 (최소 1줄 유지하지 않음)
+  const handleDeleteRow = (rowIndex) => {
+    const newData = internalValue.filter((_, idx) => idx !== rowIndex);
+    setInternalValue(newData);
+    onChange?.(newData);
   };
 
   const handleCellChange = (rowIndex, colIndex, newValue) => {
-    const currentData = Array.isArray(value) ? value : [];
-
-    const updatedData = currentData.map((row, r) =>
-      r === rowIndex
-        ? row.map((cell, c) => (c === colIndex ? newValue : cell))
-        : row
+    const updatedData = internalValue.map((row, r) =>
+      r === rowIndex ? row.map((cell, c) => (c === colIndex ? newValue : cell)) : row
     );
-
-    while (updatedData.length <= rowIndex) {
-      updatedData.push(Array(labels.length).fill(""));
-    }
-
+    setInternalValue(updatedData);
     onChange?.(updatedData);
   };
 
@@ -159,12 +176,19 @@ const StyledTable = ({
           </tr>
         </thead>
         <tbody>
-          {[...Array(rows)].map((_, rowIndex) => (
-            <tr key={rowIndex}>
-              {labels.map((_, colIndex) => {
-                const name = `${type}_${rowIndex}_${colIndex}`;
-                let Component = inputComponent;
-                let options = [];
+          {internalValue.length === 0 ? (
+            <tr>
+              <Td colSpan={labels.length + 1} style={{ textAlign: 'center', color: '#999' }}>
+                {language === 'ko' ? '데이터가 없습니다.' : 'No data available.'}
+              </Td>
+            </tr>
+          ) : (
+            internalValue.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+      {labels.map((_, colIndex) => {
+        const name = `${type}_${rowIndex}_${colIndex}`;
+        let Component = inputComponent;
+        let options = [];
 
                 // 조건: 특정 열만 select로 처리
  
@@ -224,7 +248,7 @@ const StyledTable = ({
 
                         handleCellChange(rowIndex, colIndex, newValue)
                       }}
-                      options={options}  // 여기 옵션 전달 꼭!
+                      options={options}
                       placeholder={
                       type === 'education' && colIndex === 0
                         ? (language === 'ko' ? '예: 2025.02' : 'e.g. 2025.02')
@@ -234,14 +258,18 @@ const StyledTable = ({
                         ? (language === 'ko' ? '예: 2020.02 ~ 2025.02' : 'e.g. 2020.02 ~ 2025.02')
                         : type === 'certificate' && colIndex === 0
                         ? (language === 'ko' ? '예: 2020.02' : 'e.g. 2020.02')
+                        : type === 'languageSkills' && colIndex === 3
+                        ? (language === 'ko' ? '예: 70/100 또는 700/1000' : 'e.g. 70/100 or 700/1000')
                         :undefined
                       }
                     />
-                  </Td>
+                    </Td>
                 );
               })}
+                  <DeleteRowButton onClick={() => handleDeleteRow(rowIndex)}>🗑️</DeleteRowButton>
             </tr>
-          ))}
+          ))
+          )}
         </tbody>
       </Table>
 
