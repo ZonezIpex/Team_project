@@ -3,73 +3,41 @@ import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router-dom";
-import StyledTable from "../components/StepTable";
+import AiGeneratingLoader from '../loadings/AiGeneratingLoader'; // 경로 예시
 
-export default function Step4Page({ language = 'ko', formData, onChangeLanguage, handleFormDataChange }) {
+
+export default function Step4Page({ selectedTemplate, language = 'ko', formData, onChangeLanguage, handleFormDataChange }) {
+  const [isGeneratingModalOpen, setIsGeneratingModalOpen] = useState(false);
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
   const militaryRefs = useRef({});
   const currentStep = 3;
 
-  const [education, setLocalEducation] = useState(formData.education || []);
-  const [career, setLocalCareer] = useState(formData.career || []);
-  const [certificate, setLocalCertificate] = useState(formData.certificate || []);
-  const [languageSkills, setLocalLanguageSkills] = useState(formData.languageSkills || []);
+  const Modal = ({ children, onClose }) => {
+    // 모달 배경 클릭 시 닫히게 (선택사항)
+    const handleOverlayClick = (e) => {
+      if (e.target === e.currentTarget) {
+        onClose && onClose();
+      }
+    };
 
-  const handlePhotoClick = () => fileInputRef.current?.click();
-
-  const handlePhotoChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        handleFormDataChange({ ...formData, photo: reader.result });
-      };
-      reader.readAsDataURL(file);
-    }
+    return (
+      <ModalOverlay onClick={handleOverlayClick}>
+        {children}
+      </ModalOverlay>
+    );
   };
-
-  const getYearOptions = () => {
-    const currentYear = new Date().getFullYear();
-    return Array.from({ length: currentYear - 1900 + 1 }, (_, i) => currentYear - i);
+  const handleStartGenerating = () => {
+    setIsGeneratingModalOpen(true);
+    
+    // 3초 후에 모달 닫고 다음 페이지 이동 (GeneratingPage 역할 대신 여기서 처리)
+    setTimeout(() => {
+      setIsGeneratingModalOpen(false);
+      // 필요한 데이터 넘기기
+      const resumeData = {/* Step4Page에서 준비한 데이터 */};
+      navigate('/step5Page', { state: { selectedTemplate, language } });
+    }, 3000);
   };
-
-
-  const inputComponent = useCallback(
-    (props) => (
-      <Input
-        {...props}
-        value={formData.military?.[props.name] || ""}
-        onChange={(e) => {
-          const updatedData = {
-            ...formData.military,
-            [props.name]: e.target.value,
-          };
-          handleFormDataChange({ ...formData, military: updatedData });
-        }}
-        ref={(el) => (militaryRefs.current[props.name] = el)}
-      />
-    ),
-    [formData, handleFormDataChange]
-  );
-
-  const selectComponent = useCallback(
-    (props) => (
-      <Select
-        {...props}
-        value={formData.military?.[props.name] || ""}
-        onChange={(e) => {
-          const updatedData = {
-            ...formData.military,
-            [props.name]: e.target.value,
-          };
-          handleFormDataChange({ ...formData, military: updatedData });
-        }}
-        ref={(el) => (militaryRefs.current[props.name] = el)}
-      />
-    ),
-    [formData, handleFormDataChange]
-  );
 
   const text = {
     title: { ko: "경력 입력", en: "Enter Experience" },
@@ -113,7 +81,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
         photo: "No photo",
       }
     },
-    next: { ko: "다음", en: "Next" },
+    next: { ko: "이력서 생성", en: "Create Resume" },
     prev: { ko: "이전", en: "Previous" },
     title: { ko: "신상 정보 입력", en: "Enter Personal Information" },
     inputTitle: { ko: "신상정보", en: "Personal Details" },
@@ -147,7 +115,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
     responsibilities: {ko:"담당업무", en:"Responsibilities"},
 
     dateAcquisition: {ko:"취득일", en:"Date of Acquisition"},
-    eertificateName: {ko:"자격명", en:"Eertificate Name"},
+    certificateName: {ko:"자격명", en:"Eertificate Name"},
     Issuer: {ko:"발행처", en:"Issuer"},
 
     language: {ko:"언어명", en:"Language"},
@@ -238,7 +206,8 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
 
         <InputSection>
           <SectionTitle>{getText("sectionTitles", "military")}</SectionTitle>
-          {Array.isArray(formData.military) && formData.military.length > 0 ? (
+          {formData.military && 
+  Object.values(formData.military).some(value => value && value.trim() !== "") ? (
           <Table>
             <thead>
               <tr>
@@ -254,7 +223,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
               <tr>
                 <Td>
                   <ValueBox>
-                    {formData.military.serviceStart || "-"} ~ {formData.military.serviceEnd || "-"}
+                    {(formData.military.serviceStart || "-").replace(/-/g, ".")} ~ {(formData.military.serviceEnd || "-").replace(/-/g, ".")}
                   </ValueBox>
                 </Td>
                 <Td><ValueBox>{formData.military.branch || "-"}</ValueBox></Td>
@@ -270,7 +239,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
           )}
 
           <SectionTitle>{getText("sectionTitles", "education")}</SectionTitle>
-          {Array.isArray(formData.education) && formData.education.length > 0 ? (
+          {Array.isArray(formData.education) && formData.education.some(row => row.some(col => col)) ?  (
             <Table>
               <thead>
                 <tr>
@@ -295,7 +264,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
           )}
 
           <SectionTitle>{getText("sectionTitles", "career")}</SectionTitle>
-          {Array.isArray(formData.career) && formData.career.length > 0 ? (
+          {Array.isArray(formData.career) && formData.career.some(row => row.some(col => col)) ? (
             <Table>
               <thead>
                 <tr>
@@ -320,12 +289,12 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
           )}
 
           <SectionTitle>{getText("sectionTitles", "certificate")}</SectionTitle>
-          {Array.isArray(formData.certificate) && formData.certificate.length > 0 ? (
+          {Array.isArray(formData.certificate) && formData.certificate.some(row => row.some(col => col)) ? (
             <Table>
               <thead>
                 <tr>
                   <Th>{getText('dateAcquisition')}</Th>
-                  <Th>{getText('eertificateName')}</Th>
+                  <Th>{getText('certificateName')}</Th>
                   <Th>{getText('Issuer')}</Th>
                 </tr>
               </thead>
@@ -344,7 +313,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
           )}
 
           <SectionTitle>{getText("sectionTitles", "language")}</SectionTitle>
-          {Array.isArray(formData.languageSkills) && formData.languageSkills.length > 0 ? (
+          {Array.isArray(formData.languageSkills) && formData.languageSkills.some(row => row.some(col => col)) ? (
             <Table>
               <thead>
                 <tr>
@@ -365,7 +334,7 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
               </tbody>
             </Table>
           ) : (
-            <div>{getText("nullText", "language")}</div>
+            <div style={{marginBottom:"30px"}}>{getText("nullText", "language")}</div>
           )}
         </InputSection>
 
@@ -373,9 +342,14 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
           <PreButton onClick={() => navigate("/step3page")}>
             {getText("prev")}
           </PreButton>
-          <NextButton onClick={() => navigate("/generating")}>
+          <NextButton onClick={handleStartGenerating}>
             {getText("next")}
           </NextButton>
+      {isGeneratingModalOpen && (
+        <Modal>
+          <AiGeneratingLoader selectedTemplate={selectedTemplate} language={language} />
+        </Modal>
+      )}
         </StepButton>
       </Container>
       <Footer language={language} />
@@ -388,6 +362,21 @@ export default function Step4Page({ language = 'ko', formData, onChangeLanguage,
 
 // Styled-components
 // 텍스트 출력용 스타일
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  z-index: 999;
+`;
+
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -538,11 +527,6 @@ const ResumeInput = styled.div`
   margin-bottom: 30px;
 `;
 
-const InputsColumn = styled.div`
-  flex: 1;
-  margin-top: 20px;
-`;
-
 const Input = styled.input`
   width: 100%;
   box-sizing: border-box;
@@ -553,71 +537,10 @@ const Input = styled.input`
   font-size: 14px;
 `;
 
-const InputTitle = styled.h1`
-  margin-top: 0;
-  font-size: 1.2rem;
-`;
-
-const BirthTitle = styled.h4`
-  margin-bottom: 10px;
-  margin-left: 5px;
-  text-align: left;
-`;
-
 const LabeledDisplay = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-`;
-
-const BirthAddressSection = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-top: 20px;
-  width: 100%;
-  max-width: 1000px;
-`;
-
-const AddressSection = styled.div`
-  margin-left: 20px;
-  flex: 1;
-  max-width: 600px;
-`;
-
-const AddressTitle = styled.h4`
-  margin-bottom: 10px;
-  margin-left: 5px;
-  text-align: left;
-`;
-
-const AddressInput = styled(Input)`
-  flex: 1;
-  width: 100%;
-  min-width: 0;
-`;
-
-const MilitarySection = styled.div`
-  width: 100%;
-  overflow-x: auto;
-  max-width: 100%;
-  margin-top: 30px;
-  text-align: left;
-`;
-
-const MilitaryTitle = styled.h4`
-  margin-bottom: 10px;
-  margin-left: 5px;
-`;
-
-const Select = styled.select`
-  flex: 1;
-  padding: 10px 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
-  box-sizing: border-box;
-  margin-right: 10px;
 `;
 
 const LinkText = styled.div`
