@@ -45,8 +45,7 @@ const Circle = styled.div`
   min-width: 70px;
   height: 70px;
   border-radius: 50%;
-  background-color: ${props =>
-    props.index <= props.currentStep ? "#146c94" : "white"};
+  background-color: ${props => (props.index <= props.currentStep ? "#146c94" : "white")};
   color: ${props => (props.index <= props.currentStep ? "white" : "#146c94")};
   border: 3px solid #146c94;
   font-weight: bold;
@@ -86,13 +85,8 @@ const LinkText = styled.div`
   }
 `;
 
-const PreButton = styled(LinkText)`
-  margin-left: 30px;
-`;
-
-const NextButton = styled(LinkText)`
-  margin-right: 30px;
-`;
+const PreButton = styled(LinkText)` margin-left: 30px; `;
+const NextButton = styled(LinkText)` margin-right: 30px; `;
 
 const StepButton = styled.div`
   width: 100%;
@@ -103,7 +97,7 @@ const StepButton = styled.div`
   margin-top: 40px;
 `;
 
-// 다국어 텍스트 정의
+// 텍스트 객체
 const text = {
   title: { ko: "경력 입력", en: "Enter Experience" },
   steps: {
@@ -139,7 +133,6 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
   const navigate = useNavigate();
   const currentStep = 4;
 
-  // CSS 동적 로딩
   useEffect(() => {
     const id = "dynamic-resume-style";
     const existing = document.getElementById(id);
@@ -203,7 +196,6 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
           ))}
         </Stepper>
 
-        {/* ==== 본문 ==== */}
         <div id="pdf-download" className={`resume-template-${selectedTemplate}`}>
           <div className="resume-left">
             {photo && <img src={photo} alt="사진" className="resume-photo" />}
@@ -217,59 +209,47 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
               <div className="resume-text-line">생년월일: {birthYear}.{birthMonth}.{birthDay}</div>
             </div>
 
-            <div className="resume-section">
-              <div className="resume-section-title">{getText("sectionTitles", "certificate")}</div>
-              {certificate?.map((row, i) => (
-                <div className="resume-text-line" key={i}>{row.join(" / ")}</div>
-              ))}
-            </div>
+            {Array.isArray(certificate) && (
+              <div className="resume-section">
+                <div className="resume-section-title">{getText("sectionTitles", "certificate")}</div>
+                {certificate.map((row, i) => (
+                  <div className="resume-text-line" key={i}>{row.join(" / ")}</div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="resume-right">
-            {education?.length > 0 && (
+            {Array.isArray(education) && education.length > 0 && (
               <div className="resume-section">
                 <div className="resume-section-title">{getText("sectionTitles", "education")}</div>
                 <table className="resume-table">
                   <thead>
                     <tr>
-                      <th>졸업일</th>
-                      <th>학교명</th>
-                      <th>졸업여부</th>
-                      <th>성적</th>
+                      <th>졸업일</th><th>학교명</th><th>졸업여부</th><th>성적</th>
                     </tr>
                   </thead>
                   <tbody>
                     {education.map((row, i) => (
-                      <tr key={i}>
-                        {row.map((col, j) => (
-                          <td key={j}>{col || "-"}</td>
-                        ))}
-                      </tr>
+                      <tr key={i}>{row.map((col, j) => <td key={j}>{col || "-"}</td>)}</tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             )}
 
-            {career?.length > 0 && (
+            {Array.isArray(career) && career.length > 0 && (
               <div className="resume-section">
                 <div className="resume-section-title">{getText("sectionTitles", "career")}</div>
                 <table className="resume-table">
                   <thead>
                     <tr>
-                      <th>근무기간</th>
-                      <th>회사명</th>
-                      <th>최종직위</th>
-                      <th>담당업무</th>
+                      <th>근무기간</th><th>회사명</th><th>최종직위</th><th>담당업무</th>
                     </tr>
                   </thead>
                   <tbody>
                     {career.map((row, i) => (
-                      <tr key={i}>
-                        {row.map((col, j) => (
-                          <td key={j}>{col || "-"}</td>
-                        ))}
-                      </tr>
+                      <tr key={i}>{row.map((col, j) => <td key={j}>{col || "-"}</td>)}</tr>
                     ))}
                   </tbody>
                 </table>
@@ -287,25 +267,18 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
               </div>
             )}
 
-            {languageSkills?.length > 0 && (
+            {Array.isArray(languageSkills) && languageSkills.length > 0 && (
               <div className="resume-section">
                 <div className="resume-section-title">{getText("sectionTitles", "language")}</div>
                 <table className="resume-table">
                   <thead>
                     <tr>
-                      <th>언어</th>
-                      <th>구사정도</th>
-                      <th>시험명</th>
-                      <th>점수</th>
+                      <th>언어</th><th>구사정도</th><th>시험명</th><th>점수</th>
                     </tr>
                   </thead>
                   <tbody>
                     {languageSkills.map((row, i) => (
-                      <tr key={i}>
-                        {row.map((col, j) => (
-                          <td key={j}>{col || "-"}</td>
-                        ))}
-                      </tr>
+                      <tr key={i}>{row.map((col, j) => <td key={j}>{col || "-"}</td>)}</tr>
                     ))}
                   </tbody>
                 </table>
@@ -314,14 +287,9 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
           </div>
         </div>
 
-        {/* ==== 버튼 ==== */}
         <StepButton>
-          <PreButton onClick={() => navigate("/step4page")}>
-            {getText("prev")}
-          </PreButton>
-          <NextButton onClick={downloadPDF}>
-            {getText("next")}
-          </NextButton>
+          <PreButton onClick={() => navigate("/step4page")}>{getText("prev")}</PreButton>
+          <NextButton onClick={downloadPDF}>{getText("next")}</NextButton>
         </StepButton>
 
         <FooterSpacer />
