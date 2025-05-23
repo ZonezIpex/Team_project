@@ -1,29 +1,22 @@
 import { jwtDecode } from 'jwt-decode';
-const API_URL = 'http://sarm-server.duckdns.org:8888/api/auth';
+import api from '../api/axios';
 
 // 예: 로그인 API 호출
 export const login = async (username, password) => {
-    const response = await fetch(`${API_URL}/login`, { //도메인 주소
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-    });
-
-    if (!response.ok) {
-        throw new Error("Login failed");
-    }
-
-    const data = await response.json();
-    console.log("Server Response:", data);
-    localStorage.setItem('token', data.token); // 토큰 저장 키 일관화
-
     try {
-        const decoded = jwtDecode(data.token);
+        const response = await api.post('/api/auth/login', { username, password });
+        const token = response.data.token;
+
+        console.log("Server Response:", response.data);
+        localStorage.setItem('token', token); // 토큰 저장
+
+        const decoded = jwtDecode(token);
         console.log("Decoded Token:", decoded);
-        return { token: data.token, isAdmin: decoded.isAdmin }; // 토큰과 isAdmin 반환
+
+        return { token, isAdmin: decoded.isAdmin };
     } catch (error) {
-        console.error('Failed to decode token:', error);
-        throw new Error('Failed to decode token');
+        console.error("Login error:", error);
+        throw new Error("Login failed");
     }
 };
 
@@ -32,14 +25,12 @@ export const logout = () => {
 };
 
 export const register = async (email, password, name) => {
-    const response = await fetch("http://sarm-server.duckdns.org:8888/api/user/register", { //도메인
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, name}),
-    });
-    if(!response.ok){
-        throw new Error("Failed to register: " + response.status);
-    }//
+    try {
+        await api.post('/api/user/register', { email, password, name });
+    } catch (error) {
+        console.error("Registration error:", error);
+        throw new Error("Failed to register");
+    }
 };
 
 export const getIsAdmin = () => {

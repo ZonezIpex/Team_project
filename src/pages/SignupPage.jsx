@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 
 const Wrapper = styled.div`
   background: linear-gradient(to bottom, #79A7D3, #C3DAF5);
@@ -113,7 +113,7 @@ function SignupPage({ language, onChangeLanguage }) {
 
     try {
       console.log('Sending request to backend...');
-      const response = await axios.post('http://sarm-server.duckdns.org:8888/api/user/register', payload);
+      const response = await api.post('/api/user/register', payload);
       console.log('Response from server:', response);
       alert(response.data); // 성공 메시지
       navigate('/login'); // 로그인 페이지로 이동

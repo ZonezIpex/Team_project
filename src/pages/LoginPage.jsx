@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { login } from '../contexts/AuthService';
 import { useAuth } from '../contexts/AuthContext';
+import api from '../api/axios'; 
+
 
 const Wrapper = styled.div`
   background: linear-gradient(to bottom, #79A7D3, #C3DAF5);
@@ -106,10 +108,17 @@ function LoginPage({ language, onChangeLanguage }) {
         console.log("Saving token to localStorage...");
         localStorage.setItem("token", token); // 토큰 저장
         console.log("Token saved:", localStorage.getItem("token")); // 저장된 토큰 확인
-        auth.setUser({ loggedIn: true }); // 상태 업데이트
-  
-        // ✅ 관리자이면 어드민 페이지로 이동, 아니면 홈으로 이동
-        if (isAdmin) {
+
+      const response = await api.get("/api/data");
+      const { username, isAdmin } = response.data;
+
+      auth.setUser({
+        loggedIn: true,
+        isAdmin,
+        username
+      });  
+
+      if (isAdmin) {
           navigate('/admin');
         } else {
           navigate('/');
