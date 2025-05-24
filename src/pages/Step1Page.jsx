@@ -21,6 +21,8 @@ const resumeDescriptions = [
   "컬러 포인트가 있는 세련된 디자인, 포트폴리오 포함 시 적합합니다.",
   "심플하고 조용한 인상을 주는 템플릿, 무난하게 사용 가능.",
   "경력과 자격 사항을 강조한 실무형 이력서 템플릿입니다.",
+  "푸른색의 강조와 한쪽 정렬된 디자인으로 깔끔한 느낌을 줍니다.",
+  "짙은 푸른색의 배치와 깔끔한 디자인으로 전문적인 느낌을 줍니다.",
 ];
 
 export default function Step1Page({ language, onChangeLanguage, selectedTemplate, setSelectedTemplate, formData, handleFormDataChange }) {
