@@ -96,32 +96,21 @@ function LoginPage({ language, onChangeLanguage }) {
   const t = text[language || 'ko'];
 
   const handleLogin = async () => {
+  try {
+    const { isAdmin } = await login(email, password); // 세션 로그인 요청
+    auth.setUser({ loggedIn: true });
 
-    try {
-      const { token, isAdmin } = await login(email, password); // 서버 요청
-      console.log("Token received:", token); // 토큰 값 확인
-
-      if (token) {
-        // 로그인 성공 시 JWT 토큰을 localStorage에 저장
-        console.log("Saving token to localStorage...");
-        localStorage.setItem("token", token); // 토큰 저장
-        console.log("Token saved:", localStorage.getItem("token")); // 저장된 토큰 확인
-        auth.setUser({ loggedIn: true }); // 상태 업데이트
-  
-        // ✅ 관리자이면 어드민 페이지로 이동, 아니면 홈으로 이동
-        if (isAdmin) {
-          navigate('/admin');
-        } else {
-          navigate('/');
-        }
-      } else {
-        throw new Error('Login failed');
-      }
-    } catch (error) {
-      console.error(error);
-      alert(t.error); // 로그인 실패 시 에러 메시지
-    }    
+    if (isAdmin) {
+      navigate('/admin');
+    } else {
+      navigate('/');
+    }
+  } catch (error) {
+    console.error(error);
+    alert(t.error);
+  }
 };
+
 
   return (
     <Wrapper>

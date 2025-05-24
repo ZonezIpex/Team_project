@@ -1,7 +1,7 @@
 // src/adminPages/dashboard/Index.jsx
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 
 const Wrapper = styled.div`
   padding: 0 40px;
@@ -59,11 +59,8 @@ function DashboardMain({ language }) {
   }, []);
 
   const fetchAllStats = async () => {
-    const token = localStorage.getItem('token');
     try {
-      const userResponse = await axios.get('http://sarm-server.duckdns.org:8888/api/user', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const userResponse = await api.get('/api/user');
 
       const users = userResponse.data;
 
