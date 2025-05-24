@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import { useNavigate } from "react-router-dom";
 import StyledTable from "../components/StepTable";
 
-export default function Step3Page({ language, onChangeLanguage, formData, setLanguageSkills, handleFormDataChange }) {
+export default function Step3Page({ selectedTemplate, language, onChangeLanguage, formData, handleFormDataChange }) {
   const navigate = useNavigate();
   console.log(formData); // formData 내용 확인
 
@@ -49,11 +49,7 @@ export default function Step3Page({ language, onChangeLanguage, formData, setLan
   };
 
   const currentStep = 2;
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    handleFormDataChange({ [name]: value });
-  };
+ 
   // "다음" 버튼 클릭 시 상태 전달
   const handleNext = () => {
     // 상위 컴포넌트로 상태를 전달
@@ -64,7 +60,7 @@ export default function Step3Page({ language, onChangeLanguage, formData, setLan
       languageSkills,
     });
     // Step4로 이동
-    navigate("/step4Page");
+    navigate("/step4Page", { state: { selectedTemplate, language } });
   };
   
 
@@ -169,17 +165,7 @@ const Select = React.memo(({ options = [], ...props }) => (
     </PageWrapper>
   );
 }
-
-const StyledSelect = styled.select`
-  flex: 1;
-  padding: 10px 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
-  box-sizing: border-box;
-  margin-right: 10px;
-`;
-
+ 
 // Styled-components
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
@@ -242,6 +228,7 @@ const Line = styled.div`
 `;
 
 const InputSection = styled.div`
+  width:850px;
   background-color: white;
   padding: 0 20px 20px 20px;
   border-radius: 20px;
@@ -265,17 +252,7 @@ const Input = styled.input`
   border-radius: 8px;
   font-size: 14px;
 `;
-
-const Select = styled.select`
-  flex: 1;
-  padding: 10px 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
-  box-sizing: border-box;
-  margin-right: 10px;
-`;
-
+ 
 const LinkText = styled.div`
   color: white;
   background-color: #146c94;
