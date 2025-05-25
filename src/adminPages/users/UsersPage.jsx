@@ -1,7 +1,7 @@
 // src/adminPages/users/UsersPage.jsx
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 
 
 const Wrapper = styled.div`
@@ -195,23 +195,13 @@ function UsersPage() {
   }, []);
 
   const fetchUsers = async () => {
-    const token = localStorage.getItem('token');
-    try {
-      const response = await axios.get('http://sarm-server.duckdns.org:8888/api/user', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUserList(response.data);
-    } catch (err) {
-      console.error('Error fetching users:', err.message);
-    }
+    const response = await api.get('/api/user');
+    setUserList(response.data);
   };
 
   const approveUser = async (userNo) => {
-    const token = localStorage.getItem('token');
     try {
-      await axios.post(`http://sarm-server.duckdns.org:8888/api/user/approve-user/${userNo}`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.post(`/api/user/approve-user/${userNo}`);
       alert('승인되었습니다!');
       fetchUsers();
     } catch (err) {
@@ -221,12 +211,9 @@ function UsersPage() {
   };
 
   const deleteUser = async (userNo) => {
-    const token = localStorage.getItem('token');
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
     try {
-      await axios.delete(`http://sarm-server.duckdns.org:8888/api/user/${userNo}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/api/user/${userNo}`);
       alert('삭제되었습니다!');
       fetchUsers();
     } catch (err) {
