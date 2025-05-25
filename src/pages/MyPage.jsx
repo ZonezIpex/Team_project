@@ -1,11 +1,12 @@
 // src/pages/MyPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
-import Footer from "../components/Footer";
+import Footer from '../components/Footer';
 import profileImg from '../assets/profile1.jpg';
 import resume1 from '../assets/이력서이미지.jpg';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
@@ -26,7 +27,8 @@ const Title = styled.h1`
   font-size: clamp(1.8rem, 3vw, 2.5rem);
   color: white;
   margin-bottom: 40px;
-  font-weight: bold;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 `;
 
 const ProfileSection = styled.div`
@@ -39,9 +41,10 @@ const ProfileSection = styled.div`
 const ProfileImage = styled.img`
   width: 120px;
   height: 120px;
-  border-radius: 50%;
+  border-radius: 16px;
   object-fit: cover;
   border: 3px solid white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 `;
 
 const ProfileText = styled.div`
@@ -53,10 +56,10 @@ const ProfileText = styled.div`
 const LinkText = styled.div`
   color: white;
   font-size: 1rem;
-  margin-top: 6px;
+  margin-top: 12px;
   cursor: pointer;
   text-decoration: underline;
-  transition: 0.2s;
+  transition: color 0.2s;
 
   &:hover {
     color: #ffeb3b;
@@ -79,13 +82,12 @@ const TabButton = styled.button`
   flex: 1;
   background-color: ${(props) => (props.active ? "#64a8f0" : "#eaf8ff")};
   color: ${(props) => (props.active ? "#ffffff" : "#003049")};
-  font-size: 1.1rem;
-  font-weight: bold;
-  padding: 0.8rem 1rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 0.9rem 1.2rem;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-
+  transition: background-color 0.2s ease;
   border-top-left-radius: ${(props) => (props.position === "left" ? "16px" : "0")};
   border-top-right-radius: ${(props) => (props.position === "right" ? "16px" : "0")};
   border-bottom: ${(props) => (props.active ? "none" : "1px solid #ccc")};
@@ -95,12 +97,11 @@ const TabButton = styled.button`
   }
 `;
 
-
 const TabContentBox = styled.div`
   background-color: #ffffff;
-  border: 1px solid #ddd;
+  border: 1px solid #e0e0e0;
   border-radius: 0 0 20px 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
   padding: 40px 30px;
 `;
 
@@ -113,11 +114,11 @@ const CardList = styled.div`
 
 const ResumeCard = styled.div`
   width: 200px;
-  background-color: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
 
   img {
@@ -128,30 +129,33 @@ const ResumeCard = styled.div`
   }
 
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
   }
 `;
 
 const ReviewCard = styled.div`
   width: 200px;
-  background-color: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
   padding: 20px;
   font-size: 0.95rem;
   line-height: 1.5;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
 
   strong {
-    font-weight: bold;
+    font-weight: 700;
     font-size: 1rem;
     display: block;
     margin-bottom: 5px;
+    color: #333;
   }
 
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
   }
 `;
 
@@ -167,36 +171,54 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
   max-width: 90%;
   max-height: 90%;
   overflow: auto;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
   text-align: center;
 
   img {
     max-width: 100%;
     height: auto;
     border-radius: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 16px;
   }
 
   p {
     font-size: 1.1rem;
     line-height: 1.6;
+    color: #444;
   }
 `;
 
 const MyPage = ({ language = 'ko', onChangeLanguage }) => {
   const [tab, setTab] = useState('resume');
-  const [resumeItems, setResumeItems] = useState([resume1, resume1, resume1]);
-  const [reviewItems, setReviewItems] = useState([1, 2, 3]);
+  const [resumeItems, setResumeItems] = useState([]);
+  const [reviewItems, setReviewItems] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalImage, setModalImage] = useState(null);
   const [modalText, setModalText] = useState(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [resumesRes, reviewsRes] = await Promise.all([
+          axios.get('/api/resumes'),
+          axios.get('/api/reviews'),
+        ]);
+        setResumeItems(resumesRes.data);
+        setReviewItems(reviewsRes.data);
+      } catch (err) {
+        console.error("데이터 로딩 오류:", err);
+      }
+    };
+    fetchData();
+  }, []);
 
   const openModal = (image = null, text = null) => {
     setModalImage(image);
@@ -219,7 +241,7 @@ const MyPage = ({ language = 'ko', onChangeLanguage }) => {
       resume: '이력서',
       review: '리뷰',
       reviewTitle: '진짜 최고의 이력서',
-      reviewContent: '이력서 내용이 너무 마음에 들어서 내용이 너무 좋아요 이력서 내용이 너무 마음에 들어서 내용이 너무 좋아요',
+      reviewContent: '이력서 내용이 너무 마음에 들어서 내용이 너무 좋아요.',
       more: '더 보기',
     },
     en: {
@@ -230,7 +252,7 @@ const MyPage = ({ language = 'ko', onChangeLanguage }) => {
       resume: 'Resume',
       review: 'Review',
       reviewTitle: 'Truly the Best Resume',
-      reviewContent: 'I really loved the content of this resume. It was so well done and impressive.',
+      reviewContent: 'I really loved the content of this resume. It was so impressive.',
       more: 'Load more',
     },
   }[language];
@@ -278,14 +300,14 @@ const MyPage = ({ language = 'ko', onChangeLanguage }) => {
               <>
                 <CardList>
                   {reviewItems.map((item, idx) => (
-                    <ReviewCard key={idx} onClick={() => openModal(null, t.reviewContent)}>
-                      <strong>{t.reviewTitle}</strong>
+                    <ReviewCard key={idx} onClick={() => openModal(null, item.content)}>
+                      <strong>{item.title}</strong>
                       ⭐⭐⭐⭐⭐ <br />
-                      {t.reviewContent}
+                      {item.content}
                     </ReviewCard>
                   ))}
                 </CardList>
-                <LinkText onClick={() => setReviewItems([...reviewItems, reviewItems.length + 1])}>
+                <LinkText onClick={() => setReviewItems([...reviewItems, { title: t.reviewTitle, content: t.reviewContent }])}>
                   + {t.more}
                 </LinkText>
               </>
@@ -293,6 +315,7 @@ const MyPage = ({ language = 'ko', onChangeLanguage }) => {
           </TabContentBox>
         </TabContainer>
       </Content>
+
       <Footer language={language} />
 
       {modalOpen && (

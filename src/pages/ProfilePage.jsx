@@ -164,7 +164,12 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
       home: '대림대 전산관 5층 디지털미디어실습실',
       company: '안양시청',
       military: '면제',
-      education: '대림대학교 컴퓨터 정보학부 졸업',
+      education: {
+        schoolName: '대림대학교',
+        schoolType: '학사',
+        graduationStatus: '졸업',
+        major: '컴퓨터 정보학부',
+      },
       experience: '프론트엔드 인턴 (2024.01 ~ 2024.06)',
       certificate: '정보처리기사',
       languageSkills: '영어 (중), 일본어 (초)',
@@ -178,6 +183,17 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // education 안의 각 필드 변경 함수
+  const handleEducationChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      education: {
+        ...prev.education,
+        [field]: value,
+      },
+    }));
   };
 
   const handleEditToggle = () => {
@@ -321,7 +337,78 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
 
         <InfoCard>
           <SectionTitle>학력</SectionTitle>
-          {renderField('학력', 'education')}
+          {editMode ? (
+            <>
+              <InfoRow>
+                <Label>학교 이름</Label>
+                <Input
+                  type="text"
+                  value={formData.education.schoolName || ''}
+                  onChange={(e) => handleEducationChange('schoolName', e.target.value)}
+                  placeholder="학교명을 입력하세요"
+                />
+              </InfoRow>
+
+              <InfoRow>
+                <Label>학교 종류</Label>
+                <Select
+                  value={formData.education.schoolType || ''}
+                  onChange={(e) => handleEducationChange('schoolType', e.target.value)}
+                >
+                  <option value="">선택하세요</option>
+                  <option value="초등학교">초등학교</option>
+                  <option value="중학교">중학교</option>
+                  <option value="고등학교">고등학교</option>
+                  <option value="대학교(전문학사)">대학교(전문학사)</option>
+                  <option value="대학교(학사)">대학교(학사)</option>
+                  <option value="대학교(석사)">대학교(석사)</option>
+                  <option value="대학교(박사)">대학교(박사)</option>
+                </Select>
+              </InfoRow>
+
+              <InfoRow>
+                <Label>졸업 유무</Label>
+                <Select
+                  value={formData.education.graduationStatus || ''}
+                  onChange={(e) => handleEducationChange('graduationStatus', e.target.value)}
+                >
+                  <option value="">선택하세요</option>
+                  <option value="졸업">졸업</option>
+                  <option value="휴학">휴학</option>
+                  <option value="졸업예정">졸업예정</option>
+                  <option value="재학">재학</option>
+                </Select>
+              </InfoRow>
+
+              <InfoRow>
+                <Label>전공</Label>
+                <Input
+                  type="text"
+                  value={formData.education.major || ''}
+                  onChange={(e) => handleEducationChange('major', e.target.value)}
+                  placeholder="전공을 입력하세요"
+                />
+              </InfoRow>
+            </>
+          ) : (
+            <>
+              <InfoRow>
+                <Label>학교</Label>
+                <Value>
+                  {profileData.education.schoolName}{' '}
+                  {profileData.education.schoolType && `(${profileData.education.schoolType})`}
+                </Value>
+              </InfoRow>
+              <InfoRow>
+                <Label>졸업 유무</Label>
+                <Value>{profileData.education.graduationStatus}</Value>
+              </InfoRow>
+              <InfoRow>
+                <Label>전공</Label>
+                <Value>{profileData.education.major}</Value>
+              </InfoRow>
+            </>
+          )}
         </InfoCard>
 
         <InfoCard>
@@ -335,35 +422,35 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
         </InfoCard>
 
         <InfoCard>
-          <SectionTitle>어학 능력</SectionTitle>
-          {renderField('어학 능력', 'languageSkills')}
+          <SectionTitle>언어 능력</SectionTitle>
+          {renderField('언어 능력', 'languageSkills')}
         </InfoCard>
+
+        <ButtonWrapper>
+          <Button onClick={handleEditToggle}>{editMode ? '저장' : '수정'}</Button>
+          {!editMode && (
+            <DeleteButton onClick={() => setShowDeleteModal(true)}>회원 탈퇴</DeleteButton>
+          )}
+        </ButtonWrapper>
+
+        {showDeleteModal && (
+          <ModalOverlay onClick={() => setShowDeleteModal(false)}>
+            <ModalBox onClick={(e) => e.stopPropagation()}>
+              <h3>회원 탈퇴</h3>
+              <p>비밀번호를 입력하세요:</p>
+              <Input
+                type="password"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+              />
+              <Button onClick={handleDeleteAccount} style={{ marginTop: '20px', width: '100%' }}>
+                탈퇴하기
+              </Button>
+            </ModalBox>
+          </ModalOverlay>
+        )}
       </Content>
-
-      <ButtonWrapper>
-        <Button onClick={handleEditToggle}>{editMode ? '저장' : '수정'}</Button>
-        <DeleteButton onClick={() => setShowDeleteModal(true)}>회원 탈퇴</DeleteButton>
-      </ButtonWrapper>
-
-      {showDeleteModal && (
-        <ModalOverlay>
-          <ModalBox>
-            <p>정말로 회원 탈퇴를 진행하시겠습니까?</p>
-            <Input
-              type="password"
-              placeholder="비밀번호를 입력하세요"
-              value={passwordInput}
-              onChange={(e) => setPasswordInput(e.target.value)}
-            />
-            <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
-              <Button onClick={handleDeleteAccount}>회원 탈퇴</Button>
-              <DeleteButton onClick={() => setShowDeleteModal(false)}>취소</DeleteButton>
-            </div>
-          </ModalBox>
-        </ModalOverlay>
-      )}
-
-      <Footer language={language} />
+      <Footer />
     </PageWrapper>
   );
 };
