@@ -4,8 +4,6 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import profileImg from '../assets/profile1.jpg';
 
-
-
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
   min-height: 100vh;
@@ -92,7 +90,7 @@ const ButtonWrapper = styled.div`
   gap: 10px;
   width: 100%;
   max-width: 800px;
-  margin: 20px auto 0 auto; 
+  margin: 20px auto 0 auto;
 `;
 
 const DeleteButton = styled(Button)`
@@ -100,6 +98,15 @@ const DeleteButton = styled(Button)`
 `;
 
 const Input = styled.input`
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 400px;
+  font-size: 1rem;
+`;
+
+const Select = styled.select`
   padding: 6px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -200,8 +207,8 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
   useEffect(() => {
     const mockData = {
       name: '고냥이',
-      birthday: '2025년 4월 1일',
-      gender: '고양이',
+      birthday: '2025-04-01',
+      gender: '여',
       email: 'cutecheeseCAT@cat.com',
       phone: '010-1234-5678',
       home: '대림대 전산관 5층 디지털미디어실습실',
@@ -242,11 +249,27 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
     <InfoRow key={field}>
       <Label>{label}</Label>
       {editMode ? (
-        <Input
-          type="text"
-          value={formData[field] || ''}
-          onChange={(e) => handleChange(field, e.target.value)}
-        />
+        field === 'birthday' ? (
+          <Input
+            type="date"
+            value={formData[field] || ''}
+            onChange={(e) => handleChange(field, e.target.value)}
+          />
+        ) : field === 'gender' ? (
+          <Select
+            value={formData[field] || ''}
+            onChange={(e) => handleChange(field, e.target.value)}
+          >
+            <option value="남">남</option>
+            <option value="여">여</option>
+          </Select>
+        ) : (
+          <Input
+            type="text"
+            value={formData[field] || ''}
+            onChange={(e) => handleChange(field, e.target.value)}
+          />
+        )
       ) : (
         <Value>{profileData[field]}</Value>
       )}

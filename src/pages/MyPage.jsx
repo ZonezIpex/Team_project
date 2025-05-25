@@ -117,6 +117,7 @@ const ResumeCard = styled.div`
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   overflow: hidden;
   transition: all 0.3s ease;
+  cursor: pointer;
 
   img {
     width: 100%;
@@ -139,6 +140,7 @@ const ReviewCard = styled.div`
   font-size: 0.95rem;
   line-height: 1.5;
   transition: all 0.3s ease;
+  cursor: pointer;
 
   strong {
     font-weight: bold;
@@ -152,9 +154,60 @@ const ReviewCard = styled.div`
   }
 `;
 
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 90%;
+  max-height: 90%;
+  overflow: auto;
+  text-align: center;
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+`;
+
 const MyPage = ({ language = 'ko', onChangeLanguage }) => {
   const [tab, setTab] = useState('resume');
+  const [resumeItems, setResumeItems] = useState([resume1, resume1, resume1]);
+  const [reviewItems, setReviewItems] = useState([1, 2, 3]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalImage, setModalImage] = useState(null);
+  const [modalText, setModalText] = useState(null);
+
   const navigate = useNavigate();
+
+  const openModal = (image = null, text = null) => {
+    setModalImage(image);
+    setModalText(text);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setModalImage(null);
+    setModalText(null);
+  };
 
   const t = {
     ko: {
@@ -166,6 +219,7 @@ const MyPage = ({ language = 'ko', onChangeLanguage }) => {
       review: '리뷰',
       reviewTitle: '진짜 최고의 이력서',
       reviewContent: '이력서 내용이 너무 마음에 들어서 내용이 너무 좋아요 이력서 내용이 너무 마음에 들어서 내용이 너무 좋아요',
+      more: '더 보기',
     },
     en: {
       title: 'My Page',
@@ -176,6 +230,7 @@ const MyPage = ({ language = 'ko', onChangeLanguage }) => {
       review: 'Review',
       reviewTitle: 'Truly the Best Resume',
       reviewContent: 'I really loved the content of this resume. It was so well done and impressive.',
+      more: 'Load more',
     },
   }[language];
 
@@ -196,46 +251,57 @@ const MyPage = ({ language = 'ko', onChangeLanguage }) => {
 
         <TabContainer>
           <TabHeader>
-            <TabButton
-              active={tab === 'resume'}
-              onClick={() => setTab('resume')}
-              position="left"
-            >
+            <TabButton active={tab === 'resume'} onClick={() => setTab('resume')} position="left">
               {t.resume}
             </TabButton>
-            <TabButton
-              active={tab === 'review'}
-              onClick={() => setTab('review')}
-              position="right"
-            >
+            <TabButton active={tab === 'review'} onClick={() => setTab('review')} position="right">
               {t.review}
             </TabButton>
           </TabHeader>
 
           <TabContentBox>
             {tab === 'resume' ? (
-              <CardList>
-                {[...Array(3)].map((_, idx) => (
-                  <ResumeCard key={idx}>
-                    <img src={resume1} alt="Resume" />
-                  </ResumeCard>
-                ))}
-              </CardList>
+              <>
+                <CardList>
+                  {resumeItems.map((item, idx) => (
+                    <ResumeCard key={idx} onClick={() => openModal(item)}>
+                      <img src={item} alt="Resume" />
+                    </ResumeCard>
+                  ))}
+                </CardList>
+                <LinkText onClick={() => setResumeItems([...resumeItems, resume1])}>
+                  + {t.more}
+                </LinkText>
+              </>
             ) : (
-              <CardList>
-                {[...Array(3)].map((_, idx) => (
-                  <ReviewCard key={idx}>
-                    <strong>{t.reviewTitle}</strong>
-                    ⭐⭐⭐⭐⭐ <br />
-                    {t.reviewContent}
-                  </ReviewCard>
-                ))}
-              </CardList>
+              <>
+                <CardList>
+                  {reviewItems.map((item, idx) => (
+                    <ReviewCard key={idx} onClick={() => openModal(null, t.reviewContent)}>
+                      <strong>{t.reviewTitle}</strong>
+                      ⭐⭐⭐⭐⭐ <br />
+                      {t.reviewContent}
+                    </ReviewCard>
+                  ))}
+                </CardList>
+                <LinkText onClick={() => setReviewItems([...reviewItems, reviewItems.length + 1])}>
+                  + {t.more}
+                </LinkText>
+              </>
             )}
           </TabContentBox>
         </TabContainer>
       </Content>
       <Footer language={language} />
+
+      {modalOpen && (
+        <ModalOverlay onClick={closeModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            {modalImage && <img src={modalImage} alt="확대보기" />}
+            {modalText && <p>{modalText}</p>}
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </PageWrapper>
   );
 };
