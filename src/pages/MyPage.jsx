@@ -77,8 +77,8 @@ const TabHeader = styled.div`
 
 const TabButton = styled.button`
   flex: 1;
-  background-color: ${(props) => (props.active ? "#eaf8ff" : "#64a8f0")};
-  color: ${(props) => (props.active ? "#003049" : "#ffffff")};
+  background-color: ${(props) => (props.active ? "#64a8f0" : "#eaf8ff")};
+  color: ${(props) => (props.active ? "#ffffff" : "#003049")};
   font-size: 1.1rem;
   font-weight: bold;
   padding: 0.8rem 1rem;
@@ -91,9 +91,10 @@ const TabButton = styled.button`
   border-bottom: ${(props) => (props.active ? "none" : "1px solid #ccc")};
 
   &:hover {
-    background-color: ${(props) => (props.active ? "#eaf8ff" : "#7fc6ff")};
+    background-color: ${(props) => (props.active ? "#64a8f0" : "#d2ecfb")};
   }
 `;
+
 
 const TabContentBox = styled.div`
   background-color: #ffffff;

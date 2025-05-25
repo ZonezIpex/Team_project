@@ -1,9 +1,11 @@
+// src/pages/ProfilePage.jsx
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import profileImg from '../assets/profile1.jpg';
 
+// 스타일 정의
 const PageWrapper = styled.div`
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
   min-height: 100vh;
@@ -84,6 +86,10 @@ const Button = styled.button`
   margin-right: 10px;
 `;
 
+const DeleteButton = styled(Button)`
+  background-color: #3399ff;
+`;
+
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -91,10 +97,6 @@ const ButtonWrapper = styled.div`
   width: 100%;
   max-width: 800px;
   margin: 20px auto 0 auto;
-`;
-
-const DeleteButton = styled(Button)`
-  background-color: #3399ff;
 `;
 
 const Input = styled.input`
@@ -138,11 +140,11 @@ const ModalBox = styled.div`
 const formatPhoneInput = (value) => {
   const onlyNums = value.replace(/[^0-9]/g, '');
   if (onlyNums.length <= 3) return onlyNums;
-  if (onlyNums.length <= 7)
-    return `${onlyNums.slice(0, 3)}-${onlyNums.slice(3)}`;
+  if (onlyNums.length <= 7) return `${onlyNums.slice(0, 3)}-${onlyNums.slice(3)}`;
   return `${onlyNums.slice(0, 3)}-${onlyNums.slice(3, 7)}-${onlyNums.slice(7, 11)}`;
 };
 
+// 메인 컴포넌트
 const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
   const [profileData, setProfileData] = useState(null);
   const [formData, setFormData] = useState({});
@@ -157,8 +159,8 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
       name: '고냥이',
       birthday: '2025-04-01',
       gender: '여',
-      email: '',
-      phone: '',
+      email: 'daelim@email.com',
+      phone: '010-1234-1234',
       home: '대림대 전산관 5층 디지털미디어실습실',
       company: '안양시청',
       military: '면제',
@@ -223,18 +225,12 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
               onChange={(e) => handleChange(field, e.target.value)}
             />
           ) : field === 'gender' ? (
-            <Select
-              value={formData[field] || ''}
-              onChange={(e) => handleChange(field, e.target.value)}
-            >
+            <Select value={formData[field]} onChange={(e) => handleChange(field, e.target.value)}>
               <option value="남">남</option>
               <option value="여">여</option>
             </Select>
           ) : field === 'military' ? (
-            <Select
-              value={formData[field] || ''}
-              onChange={(e) => handleChange(field, e.target.value)}
-            >
+            <Select value={formData[field]} onChange={(e) => handleChange(field, e.target.value)}>
               <option value="미필">미필</option>
               <option value="현역필">현역필</option>
               <option value="방위필">방위필</option>
@@ -246,23 +242,21 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
           ) : isPhone ? (
             <Input
               type="tel"
-              value={formData[field] || ''}
-              onChange={(e) =>
-                handleChange(field, formatPhoneInput(e.target.value))
-              }
+              value={formData[field]}
+              onChange={(e) => handleChange(field, formatPhoneInput(e.target.value))}
               placeholder={placeholderMap.phone}
             />
           ) : isEmail ? (
             <Input
               type="email"
-              value={formData[field] || ''}
+              value={formData[field]}
               onChange={(e) => handleChange(field, e.target.value)}
               placeholder={placeholderMap.email}
             />
           ) : (
             <Input
               type="text"
-              value={formData[field] || ''}
+              value={formData[field]}
               onChange={(e) => handleChange(field, e.target.value)}
             />
           )
@@ -286,11 +280,7 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
           <InfoRow>
             <label htmlFor="profile-upload">
               <ProfileImage
-                src={
-                  editMode
-                    ? profileImagePreview
-                    : profileData.profileImage || profileImg
-                }
+                src={editMode ? profileImagePreview : profileData.profileImage}
                 alt="프로필"
                 style={{ cursor: editMode ? 'pointer' : 'default' }}
               />
@@ -303,10 +293,7 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
               onChange={handleProfileImageChange}
             />
             {editMode ? (
-              <Input
-                value={formData.name}
-                onChange={(e) => handleChange('name', e.target.value)}
-              />
+              <Input value={formData.name} onChange={(e) => handleChange('name', e.target.value)} />
             ) : (
               <Value>{profileData.name}</Value>
             )}
@@ -354,12 +341,8 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
       </Content>
 
       <ButtonWrapper>
-        <Button onClick={handleEditToggle}>
-          {editMode ? '저장' : '수정'}
-        </Button>
-        <DeleteButton onClick={() => setShowDeleteModal(true)}>
-          회원 탈퇴
-        </DeleteButton>
+        <Button onClick={handleEditToggle}>{editMode ? '저장' : '수정'}</Button>
+        <DeleteButton onClick={() => setShowDeleteModal(true)}>회원 탈퇴</DeleteButton>
       </ButtonWrapper>
 
       {showDeleteModal && (
@@ -372,17 +355,9 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
             />
-            <div
-              style={{
-                marginTop: '20px',
-                display: 'flex',
-                justifyContent: 'flex-end',
-              }}
-            >
+            <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
               <Button onClick={handleDeleteAccount}>회원 탈퇴</Button>
-              <DeleteButton onClick={() => setShowDeleteModal(false)}>
-                취소
-              </DeleteButton>
+              <DeleteButton onClick={() => setShowDeleteModal(false)}>취소</DeleteButton>
             </div>
           </ModalBox>
         </ModalOverlay>
