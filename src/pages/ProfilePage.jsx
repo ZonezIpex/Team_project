@@ -135,74 +135,22 @@ const ModalBox = styled.div`
   max-width: 400px;
 `;
 
-const translations = {
-  ko: {
-    title: '프로필 페이지',
-    edit: '수정',
-    save: '저장',
-    delete: '회원 탈퇴',
-    confirmDelete: '정말로 회원 탈퇴를 진행하시겠습니까?',
-    passwordPlaceholder: '비밀번호를 입력하세요',
-    cancel: '취소',
-    section1: '기본 정보',
-    birthLabel: '생년월일',
-    genderLabel: '성별',
-    section2: '연락처',
-    emailLabel: '이메일',
-    phoneLabel: '전화번호',
-    section3: '주소 및 회사',
-    homeLabel: '주소',
-    companyLabel: '회사',
-    section4: '군 복무',
-    militaryLabel: '군 복무 여부',
-    section5: '학력',
-    educationLabel: '학력',
-    section6: '경력',
-    experienceLabel: '경력',
-    section7: '자격증',
-    certificateLabel: '자격증',
-    section8: '어학 능력',
-    languageLabel: '어학 능력',
-  },
-  en: {
-    title: 'Profile Page',
-    edit: 'Edit',
-    save: 'Save',
-    delete: 'Delete Account',
-    confirmDelete: 'Are you sure you want to delete your account?',
-    passwordPlaceholder: 'Enter your password',
-    cancel: 'Cancel',
-    section1: 'Basic Information',
-    birthLabel: 'Birthday',
-    genderLabel: 'Gender',
-    section2: 'Contact',
-    emailLabel: 'Email',
-    phoneLabel: 'Phone',
-    section3: 'Address & Company',
-    homeLabel: 'Address',
-    companyLabel: 'Company',
-    section4: 'Military Service',
-    militaryLabel: 'Military Service',
-    section5: 'Education',
-    educationLabel: 'Education',
-    section6: 'Experience',
-    experienceLabel: 'Experience',
-    section7: 'Certificate',
-    certificateLabel: 'Certificate',
-    section8: 'Language Skills',
-    languageLabel: 'Language Skills',
-  },
+const formatPhoneInput = (value) => {
+  const onlyNums = value.replace(/[^0-9]/g, '');
+  if (onlyNums.length <= 3) return onlyNums;
+  if (onlyNums.length <= 7)
+    return `${onlyNums.slice(0, 3)}-${onlyNums.slice(3)}`;
+  return `${onlyNums.slice(0, 3)}-${onlyNums.slice(3, 7)}-${onlyNums.slice(7, 11)}`;
 };
 
 const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
-  const t = (key) => translations[language]?.[key] || key;
-
   const [profileData, setProfileData] = useState(null);
   const [formData, setFormData] = useState({});
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
+  const [profileImagePreview, setProfileImagePreview] = useState(profileImg);
 
   useEffect(() => {
     const mockData = {
@@ -218,12 +166,12 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
       experience: '프론트엔드 인턴 (2024.01 ~ 2024.06)',
       certificate: '정보처리기사',
       languageSkills: '영어 (중), 일본어 (초)',
+      profileImage: profileImg,
     };
-    setTimeout(() => {
-      setProfileData(mockData);
-      setFormData(mockData);
-      setLoading(false);
-    }, 1000);
+    setProfileData(mockData);
+    setFormData(mockData);
+    setProfileImagePreview(mockData.profileImage);
+    setLoading(false);
   }, []);
 
   const handleChange = (field, value) => {
@@ -231,7 +179,9 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
   };
 
   const handleEditToggle = () => {
-    if (editMode) setProfileData(formData);
+    if (editMode) {
+      setProfileData({ ...formData, profileImage: profileImagePreview });
+    }
     setEditMode(!editMode);
   };
 
@@ -239,9 +189,17 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
     if (passwordInput.trim()) {
       alert('회원 탈퇴 완료되었습니다.');
       setShowDeleteModal(false);
-      // 실제 API 호출은 여기서
     } else {
       alert('비밀번호를 입력해주세요.');
+    }
+  };
+
+  const handleProfileImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setProfileImagePreview(imageUrl);
+      handleChange('profileImage', imageUrl);
     }
   };
 
@@ -250,25 +208,26 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
       <Label>{label}</Label>
       {editMode ? (
         field === 'birthday' ? (
-          <Input
-            type="date"
-            value={formData[field] || ''}
-            onChange={(e) => handleChange(field, e.target.value)}
-          />
+          <Input type="date" value={formData[field] || ''} onChange={(e) => handleChange(field, e.target.value)} />
         ) : field === 'gender' ? (
-          <Select
-            value={formData[field] || ''}
-            onChange={(e) => handleChange(field, e.target.value)}
-          >
+          <Select value={formData[field] || ''} onChange={(e) => handleChange(field, e.target.value)}>
             <option value="남">남</option>
             <option value="여">여</option>
           </Select>
+        ) : field === 'military' ? (
+          <Select value={formData[field] || ''} onChange={(e) => handleChange(field, e.target.value)}>
+            <option value="미필">미필</option>
+            <option value="현역필">현역필</option>
+            <option value="방위필">방위필</option>
+            <option value="공익">공익</option>
+            <option value="면제">면제</option>
+            <option value="직업군인">직업군인</option>
+            <option value="단기사병">단기사병</option>
+          </Select>
+        ) : field === 'phone' ? (
+          <Input type="tel" value={formData[field] || ''} onChange={(e) => handleChange(field, formatPhoneInput(e.target.value))} />
         ) : (
-          <Input
-            type="text"
-            value={formData[field] || ''}
-            onChange={(e) => handleChange(field, e.target.value)}
-          />
+          <Input type="text" value={formData[field] || ''} onChange={(e) => handleChange(field, e.target.value)} />
         )
       ) : (
         <Value>{profileData[field]}</Value>
@@ -276,18 +235,31 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
     </InfoRow>
   );
 
-  if (loading || !profileData) return <div>Loading...</div>;
+  if (loading || !profileData) return null;
 
   return (
     <PageWrapper>
       <Header language={language} onChangeLanguage={onChangeLanguage} />
       <Content>
-        <Title>{t('title')}</Title>
+        <Title>프로필 페이지</Title>
 
         <InfoCard>
-          <SectionTitle>{t('section1')}</SectionTitle>
+          <SectionTitle>기본 정보</SectionTitle>
           <InfoRow>
-            <ProfileImage src={profileImg} alt="프로필 사진" />
+            <label htmlFor="profile-upload">
+              <ProfileImage
+                src={editMode ? profileImagePreview : profileData.profileImage || profileImg}
+                alt="프로필"
+                style={{ cursor: editMode ? 'pointer' : 'default' }}
+              />
+            </label>
+            <input
+              id="profile-upload"
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={handleProfileImageChange}
+            />
             {editMode ? (
               <Input
                 value={formData.name}
@@ -297,70 +269,66 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
               <Value>{profileData.name}</Value>
             )}
           </InfoRow>
-          {renderField(t('birthLabel'), 'birthday')}
-          {renderField(t('genderLabel'), 'gender')}
+          {renderField('생년월일', 'birthday')}
+          {renderField('성별', 'gender')}
         </InfoCard>
 
         <InfoCard>
-          <SectionTitle>{t('section2')}</SectionTitle>
-          {renderField(t('emailLabel'), 'email')}
-          {renderField(t('phoneLabel'), 'phone')}
+          <SectionTitle>연락처</SectionTitle>
+          {renderField('이메일', 'email')}
+          {renderField('전화번호', 'phone')}
         </InfoCard>
 
         <InfoCard>
-          <SectionTitle>{t('section3')}</SectionTitle>
-          {renderField(t('homeLabel'), 'home')}
-          {renderField(t('companyLabel'), 'company')}
+          <SectionTitle>주소 및 회사</SectionTitle>
+          {renderField('주소', 'home')}
+          {renderField('회사', 'company')}
         </InfoCard>
 
         <InfoCard>
-          <SectionTitle>{t('section4')}</SectionTitle>
-          {renderField(t('militaryLabel'), 'military')}
+          <SectionTitle>군 복무</SectionTitle>
+          {renderField('군 복무 여부', 'military')}
         </InfoCard>
 
         <InfoCard>
-          <SectionTitle>{t('section5')}</SectionTitle>
-          {renderField(t('educationLabel'), 'education')}
+          <SectionTitle>학력</SectionTitle>
+          {renderField('학력', 'education')}
         </InfoCard>
 
         <InfoCard>
-          <SectionTitle>{t('section6')}</SectionTitle>
-          {renderField(t('experienceLabel'), 'experience')}
+          <SectionTitle>경력</SectionTitle>
+          {renderField('경력', 'experience')}
         </InfoCard>
 
         <InfoCard>
-          <SectionTitle>{t('section7')}</SectionTitle>
-          {renderField(t('certificateLabel'), 'certificate')}
+          <SectionTitle>자격증</SectionTitle>
+          {renderField('자격증', 'certificate')}
         </InfoCard>
 
         <InfoCard>
-          <SectionTitle>{t('section8')}</SectionTitle>
-          {renderField(t('languageLabel'), 'languageSkills')}
+          <SectionTitle>어학 능력</SectionTitle>
+          {renderField('어학 능력', 'languageSkills')}
         </InfoCard>
       </Content>
 
       <ButtonWrapper>
-        <Button onClick={handleEditToggle}>
-          {editMode ? t('save') : t('edit')}
-        </Button>
-        <DeleteButton onClick={() => setShowDeleteModal(true)}>
-          {t('delete')}
-        </DeleteButton>
+        <Button onClick={handleEditToggle}>{editMode ? '저장' : '수정'}</Button>
+        <DeleteButton onClick={() => setShowDeleteModal(true)}>회원 탈퇴</DeleteButton>
       </ButtonWrapper>
 
       {showDeleteModal && (
         <ModalOverlay>
           <ModalBox>
-            <p>{t('confirmDelete')}</p>
+            <p>정말로 회원 탈퇴를 진행하시겠습니까?</p>
             <Input
               type="password"
-              placeholder={t('passwordPlaceholder')}
+              placeholder="비밀번호를 입력하세요"
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
             />
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
-              <Button onClick={handleDeleteAccount}>{t('delete')}</Button>
-              <DeleteButton onClick={() => setShowDeleteModal(false)}>{t('cancel')}</DeleteButton>
+              <Button onClick={handleDeleteAccount}>회원 탈퇴</Button>
+              <DeleteButton onClick={() => setShowDeleteModal(false)}>취소</DeleteButton>
             </div>
           </ModalBox>
         </ModalOverlay>
