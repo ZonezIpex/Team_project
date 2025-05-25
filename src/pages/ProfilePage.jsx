@@ -157,8 +157,8 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
       name: '고냥이',
       birthday: '2025-04-01',
       gender: '여',
-      email: 'cutecheeseCAT@cat.com',
-      phone: '010-1234-5678',
+      email: '',
+      phone: '',
       home: '대림대 전산관 5층 디지털미디어실습실',
       company: '안양시청',
       military: '면제',
@@ -175,7 +175,7 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
   }, []);
 
   const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleEditToggle = () => {
@@ -203,37 +203,75 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
     }
   };
 
-  const renderField = (label, field) => (
-    <InfoRow key={field}>
-      <Label>{label}</Label>
-      {editMode ? (
-        field === 'birthday' ? (
-          <Input type="date" value={formData[field] || ''} onChange={(e) => handleChange(field, e.target.value)} />
-        ) : field === 'gender' ? (
-          <Select value={formData[field] || ''} onChange={(e) => handleChange(field, e.target.value)}>
-            <option value="남">남</option>
-            <option value="여">여</option>
-          </Select>
-        ) : field === 'military' ? (
-          <Select value={formData[field] || ''} onChange={(e) => handleChange(field, e.target.value)}>
-            <option value="미필">미필</option>
-            <option value="현역필">현역필</option>
-            <option value="방위필">방위필</option>
-            <option value="공익">공익</option>
-            <option value="면제">면제</option>
-            <option value="직업군인">직업군인</option>
-            <option value="단기사병">단기사병</option>
-          </Select>
-        ) : field === 'phone' ? (
-          <Input type="tel" value={formData[field] || ''} onChange={(e) => handleChange(field, formatPhoneInput(e.target.value))} />
+  const renderField = (label, field) => {
+    const isEmail = field === 'email';
+    const isPhone = field === 'phone';
+
+    const placeholderMap = {
+      email: 'example@domain.com',
+      phone: '010-1234-5678',
+    };
+
+    return (
+      <InfoRow key={field}>
+        <Label>{label}</Label>
+        {editMode ? (
+          field === 'birthday' ? (
+            <Input
+              type="date"
+              value={formData[field] || ''}
+              onChange={(e) => handleChange(field, e.target.value)}
+            />
+          ) : field === 'gender' ? (
+            <Select
+              value={formData[field] || ''}
+              onChange={(e) => handleChange(field, e.target.value)}
+            >
+              <option value="남">남</option>
+              <option value="여">여</option>
+            </Select>
+          ) : field === 'military' ? (
+            <Select
+              value={formData[field] || ''}
+              onChange={(e) => handleChange(field, e.target.value)}
+            >
+              <option value="미필">미필</option>
+              <option value="현역필">현역필</option>
+              <option value="방위필">방위필</option>
+              <option value="공익">공익</option>
+              <option value="면제">면제</option>
+              <option value="직업군인">직업군인</option>
+              <option value="단기사병">단기사병</option>
+            </Select>
+          ) : isPhone ? (
+            <Input
+              type="tel"
+              value={formData[field] || ''}
+              onChange={(e) =>
+                handleChange(field, formatPhoneInput(e.target.value))
+              }
+              placeholder={placeholderMap.phone}
+            />
+          ) : isEmail ? (
+            <Input
+              type="email"
+              value={formData[field] || ''}
+              onChange={(e) => handleChange(field, e.target.value)}
+              placeholder={placeholderMap.email}
+            />
+          ) : (
+            <Input
+              type="text"
+              value={formData[field] || ''}
+              onChange={(e) => handleChange(field, e.target.value)}
+            />
+          )
         ) : (
-          <Input type="text" value={formData[field] || ''} onChange={(e) => handleChange(field, e.target.value)} />
-        )
-      ) : (
-        <Value>{profileData[field]}</Value>
-      )}
-    </InfoRow>
-  );
+          <Value>{profileData[field]}</Value>
+        )}
+      </InfoRow>
+    );
+  };
 
   if (loading || !profileData) return null;
 
@@ -248,7 +286,11 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
           <InfoRow>
             <label htmlFor="profile-upload">
               <ProfileImage
-                src={editMode ? profileImagePreview : profileData.profileImage || profileImg}
+                src={
+                  editMode
+                    ? profileImagePreview
+                    : profileData.profileImage || profileImg
+                }
                 alt="프로필"
                 style={{ cursor: editMode ? 'pointer' : 'default' }}
               />
@@ -312,8 +354,12 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
       </Content>
 
       <ButtonWrapper>
-        <Button onClick={handleEditToggle}>{editMode ? '저장' : '수정'}</Button>
-        <DeleteButton onClick={() => setShowDeleteModal(true)}>회원 탈퇴</DeleteButton>
+        <Button onClick={handleEditToggle}>
+          {editMode ? '저장' : '수정'}
+        </Button>
+        <DeleteButton onClick={() => setShowDeleteModal(true)}>
+          회원 탈퇴
+        </DeleteButton>
       </ButtonWrapper>
 
       {showDeleteModal && (
@@ -326,9 +372,17 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
             />
-            <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
+            <div
+              style={{
+                marginTop: '20px',
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
+            >
               <Button onClick={handleDeleteAccount}>회원 탈퇴</Button>
-              <DeleteButton onClick={() => setShowDeleteModal(false)}>취소</DeleteButton>
+              <DeleteButton onClick={() => setShowDeleteModal(false)}>
+                취소
+              </DeleteButton>
             </div>
           </ModalBox>
         </ModalOverlay>
