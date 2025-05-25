@@ -242,8 +242,18 @@ const [birth, setBirth] = useState(''); // ✅ 반드시 포함
 
     if (!firstName.trim()) messages.firstName = '이름을 입력해주세요.';
     if (!lastName.trim()) messages.lastName = '성을 입력해주세요.';
-    if (!password) messages.password = '비밀번호를 입력해주세요.';
-    if (!confirm) messages.confirm = '비밀번호를 재확인해주세요.';
+    if (!password) {
+      messages.password = '비밀번호를 입력해주세요.';
+    } else if (password.length < 8 || password.length > 20) {
+      messages.password = '비밀번호는 8자 이상 입력해주세요.';
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      messages.password = '특수문자를 포함해주세요.';
+    }
+    if (!confirm) {
+      messages.confirm = '비밀번호를 재확인해주세요.';
+    } else if (password !== confirm) {
+      messages.confirm = '비밀번호가 일치하지 않습니다.';
+    }
     if (!birth.trim()) messages.birth = '생년월일을 입력해주세요.';
     if (!address.trim()) messages.address = '주소를 입력해주세요.';
 
@@ -400,7 +410,7 @@ const [birth, setBirth] = useState(''); // ✅ 반드시 포함
           </div>
           <div style={{ position: 'relative' }}>
             <Input type={showPassword ? 'text' : 'password'} placeholder={t.password} value={password}
-              onChange={(e) => setPassword(e.target.value)} />
+              onChange={(e) => setPassword(e.target.value)} maxLength={20} />
             <button type="button" onClick={() => setShowPassword(!showPassword)}
               style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer' }}>
               {!showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
@@ -413,7 +423,7 @@ const [birth, setBirth] = useState(''); // ✅ 반드시 포함
           </div>
           <div style={{ position: 'relative' }}>
             <Input type={showConfirmPassword ? 'text' : 'password'} placeholder={t.confirm} value={confirm}
-              onChange={(e) => setConfirm(e.target.value)} />
+              onChange={(e) => setConfirm(e.target.value)} maxLength={20} />
             <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer' }}>
               {!showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
