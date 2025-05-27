@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { login } from '../contexts/AuthService';
 import { useAuth } from '../contexts/AuthContext';
+import api from '../api/axios'; 
 
 const Wrapper = styled.div`
   background: linear-gradient(to bottom, #79A7D3, #C3DAF5);
@@ -96,21 +97,45 @@ function LoginPage({ language, onChangeLanguage }) {
   const t = text[language || 'ko'];
 
   const handleLogin = async () => {
-  try {
-    const { isAdmin } = await login(email, password); // 세션 로그인 요청
-    auth.setUser({ loggedIn: true });
+    try {
+      const { isAdmin } = await login(email, password); // 세션 로그인 요청
+      auth.setUser({ loggedIn: true });
+      try {
+        const { token, isAdmin } = await login(email, password); // 서버 요청
+        console.log("Token received:", token); // 토큰 값 확인
 
-    if (isAdmin) {
-      navigate('/admin');
-    } else {
-      navigate('/');
+        if (token) {
+          // 로그인 성공 시 JWT 토큰을 localStorage에 저장
+          console.log("Saving token to localStorage...");
+          localStorage.setItem("token", token); // 토큰 저장
+          console.log("Token saved:", localStorage.getItem("token")); // 저장된 토큰 확인
+
+          const response = await api.get("/api/data");
+          const { username, isAdmin } = response.data;
+
+          auth.setUser({
+            loggedIn: true,
+            isAdmin,
+            username
+          });
+
+          if (isAdmin) {
+            navigate('/admin');
+          } else {
+            navigate('/');
+          }
+        } else {
+          throw new Error('Login failed');
+        }
+      } catch (error) {
+        console.error(error);
+        alert(t.error); // 로그인 실패 시 에러 메시지
+      }
+    } catch (error) {
+      console.error(error);
+      alert(t.error);
     }
-  } catch (error) {
-    console.error(error);
-    alert(t.error);
-  }
-};
-
+  };
 
   return (
     <Wrapper>

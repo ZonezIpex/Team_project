@@ -1,8 +1,9 @@
 // src/adminPages/users/UsersPage.jsx
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-import api from '../../api/axios';
-
+import api from '../../api/axios'; 
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled.div`
   padding: 40px;
@@ -60,12 +61,17 @@ const UserList = styled.div`
   gap: 14px;
 `;
 
-const UserCard = styled.div`
-  background: ${(props) =>
-    props.role === 'ADMIN' ? '#d0f0c0' : props.isApproved ? 'white' : '#ffe0e0'};
+const UserCard = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isApproved' && prop !== 'isAdmin',
+})`
+  background: ${(props) => {
+    if (props.isAdmin) return '#d0f0c0'; 
+    if (props.isApproved) return 'white'; 
+    return '#ffe0e0'; 
+  }};
   padding: 16px 20px;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -189,55 +195,67 @@ function UsersPage() {
   const [search, setSearch] = useState('');
   const [userList, setUserList] = useState([]);
   const [filter, setFilter] = useState('ALL');
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    // 로그인 안 됐거나 관리자가 아니면 홈으로 리디렉션
+    if (!user.loggedIn || !user.isAdmin) {
+      alert("접근 권한이 없습니다.");
+      navigate('/');
+    }
     fetchUsers();
-  }, []);
+  }, [user, navigate]);
 
   const fetchUsers = async () => {
+    try {
     const response = await api.get('/api/user');
     setUserList(response.data);
+  } catch (err) {
+    console.error('Error fetching users:', err.message);
+  }
   };
 
   const approveUser = async (userNo) => {
     try {
-      await api.post(`/api/user/approve-user/${userNo}`);
-      alert('승인되었습니다!');
-      fetchUsers();
-    } catch (err) {
-      console.error('Error approving user:', err.message);
-      alert('승인 실패');
-    }
+    await api.post(`/api/user/approve-user/${userNo}`);
+    alert('승인되었습니다!');
+    fetchUsers();
+  } catch (err) {
+    console.error('Error approving user:', err.message);
+    alert('승인 실패');
+  }
   };
 
   const deleteUser = async (userNo) => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
-    try {
-      await api.delete(`/api/user/${userNo}`);
-      alert('삭제되었습니다!');
-      fetchUsers();
-    } catch (err) {
-      console.error('Error deleting user:', err.message);
-      alert('삭제 실패');
-    }
+  try {
+    await api.delete(`/api/user/delete/${userNo}`);
+    alert('삭제되었습니다!');
+    fetchUsers();
+  } catch (err) {
+    console.error('Error deleting user:', err.message);
+    alert('삭제 실패');
+  }
   };
 
-  const toggleRole = (userNo) => {
-    setUserList(prevList =>
-      prevList.map(user =>
-        user.userNo === userNo
-          ? { ...user, userRole: user.userRole === 'USER' ? 'ADMIN' : 'USER' }
-          : user
-      )
-    );
-  };
+  const toggleRole = async (userNo, currentIsAdmin) => {
+  try {
+    await api.post(`/api/user/role/${userNo}`, { isAdmin: !currentIsAdmin });
+    alert('역할이 변경되었습니다!');
+    fetchUsers();
+  } catch (err) {
+    console.error('역할 변경 실패:', err.message);
+    alert('역할 변경 실패');
+  }
+};
 
   const filteredUsers = userList.filter(user => {
     const matchesSearch = user.userName.toLowerCase().includes(search.toLowerCase()) || user.userEmail.toLowerCase().includes(search.toLowerCase());
     const matchesFilter =
       filter === 'ALL' ||
-      (filter === 'ADMIN' && user.userRole === 'ADMIN') ||
-      (filter === 'USER' && user.userRole === 'USER') ||
+      (filter === 'ADMIN' && user.isAdmin) ||
+      (filter === 'USER' && !user.isAdmin) ||
       (filter === 'NOT_APPROVED' && !user.isApproved);
     return matchesSearch && matchesFilter;
   });
@@ -292,7 +310,7 @@ function UsersPage() {
 
         {filteredUsers.length > 0 ? (
           filteredUsers.map(user => (
-            <UserCard key={user.userNo} isApproved={user.isApproved} role={user.userRole}>
+            <UserCard key={user.userNo} isApproved={user.isApproved} isAdmin={user.isAdmin}>
               <div>
                 <div><strong>{user.userName}</strong> ({user.userEmail})</div>
                 <div>상태: {user.isApproved ? '승인됨' : '미승인'}</div>
@@ -300,8 +318,8 @@ function UsersPage() {
               <ButtonGroup>
                 {/* ✅ 승인된 사용자만 역할 변경 버튼 보이게 */}
                 {user.isApproved && (
-                  <RoleButton onClick={() => toggleRole(user.userNo)}>
-                    {user.userRole === 'ADMIN' ? '관리자' : '유저'}
+                  <RoleButton onClick={() => toggleRole(user.userNo, user.isAdmin)}>
+                  {user.isAdmin ? '관리자' : '유저'}
                   </RoleButton>
                 )}
 

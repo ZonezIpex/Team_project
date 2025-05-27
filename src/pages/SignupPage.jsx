@@ -2,22 +2,8 @@
 import styled from 'styled-components';
 import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { useState, useRef, useEffect } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { createGlobalStyle } from 'styled-components';
-
-const GlobalStyle = createGlobalStyle`
-  input::-ms-reveal { display: none; }
-  input::-webkit-credentials-auto-fill-button {
-    visibility: hidden;
-    display: none !important;
-    pointer-events: none;
-  }
-  input[type="password"]::-webkit-textfield-decoration-container {
-    display: none;
-  }
-`;
+import { useState } from 'react';
+import api from '../api/axios';
 
 const Wrapper = styled.div`
   background: linear-gradient(to bottom, #79A7D3, #C3DAF5);
@@ -278,24 +264,15 @@ const [birth, setBirth] = useState(''); // ✅ 반드시 포함
     const payload = { firstName, lastName, email: fullEmail, password, birth, address };
 
     try {
-      const res = await axios.post('http://sarm-server.duckdns.org:8888/api/user/register', payload);
-      alert(res.data);
-      navigate('/step2', {
-        state: {
-          formData: {
-            name: firstName,
-            firstName: lastName,
-            email: fullEmail,
-            address,
-            birthYear: birth.split('.')[0],
-            birthMonth: birth.split('.')[1],
-            birthDay: birth.split('.')[2],
-          },
-          language,
-        }
-      });
-    } catch (err) {
-      alert('회원가입 실패: ' + (err.response?.data || '서버 오류'));
+      console.log('Sending request to backend...');
+      const response = await api.post('/api/user/register', payload);
+      console.log('Response from server:', response);
+      alert(response.data); // 성공 메시지
+      navigate('/login'); // 로그인 페이지로 이동
+    } catch (error) {
+      console.error('회원가입 실패:', error);
+      console.error('Error details:', error.response?.data);
+      alert('회원가입 실패: ' + (error.response?.data || '서버 오류'));
     }
   };
 
