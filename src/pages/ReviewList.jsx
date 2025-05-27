@@ -227,7 +227,7 @@ const ReviewList = () => {
   }}>
     {sliderLikedMap[review.id] ? <FaHeart /> : <FaRegHeart />}
   </HeartButton>
-  <LikeCountText>{sliderLikedMap[review.id] ? "1명" : "0명"}</LikeCountText>
+  <LikeCountText>{bottomLikeCountMap[review.id] ? "1명" : "0명"}</LikeCountText>
   <RatingWrapper>
     {renderStars(4.5)} {/* ⭐ 별 렌더링 */}
     <RatingValue>4.5</RatingValue> {/* 🔢 점수 텍스트 */}

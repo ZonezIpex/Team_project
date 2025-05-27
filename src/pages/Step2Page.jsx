@@ -305,7 +305,7 @@ export default Step2Page;
 const PageWrapper = styled.div`background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff); min-height: 100vh; display: flex; flex-direction: column;`;
 const Container = styled.div`flex: 1; padding: 2rem; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; text-align: center;`;
 const Title = styled.h1`font-size: clamp(1.8rem, 3vw, 2.5rem); color: white; margin-top: 100px; margin-bottom: 30px;`;
-const ResumeInput = styled.div`background-color: white; padding: 20px 30px; border-radius: 20px; box-shadow: 3px 3px 10px -3px gray;`;
+const ResumeInput = styled.div`width:800px; background-color: white; padding: 20px 30px; border-radius: 20px; box-shadow: 3px 3px 10px -3px gray;`;
 const InputTitle = styled.h1`margin-top: 0; font-size: 1.2rem;`;
 const InfoSection = styled.div`display: flex; gap: 20px; margin-top: 30px; width: 100%; max-width: 800px;`;
 const PhotoBox = styled.div`width: 120px; height: 150px; border: 1px solid #aaa; display: flex; justify-content: center; align-items: center; flex-shrink: 0; cursor: pointer;`;
