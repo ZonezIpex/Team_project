@@ -71,7 +71,7 @@ function MainTop({ language }) {
       greeting: (name) => `안녕하세요, ${name} 님 👋\n당신의 이력서를 준비해볼까요?`,
     },
     en: {
-      title: 'Use the resume assistant\nto start writing easily',
+      title: ['Use the resume assistant', 'to start writing easily'],
       subtitle: '~Start writing your resume~',
       button: 'Start Resume',
       greeting: (name) => `Hello, ${name}! 👋\nReady to build your resume?`,
