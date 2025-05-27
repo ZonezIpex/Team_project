@@ -40,6 +40,13 @@ const bottomReviews = Array.from({ length: 15 }, (_, i) => ({
   image: resumeImage,
 }));
 
+const formatLikeCount = (count) => {
+  if (count >= 10000) {
+    return (count / 10000).toFixed(1) + '만';
+    }
+    return count.toString();
+  };
+
 const ReviewList = () => {
   const navigate = useNavigate();
 
@@ -60,14 +67,13 @@ const ReviewList = () => {
 
   const [selectedReview, setSelectedReview] = useState(null);
 
-  const [offset, setOffset] = useState(0);
-
   const text = {
     popular: language === "ko" ? "인기 리뷰" : "Popular",
     latest: language === "ko" ? "최신 리뷰" : "Latest",
     mine: language === "ko" ? "내 리뷰" : "My Review",
     all: language === "ko" ? "전체 리뷰" : "All Reviews",
     write: language === "ko" ? "내 리뷰 작성하러가기" : "Write a Review",
+    person: (count) => `${count}`,
   };
 
   useEffect(() => {
@@ -136,10 +142,10 @@ const ReviewList = () => {
   );
   const totalPages = Math.ceil(sliderReviews.length / imagesPerPage);
 
-  useEffect(() => {
+  /*useEffect(() => {
     const cardWidth = 240 + 16; // 카드 너비 + gap
     setOffset(page * cardWidth * imagesPerPage);
-  }, [page, imagesPerPage]);
+  }, [page, imagesPerPage]);*/
 
   const renderStars = (rating) => {
     const stars = [];
@@ -200,7 +206,7 @@ const ReviewList = () => {
                       >
                         {sliderLikedMap[review.id] ? <FaHeart /> : <FaRegHeart />}
                       </HeartButton>
-                      <LikeCountText>{sliderLikedMap[review.id] ? "1명" : "0명"}</LikeCountText>
+                      <LikeCountText>{formatLikeCount(sliderPopularLikes[review.id] || 0)}</LikeCountText>
                       <RatingWrapper>
                         {renderStars(4.5)}
                         <RatingValue>4.5</RatingValue>
@@ -244,7 +250,7 @@ const ReviewList = () => {
                     >
                       {bottomLikedMap[review.id] ? <FaHeart /> : <FaRegHeart />}
                     </HeartButton>
-                    <LikeCountText>{bottomLikedMap[review.id] ? "1명" : "0명"}</LikeCountText>
+                    <LikeCountText>{formatLikeCount(bottomLikeCountMap[review.id] || 0)}</LikeCountText>
                     <RatingWrapper>
                       {renderStars(4.5)}
                       <RatingValue>4.5</RatingValue>
@@ -455,12 +461,6 @@ const RatingValue = styled.span`
   font-size: 0.85rem;
   color: rgb(0, 0, 0);
   font-weight: bold;
-`;
-
-const RatingText = styled.span`
-  font-size: 0.85rem;
-  color: rgb(255, 230, 0);
-  margin-left: 0.3rem;
 `;
 
 // 상단 슬라이더용 텍스트 영역
