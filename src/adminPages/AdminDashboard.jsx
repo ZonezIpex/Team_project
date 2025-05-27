@@ -2,6 +2,8 @@
 import styled from 'styled-components';
 import Header from '../components/Header';
 import AdminSidebar from './components/AdminSidebar';
+import { useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 
 const PageWrapper = styled.div`
@@ -61,11 +63,23 @@ function AdminDashboard({ language, onChangeLanguage }) {
   const navigate = useNavigate();
   const location = useLocation();
   const isAdminHome = location.pathname === '/admin';
-  const adminName = localStorage.getItem('adminName') || '홍길동';
+  const username = localStorage.getItem('username') || '홍길동';
+  const { user } = useAuth();
+
+  const isLoading = user.isAdmin === undefined || user.loggedIn === undefined;
+
+
+  useEffect(() => {
+
+  if (!user.loggedIn || !user.isAdmin) {
+    alert("접근 권한이 없습니다.");
+    navigate('/');
+  }
+}, [user, navigate]);
 
   const pageText = {
     ko: {
-      greeting: `${adminName} 관리자님, 어서 오세요 👋`,
+      greeting: `${username} 관리자님, 어서 오세요 👋`,
       userPages: '전체 사용자용 페이지 미리보기',
       previews: [
         { path: '/', label: '메인 화면 (Lobby)' },
@@ -85,7 +99,7 @@ function AdminDashboard({ language, onChangeLanguage }) {
       ]
     },
     en: {
-      greeting: `Welcome, ${adminName} Admin 👋`,
+      greeting: `Welcome, ${username} Admin 👋`,
       userPages: 'Preview of all user-facing pages',
       previews: [
         { path: '/', label: 'Main Page (Lobby)' },
