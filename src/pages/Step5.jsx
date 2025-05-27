@@ -122,6 +122,48 @@ const text = {
       military: "Military Service"
     }
   },
+  sectionText: {
+    ko: {
+      email: "이메일",
+      phone: "전화번호",
+      birth: "생년월일",
+      
+      eduDate: "졸업일",
+      eduName: "학교명",
+      eduStatus: "졸업여부",
+      eduGrade: "성적",
+      
+      carPeriod: "근무기간",
+      carName: "회사명",
+      carPosition: "최종직위",
+      carResponsibilities: "담당업무",
+      
+      language: "언어명",
+      proficiency: "구사정도",
+      testName: "시험명",
+      score: "점수",
+    },
+    en: {
+      email: "Email",
+      phone: "Phone",
+      birth: "Birth",
+
+      eduDate: "Graduation Date",
+      eduName: "School Name",
+      eduStatus: "Graduation Status",
+      eduGrade: "Grade",
+      
+      carPeriod: "Employment Period",
+      carName: "Company Name",
+      carPosition: "Final Position",
+      carResponsibilities: "Responsibilities",
+      
+      language: "Language",
+      proficiency: "Proficiency",
+      testName: "Test Name",
+      score: "Score",
+    }
+  },
   next: { ko: "PDF 다운", en: "PDF DOWNLOAD" },
   prev: { ko: "이전", en: "Previous" }
 };
@@ -204,9 +246,9 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
 
             <div className="resume-section">
               <div className="resume-section-title">{getText("sectionTitles", "personal")}</div>
-              <div className="resume-text-line">이메일: {email}</div>
-              <div className="resume-text-line">전화번호: {phone}</div>
-              <div className="resume-text-line">생년월일: {birthYear}.{birthMonth}.{birthDay}</div>
+              <div className="resume-text-line">{getText("sectionText","email")}: {email}</div>
+              <div className="resume-text-line">{getText("sectionText","phone")}: {phone}</div>
+              <div className="resume-text-line">{getText("sectionText","birth")}: {birthYear}.{birthMonth}.{birthDay}</div>
             </div>
 
             {Array.isArray(certificate) && (
@@ -226,7 +268,7 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
                 <table className="resume-table">
                   <thead>
                     <tr>
-                      <th>졸업일</th><th>학교명</th><th>졸업여부</th><th>성적</th>
+                      <th>{getText("sectionText", "eduDate")}</th><th>{getText("sectionText", "eduName")}</th><th>{getText("sectionText", "eduStatus")}</th><th>{getText("sectionText", "eduGrade")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -244,7 +286,7 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
                 <table className="resume-table">
                   <thead>
                     <tr>
-                      <th>근무기간</th><th>회사명</th><th>최종직위</th><th>담당업무</th>
+                      <th>{getText("sectionText", "carPeriod")}</th><th>{getText("sectionText", "carName")}</th><th>{getText("sectionText", "carPosition")}</th><th>{getText("sectionText", "carResponsibilities")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -256,7 +298,7 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
               </div>
             )}
 
-            {military && (
+            {military && Object.values(military).some(value => value) && (
               <div className="resume-section">
                 <div className="resume-section-title">{getText("sectionTitles", "military")}</div>
                 <div className="resume-text-line">
@@ -273,7 +315,7 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
                 <table className="resume-table">
                   <thead>
                     <tr>
-                      <th>언어</th><th>구사정도</th><th>시험명</th><th>점수</th>
+                      <th>{getText("sectionText", "language")}</th><th>{getText("sectionText", "proficiency")}</th><th>{getText("sectionText", "testName")}</th><th>{getText("sectionText", "score")}</th>
                     </tr>
                   </thead>
                   <tbody>

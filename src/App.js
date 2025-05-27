@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
+
 import MainPage from './pages/MainPage';
 import MyPage from './pages/MyPage';
 import LoginPage from './pages/LoginPage';
