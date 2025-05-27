@@ -1,57 +1,41 @@
-import { jwtDecode } from 'jwt-decode';
-const API_URL = 'http://sarm-server.duckdns.org:8888/api/auth';
+import api from '../api/axios'; // axios 인스턴스 (withCredentials: true 포함)
 
-// 예: 로그인 API 호출
+// 로그인 (세션 생성)
 export const login = async (username, password) => {
-    const response = await fetch(`${API_URL}/login`, { //도메인 주소
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-    });
+  const response = await api.post('/api/auth/login', {
+    username,
+    password,
+  });
 
-    if (!response.ok) {
-        throw new Error("Login failed");
-    }
-
-    const data = await response.json();
-    console.log("Server Response:", data);
-    localStorage.setItem('token', data.token); // 토큰 저장 키 일관화
-
-    try {
-        const decoded = jwtDecode(data.token);
-        console.log("Decoded Token:", decoded);
-        return { token: data.token, isAdmin: decoded.isAdmin }; // 토큰과 isAdmin 반환
-    } catch (error) {
-        console.error('Failed to decode token:', error);
-        throw new Error('Failed to decode token');
-    }
+  // 백엔드에서 { isAdmin: true/false } 형태로 응답한다고 가정
+  return response.data; // { isAdmin: true }
 };
 
-export const logout = () => {
-    localStorage.removeItem('token'); // 토큰 제거 키 일관화
+// 로그아웃 (세션 삭제)
+export const logout = async () => {
+  await api.post('/api/auth/logout');
 };
 
+// 회원가입
 export const register = async (email, password, name) => {
-    const response = await fetch("http://sarm-server.duckdns.org:8888/api/user/register", { //도메인
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, name}),
-    });
-    if(!response.ok){
-        throw new Error("Failed to register: " + response.status);
-    }//
+  const response = await api.post('/api/user/register', {
+    email,
+    password,
+    name,
+  });
+
+  if (!response.status.toString().startsWith('2')) {
+    throw new Error(`Failed to register: ${response.status}`);
+  }
 };
 
-export const getIsAdmin = () => {
-    const token = localStorage.getItem('token');
-    if (!token) return false;
-
-    try {
-        const decoded = jwtDecode(token);
-        console.log("Decoded Token:", decoded);
-        return decoded.isAdmin === true; // 토큰에서 isAdmin 값을 확인
-    } catch (error) {
-        console.error('Failed to decode token:', error);
-        return false;
-    }
+// 관리자 여부 확인 (선택적으로 사용)
+export const getIsAdmin = async () => {
+  try {
+    const response = await api.get('/api/auth/check');
+    return response.data.isAdmin === true;
+  } catch (error) {
+    console.error('Admin check failed:', error);
+    return false;
+  }
 };
