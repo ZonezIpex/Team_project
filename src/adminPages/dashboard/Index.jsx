@@ -1,5 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext'
+import styled from 'styled-components';
+import { useState, useEffect } from 'react';
+import api from '../../api/axios'; // 상대 경로 확인 필요
+
 
 const Wrapper = styled.div`
   padding: 0 40px;
@@ -67,7 +71,7 @@ function DashboardMain({ language }) {
     try {
       const response = await api.get('/api/user'); // ✅ 토큰 자동 포함
       const users = response.data;
-      
+
       const totalUsers = users.length;
       const activeUsers = users.filter(u => u.isApproved).length;
       const adminUsers = users.filter(u => u.userRole === 'ADMIN').length;

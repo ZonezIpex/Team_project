@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-    // baseURL: 'http://sarm-server.duckdns.org:8888', // 서버 주소
-    baseURL: 'http://localhost:8888', //로컬
+     baseURL: 'http://sarm-server.duckdns.org:8888', // 서버 주소
+    //baseURL: 'http://localhost:8888', //로컬
     headers: {
         'Content-Type': 'application/json',
     },

@@ -2,8 +2,9 @@
 import styled from 'styled-components';
 import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import api from '../api/axios';
+import { useState, useEffect, useRef } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Wrapper = styled.div`
   background: linear-gradient(to bottom, #79A7D3, #C3DAF5);
@@ -288,7 +289,6 @@ const [birth, setBirth] = useState(''); // ✅ 반드시 포함
 
   return (
     <Wrapper>
-      <GlobalStyle />
       <Header language={language} onChangeLanguage={onChangeLanguage} />
       <JoinSection>
         <JoinBox>
