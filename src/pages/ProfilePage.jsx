@@ -153,6 +153,11 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [profileImagePreview, setProfileImagePreview] = useState(profileImg);
+  const [emailId, setEmailId] = useState('');
+  const [emailDomain, setEmailDomain] = useState('');
+  const [customDomain, setCustomDomain] = useState(false); // '직접 입력' 선택 여부
+
+
 
   useEffect(() => {
     const mockData = {
@@ -175,6 +180,14 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
       languageSkills: '영어 (중), 일본어 (초)',
       profileImage: profileImg,
     };
+
+    const [id, domain] = mockData.email.split('@');
+    setEmailId(id);
+    setEmailDomain(domain);
+    setProfileData(mockData);
+    setFormData(mockData);
+    setProfileImagePreview(mockData.profileImage);
+    setLoading(false);
     setProfileData(mockData);
     setFormData(mockData);
     setProfileImagePreview(mockData.profileImage);
@@ -197,11 +210,16 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
   };
 
   const handleEditToggle = () => {
-    if (editMode) {
-      setProfileData({ ...formData, profileImage: profileImagePreview });
-    }
-    setEditMode(!editMode);
-  };
+  if (editMode) {
+    setProfileData({ 
+      ...formData, 
+      profileImage: profileImagePreview,
+      email: `${emailId}@${emailDomain}`,
+    });
+  }
+  setEditMode(!editMode);
+};
+
 
   const handleDeleteAccount = () => {
     if (passwordInput.trim()) {
@@ -222,66 +240,104 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
   };
 
   const renderField = (label, field) => {
-    const isEmail = field === 'email';
-    const isPhone = field === 'phone';
+  const isEmail = field === 'email';
+  const isPhone = field === 'phone';
 
-    const placeholderMap = {
-      email: 'example@domain.com',
-      phone: '010-1234-5678',
-    };
-
-    return (
-      <InfoRow key={field}>
-        <Label>{label}</Label>
-        {editMode ? (
-          field === 'birthday' ? (
-            <Input
-              type="date"
-              value={formData[field] || ''}
-              onChange={(e) => handleChange(field, e.target.value)}
-            />
-          ) : field === 'gender' ? (
-            <Select value={formData[field]} onChange={(e) => handleChange(field, e.target.value)}>
-              <option value="남">남</option>
-              <option value="여">여</option>
-            </Select>
-          ) : field === 'military' ? (
-            <Select value={formData[field]} onChange={(e) => handleChange(field, e.target.value)}>
-              <option value="미필">미필</option>
-              <option value="현역필">현역필</option>
-              <option value="방위필">방위필</option>
-              <option value="공익">공익</option>
-              <option value="면제">면제</option>
-              <option value="직업군인">직업군인</option>
-              <option value="단기사병">단기사병</option>
-            </Select>
-          ) : isPhone ? (
-            <Input
-              type="tel"
-              value={formData[field]}
-              onChange={(e) => handleChange(field, formatPhoneInput(e.target.value))}
-              placeholder={placeholderMap.phone}
-            />
-          ) : isEmail ? (
-            <Input
-              type="email"
-              value={formData[field]}
-              onChange={(e) => handleChange(field, e.target.value)}
-              placeholder={placeholderMap.email}
-            />
-          ) : (
-            <Input
-              type="text"
-              value={formData[field]}
-              onChange={(e) => handleChange(field, e.target.value)}
-            />
-          )
-        ) : (
-          <Value>{profileData[field]}</Value>
-        )}
-      </InfoRow>
-    );
+  const placeholderMap = {
+    email: 'example@domain.com',
+    phone: '010-1234-5678',
   };
+
+  return (
+    <InfoRow key={field}>
+      <Label>{label}</Label>
+      {editMode ? (
+        field === 'birthday' ? (
+          <Input
+            type="date"
+            value={formData[field] || ''}
+            onChange={(e) => handleChange(field, e.target.value)}
+          />
+        ) : field === 'gender' ? (
+          <Select value={formData[field]} onChange={(e) => handleChange(field, e.target.value)}>
+            <option value="남">남</option>
+            <option value="여">여</option>
+          </Select>
+        ) : field === 'military' ? (
+          <Select value={formData[field]} onChange={(e) => handleChange(field, e.target.value)}>
+            <option value="미필">미필</option>
+            <option value="현역필">현역필</option>
+            <option value="방위필">방위필</option>
+            <option value="공익">공익</option>
+            <option value="면제">면제</option>
+            <option value="직업군인">직업군인</option>
+            <option value="단기사병">단기사병</option>
+          </Select>
+        ) : isPhone ? (
+          <Input
+            type="tel"
+            value={formData[field]}
+            onChange={(e) => handleChange(field, formatPhoneInput(e.target.value))}
+            placeholder={placeholderMap.phone}
+          />
+        ) : isEmail ? (
+ <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+  <Input
+    type="text"
+    value={emailId}
+    onChange={(e) => setEmailId(e.target.value)}
+    placeholder="이메일 아이디"
+    style={{ maxWidth: '160px' }}
+  />
+  <span>@</span>
+  {!customDomain ? (
+    <Select
+      value={emailDomain}
+      onChange={(e) => {
+        if (e.target.value === 'custom') {
+          setCustomDomain(true);
+          setEmailDomain('');
+        } else {
+          setEmailDomain(e.target.value);
+        }
+      }}
+      style={{ maxWidth: '160px' }}
+    >
+      <option value="">선택</option>
+      <option value="naver.com">naver.com</option>
+      <option value="gmail.com">gmail.com</option>
+      <option value="yahoo.com">yahoo.com</option>
+      <option value="outlook.com">outlook.com</option>
+      <option value="nate.net">nate.net</option>
+      <option value="hanmail.net">hanmail.net</option>
+      <option value="daum.net">daum.net</option>
+      <option value="hotmail.com">hotmail.comt</option>
+      <option value="custom">직접 입력</option>
+    </Select>
+  ) : (
+    <Input
+      type="text"
+      value={emailDomain}
+      onChange={(e) => setEmailDomain(e.target.value)}
+      placeholder="도메인 입력 (예: example.com)"
+      style={{ maxWidth: '160px' }}
+    />
+  )}
+</div>
+        ) : (
+          <Input
+            type="text"
+            value={formData[field]}
+            onChange={(e) => handleChange(field, e.target.value)}
+          />
+        )
+      ) : (
+        <Value>{profileData[field]}</Value>
+      )}
+    </InfoRow>
+  );
+};
+
 
   if (loading || !profileData) return null;
 
@@ -450,7 +506,7 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
           </ModalOverlay>
         )}
       </Content>
-      <Footer />
+      <Footer language={language} />
     </PageWrapper>
   );
 };
