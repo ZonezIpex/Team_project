@@ -97,6 +97,11 @@ const StepButton = styled.div`
   margin-top: 40px;
 `;
 
+const Content = styled.div`
+    width: 2480px;
+    hegit: 3508px;
+`;
+
 // 텍스트 객체
 const text = {
   title: { ko: "경력 입력", en: "Enter Experience" },
@@ -238,7 +243,9 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
           ))}
         </Stepper>
 
+
         <div id="pdf-download" className={`resume-template-${selectedTemplate}`}>
+
           <div className="resume-left">
             {photo && <img src={photo} alt="사진" className="resume-photo" />}
             <div className="resume-name">{firstName} {name}</div>
@@ -327,6 +334,7 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
               </div>
             )}
           </div>
+          
         </div>
 
         <StepButton>
