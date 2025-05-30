@@ -25,44 +25,43 @@ const Content = styled.div`
 
 const Title = styled.h1`
   font-size: clamp(1.8rem, 3vw, 2.5rem);
-  color: white;
+  color: #fff;
   margin-bottom: 40px;
   font-weight: 700;
-  letter-spacing: -0.5px;
 `;
 
 const ProfileSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 24px;
   margin-bottom: 50px;
 `;
 
 const ProfileImage = styled.img`
   width: 120px;
   height: 120px;
-  border-radius: 16px;
+  border-radius: 20px;
   object-fit: cover;
-  border: 3px solid white;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border: 3px solid #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 `;
 
 const ProfileText = styled.div`
-  color: white;
-  font-size: clamp(1.2rem, 2vw, 1.6rem);
-  font-weight: bold;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 600;
 `;
 
 const LinkText = styled.div`
-  color: white;
+  color: #fff;
   font-size: 1rem;
-  margin-top: 12px;
+  margin-top: 10px;
   cursor: pointer;
   text-decoration: underline;
   transition: color 0.2s;
 
   &:hover {
-    color: #ffeb3b;
+    color: #ffe169;
   }
 `;
 
@@ -73,32 +72,32 @@ const TabContainer = styled.div`
 
 const TabHeader = styled.div`
   display: flex;
-  background-color: #d2ecfb;
+  background-color: #d9f1ff;
   border-radius: 16px 16px 0 0;
   overflow: hidden;
 `;
 
 const TabButton = styled.button`
   flex: 1;
-  background-color: ${(props) => (props.active ? "#64a8f0" : "#eaf8ff")};
-  color: ${(props) => (props.active ? "#ffffff" : "#003049")};
+  background-color: ${(props) => (props.active ? "#5ca7e8" : "#eaf8ff")};
+  color: ${(props) => (props.active ? "#fff" : "#004080")};
   font-size: 1.05rem;
   font-weight: 600;
-  padding: 0.9rem 1.2rem;
+  padding: 1rem;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s ease;
   border-top-left-radius: ${(props) => (props.position === "left" ? "16px" : "0")};
   border-top-right-radius: ${(props) => (props.position === "right" ? "16px" : "0")};
   border-bottom: ${(props) => (props.active ? "none" : "1px solid #ccc")};
+  transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${(props) => (props.active ? "#64a8f0" : "#d2ecfb")};
+    background-color: ${(props) => (props.active ? "#5ca7e8" : "#cbe9ff")};
   }
 `;
 
 const TabContentBox = styled.div`
-  background-color: #ffffff;
+  background-color: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 0 0 20px 20px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
@@ -107,55 +106,55 @@ const TabContentBox = styled.div`
 
 const CardList = styled.div`
   display: flex;
-  gap: 30px;
+  gap: 24px;
   justify-content: center;
   flex-wrap: wrap;
 `;
 
 const ResumeCard = styled.div`
-  width: 200px;
+  width: 220px;
   background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
 
   img {
     width: 100%;
     height: 260px;
     object-fit: cover;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #e0e0e0;
   }
 
   &:hover {
     transform: translateY(-6px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   }
 `;
 
 const ReviewCard = styled.div`
-  width: 200px;
+  width: 220px;
   background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   padding: 20px;
   font-size: 0.95rem;
   line-height: 1.5;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
+  transition: all 0.3s ease;
 
   strong {
-    font-weight: 700;
-    font-size: 1rem;
     display: block;
-    margin-bottom: 5px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 6px;
     color: #333;
   }
 
   &:hover {
     transform: translateY(-6px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   }
 `;
 

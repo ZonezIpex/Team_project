@@ -311,7 +311,7 @@ const ProfilePage = ({ language = 'ko', onChangeLanguage }) => {
       <option value="nate.net">nate.net</option>
       <option value="hanmail.net">hanmail.net</option>
       <option value="daum.net">daum.net</option>
-      <option value="hotmail.com">hotmail.comt</option>
+      <option value="hotmail.com">hotmail.com</option>
       <option value="custom">직접 입력</option>
     </Select>
   ) : (
