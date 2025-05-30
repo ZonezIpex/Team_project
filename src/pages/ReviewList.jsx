@@ -262,7 +262,7 @@ const ReviewList = () => {
         // 삭제 처리 로직: confirm → fetch → 상태 갱신 등
         if (window.confirm(text.deleteConfirm)) {
           // 여기에 삭제 API 연동 또는 상태 제거 처리
-          alert(text.deleteAlert(review.id));
+          alert(text.deleteAlert(review.title));
         }
       }}
     >
