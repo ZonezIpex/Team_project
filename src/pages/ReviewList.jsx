@@ -74,6 +74,10 @@ const ReviewList = () => {
     all: language === "ko" ? "전체 리뷰" : "All Reviews",
     write: language === "ko" ? "내 리뷰 작성하러가기" : "Write a Review",
     person: (count) => `${count}`,
+    edit: language === "ko" ? "수정하기" : "Edit",
+    delete: language === "ko" ? "삭제하기" : "Delete",
+    deleteConfirm: language === "ko" ? "정말 삭제하시겠습니까?" : "Are you sure you want to delete this review?",
+    deleteAlert: (title) => language === "ko" ? `리뷰 "${title}"가 삭제되었습니다.` : `Review "${title}" has been deleted.`,
   };
 
   useEffect(() => {
@@ -250,19 +254,19 @@ const ReviewList = () => {
         navigate("/review/write");
       }}
     >
-      수정하기
+      {text.edit}
     </EditButton>
     <DeleteButton
       onClick={(e) => {
         e.stopPropagation();
         // 삭제 처리 로직: confirm → fetch → 상태 갱신 등
-        if (window.confirm("정말 삭제하시겠습니까?")) {
+        if (window.confirm(text.deleteConfirm)) {
           // 여기에 삭제 API 연동 또는 상태 제거 처리
-          alert(`리뷰 ${review.id} 삭제됨 (예시)`);
+          alert(text.deleteAlert(review.id));
         }
       }}
     >
-      삭제하기
+      {text.delete}
     </DeleteButton>
   </EditDeleteButtonWrapper>
 )}
