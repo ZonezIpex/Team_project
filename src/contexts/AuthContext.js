@@ -1,38 +1,35 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import api from '../api/axios';
-
+import api from '../api/axios'; 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState({
-        loggedIn: false,
-        isAdmin: false,
-        username: null
-    });
+    loggedIn: false,
+    isAdmin: false,
+    username: '',
+  });
 
     useEffect(() => {
-        // 세션 기반 로그인 여부 확인
-        const checkSession = async () => {
-            try {
-                const res = await api.get('/api/user/data'); // or /api/auth/check
-                const { isAdmin, username } = res.data;
 
-                setUser({
-                    loggedIn: true,
-                    isAdmin: !!isAdmin,
-                    username: username || null
-                });
+        const fetchUserInfo = async () => {
+            try {
+                const response = await api.get('/api/data'); // ✅ 토큰 자동 포함
+                console.log('User data:', response.data);
+                const { username, isAdmin } = response.data;
+
+        setUser({
+          loggedIn: true,
+          isAdmin: isAdmin,
+          username: username,
+        });
+        localStorage.setItem('username', username);
             } catch (err) {
-                console.log('User is not logged in:', err.message);
-                setUser({
-                    loggedIn: false,
-                    isAdmin: false,
-                    username: null
-                });
+                console.error("Fetch error:", err);
+                setUser({ loggedIn: false, isAdmin: false, username: '' });
             }
         };
 
-        checkSession();
+        fetchUserInfo();
     }, []);
 
     return (

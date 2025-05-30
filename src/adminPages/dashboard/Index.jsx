@@ -1,7 +1,9 @@
-// src/adminPages/dashboard/Index.jsx
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext'
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
-import api from '../../api/axios';
+import { useState, useEffect } from 'react';
+import api from '../../api/axios'; // 상대 경로 확인 필요
+
 
 const Wrapper = styled.div`
   padding: 0 40px;
@@ -53,24 +55,30 @@ function DashboardMain({ language }) {
     totalReviews: 0,
     resumeSubmissions: 0
   });
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
 
   useEffect(() => {
+      if (!user.loggedIn || !user.isAdmin) {
+        alert("접근 권한이 없습니다.");
+        navigate('/');
+      }
     fetchAllStats();
-  }, []);
+    }, [user, navigate]);
 
   const fetchAllStats = async () => {
     try {
-      const userResponse = await api.get('/api/user');
-
-      const users = userResponse.data;
+      const response = await api.get('/api/user'); // ✅ 토큰 자동 포함
+      const users = response.data;
 
       const totalUsers = users.length;
       const activeUsers = users.filter(u => u.isApproved).length;
       const adminUsers = users.filter(u => u.userRole === 'ADMIN').length;
 
-      // 🚀 (등록된 리뷰, 이력서 제출 수는 추후 API 연결되면 따로 가져오면 됨)
-      const totalReviews = 0;  // 예시
-      const resumeSubmissions = 0;  // 예시
+      // 예시 데이터 (추후 실제 API 연결 시 교체)
+      const totalReviews = 0;
+      const resumeSubmissions = 0;
 
       setStats({ totalUsers, activeUsers, adminUsers, totalReviews, resumeSubmissions });
 

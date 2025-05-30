@@ -36,7 +36,7 @@ const allTopReviews = [
 const bottomReviews = Array.from({ length: 15 }, (_, i) => ({
   id: 300 + i,
   title: `전체 리뷰 ${i + 1}`,
-  desc: "하단 독립 리뷰 설명입니다.하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다",
+  desc: "하단 독립 리뷰 설명입니다.하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다하단 독립 리뷰 설명입니다",
   image: resumeImage,
 }));
 
@@ -62,7 +62,6 @@ const ReviewList = () => {
 
   const [offset, setOffset] = useState(0);
 
-
   const text = {
     popular: language === "ko" ? "인기 리뷰" : "Popular",
     latest: language === "ko" ? "최신 리뷰" : "Latest",
@@ -70,6 +69,7 @@ const ReviewList = () => {
     all: language === "ko" ? "전체 리뷰" : "All Reviews",
     write: language === "ko" ? "내 리뷰 작성하러가기" : "Write a Review",
   };
+
   useEffect(() => {
     localStorage.setItem("language", language);
   }, [language]);
@@ -119,11 +119,11 @@ const ReviewList = () => {
   const handleCardClick = (review) => {
     setSelectedReview(review);
   };
-  
+
   const closeModal = () => {
     setSelectedReview(null);
   };
-  
+
   const tabList = [
     { type: "인기", label: text.popular },
     { type: "최신", label: text.latest },
@@ -154,6 +154,13 @@ const ReviewList = () => {
     return stars;
   };
 
+  useEffect(() => {
+    if (selectedReview) {
+      document.body.style.overflow = 'hidden'; // 바디 스크롤 막기
+    } else {
+      document.body.style.overflow = 'auto';   // 바디 스크롤 다시 허용
+    }
+  }, [selectedReview]);
 
   return (
     <PageWrapper>
@@ -161,116 +168,125 @@ const ReviewList = () => {
       <Container>
         <TopBoxButtonsWrapper>
           {tabList.map(({ type, label }) => (
-            <TopButton key={type} isActive={reviewType === type} onClick={() => {
-              setReviewType(type);
-              setPage(0);
-            }}>
+            <TopButton
+              key={type}
+              isActive={reviewType === type}
+              onClick={() => {
+                setReviewType(type);
+                setPage(0);
+              }}
+            >
               {label}
             </TopButton>
           ))}
         </TopBoxButtonsWrapper>
-
+  
         <TopBox>
           <SliderWrapper>
-            <NavButton onClick={() => setPage(prev => Math.max(prev - 1, 0))} disabled={page === 0}>◀</NavButton>
+            <NavButton onClick={() => setPage(prev => Math.max(prev - 1, 0))} disabled={page === 0}>
+              ◀
+            </NavButton>
             <ImageGrid perPage={imagesPerPage}>
               {visibleSlider.map((review) => (
-                <ImageCard onClick={() => handleCardClick(review)} hoverable>
-  <img src={review.image} alt={`resume-${review.id}`} />
-              
-                <SliderCardTextWrapper>
-                  <HeartRow>
-  <HeartButton onClick={(e) => {
-    e.stopPropagation(); // 클릭 이벤트 막기
-    toggleSliderLike(review.id);
-  }}>
-    {sliderLikedMap[review.id] ? <FaHeart /> : <FaRegHeart />}
-  </HeartButton>
-  <LikeCountText>{sliderLikedMap[review.id] ? "1명" : "0명"}</LikeCountText>
-  <RatingWrapper>
-    {renderStars(4.5)} {/* ⭐ 별 렌더링 */}
-    <RatingValue>4.5</RatingValue> {/* 🔢 점수 텍스트 */}
-  </RatingWrapper>
-</HeartRow>
-
-              
-                  <CardTitle>
-  {review.title.length > 10
-    ? `${review.title.slice(0, 10)}...`
-    : review.title}
-</CardTitle>
-
-<CardDesc>
-  {review.desc && review.desc.length > 35
-    ? `${review.desc.slice(0, 35)}...`
-    : review.desc || ""}
-</CardDesc>
-                </SliderCardTextWrapper>
-              </ImageCard>
+                <ImageCard onClick={() => handleCardClick(review)} hoverable key={review.id}>
+                  <img src={review.image} alt={`resume-${review.id}`} />
+                  <SliderCardTextWrapper>
+                    <HeartRow>
+                      <HeartButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleSliderLike(review.id);
+                        }}
+                      >
+                        {sliderLikedMap[review.id] ? <FaHeart /> : <FaRegHeart />}
+                      </HeartButton>
+                      <LikeCountText>{sliderLikedMap[review.id] ? "1명" : "0명"}</LikeCountText>
+                      <RatingWrapper>
+                        {renderStars(4.5)}
+                        <RatingValue>4.5</RatingValue>
+                      </RatingWrapper>
+                    </HeartRow>
+                    <CardTitle>
+                      {review.title.length > 10 ? `${review.title.slice(0, 10)}...` : review.title}
+                    </CardTitle>
+                    <CardDesc>
+                      {review.desc && review.desc.length > 35
+                        ? `${review.desc.slice(0, 35)}...`
+                        : review.desc || ""}
+                    </CardDesc>
+                  </SliderCardTextWrapper>
+                </ImageCard>
               ))}
             </ImageGrid>
-            <NavButton onClick={() => setPage(prev => Math.min(prev + 1, totalPages - 1))} disabled={page === totalPages - 1}>▶</NavButton>
+            <NavButton
+              onClick={() => setPage(prev => Math.min(prev + 1, totalPages - 1))}
+              disabled={page === totalPages - 1}
+            >
+              ▶
+            </NavButton>
           </SliderWrapper>
         </TopBox>
+  
         <CenterLabel>{text.all}</CenterLabel>
+  
         <BottomBox>
           <ScrollableList>
             {bottomReviews.map((review) => (
               <BottomReviewCard key={review.id} onClick={() => handleCardClick(review)}>
-              <img src={review.image} alt={`resume-${review.id}`} />
-              
-              <CardRightContent>
-                <HeartRow>
-  <HeartButton onClick={(e) => {
-    e.stopPropagation(); // 클릭 이벤트 막기
-    toggleBottomLike(review.id);
-  }}>
-    {sliderLikedMap[review.id] ? <FaHeart /> : <FaRegHeart />}
-  </HeartButton>
-  <LikeCountText>{bottomLikeCountMap[review.id] ? "1명" : "0명"}</LikeCountText>
-  <RatingWrapper>
-    {renderStars(4.5)} {/* ⭐ 별 렌더링 */}
-    <RatingValue>4.5</RatingValue> {/* 🔢 점수 텍스트 */}
-  </RatingWrapper>
-</HeartRow>
-
-            
-                <BottomCardTextWrapper>
-  <CardTitle>
-    {review.title.length > 10
-      ? `${review.title.slice(0, 10)}...`
-      : review.title}
-  </CardTitle>
-  <CardDesc>
-  {review.desc?.length > 35
-    ? `${review.desc.slice(0, 35)}...`
-    : review.desc || ""}
-</CardDesc>
-</BottomCardTextWrapper>
-              </CardRightContent>
-            </BottomReviewCard>
-            
+                <img src={review.image} alt={`resume-${review.id}`} />
+                <CardRightContent>
+                  <HeartRow>
+                    <HeartButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleBottomLike(review.id);
+                      }}
+                    >
+                      {bottomLikedMap[review.id] ? <FaHeart /> : <FaRegHeart />}
+                    </HeartButton>
+                    <LikeCountText>{bottomLikedMap[review.id] ? "1명" : "0명"}</LikeCountText>
+                    <RatingWrapper>
+                      {renderStars(4.5)}
+                      <RatingValue>4.5</RatingValue>
+                    </RatingWrapper>
+                  </HeartRow>
+                  <BottomCardTextWrapper>
+                    <CardTitle>
+                      {review.title.length > 10 ? `${review.title.slice(0, 10)}...` : review.title}
+                    </CardTitle>
+                    <CardDesc>
+                      {review.desc?.length > 35
+                        ? `${review.desc.slice(0, 35)}...`
+                        : review.desc || ""}
+                    </CardDesc>
+                  </BottomCardTextWrapper>
+                </CardRightContent>
+              </BottomReviewCard>
             ))}
             <BottomPaddingSpacer />
           </ScrollableList>
         </BottomBox>
-
+  
         <WriteButton onClick={() => navigate("/review/write")}>
           {text.write}
         </WriteButton>
-
+  
         {selectedReview && (
-  <ModalOverlay onClick={closeModal}>
-    <ModalContent onClick={(e) => e.stopPropagation()}>
-      <img src={selectedReview.image} alt="modal" />
-      <h2>{selectedReview.title}</h2>
-      <p>{selectedReview.desc}</p> {/* ✅ 이 부분을 text.desc → selectedReview.desc로 수정 */}
-      <CloseButton onClick={closeModal}>닫기</CloseButton>
-    </ModalContent>
-  </ModalOverlay>
-)}
+          <ModalOverlay onClick={closeModal}>
+            <ModalContent onClick={(e) => e.stopPropagation()}>
+              <CloseButton onClick={closeModal}>×</CloseButton>
+              <ModalBody>
+                <img src={selectedReview.image} alt="modal" />
+                <h2>{selectedReview.title}</h2>
+                <p>{selectedReview.desc}</p>
+              </ModalBody>
+            </ModalContent>
+          </ModalOverlay>
+        )}
       </Container>
-      <Footer language={language} />
+      <StickyFooter>
+        <Footer language={language} />
+      </StickyFooter>
     </PageWrapper>
   );
 };
@@ -288,6 +304,7 @@ const PageWrapper = styled.div`
 `;
 
 const Container = styled.div`
+flex: 1;  // ✅ footer 위까지 채움
   background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
   width: 100%;
   display: flex;
@@ -480,9 +497,14 @@ const CardDesc = styled.div`
 
 const CenterLabel = styled.h2`
   font-size: 1.8rem;
-  color: #003049;
-  margin: 1rem 0;
+  color: white;
+  background-color: rgba(61, 194, 255, 0.47); /* 아주 연한 하늘색 배경 */
+  backdrop-filter: blur(6px); /* 흐림 효과 추가 */
+  -webkit-backdrop-filter: blur(6px); /* Safari 지원 */
+  padding: 0.4rem 1rem;
+  border-radius: 12px;
   text-align: center;
+  display: inline-block;
 `;
 
 const BottomBox = styled.div`
@@ -571,9 +593,9 @@ const CardRightContent = styled.div`
 const WriteButton = styled.button`
   margin-top: 1.5rem;
   padding: 0.8rem 1.6rem;
-  background-color: rgb(129, 215, 255);
+  background-color: #146c94;
   color: white;
-  border: none;
+  border: 2px solid #146c94; /* ✅ 기본 border 설정 */
   border-radius: 999px;
   font-size: 1rem;
   font-weight: bold;
@@ -581,7 +603,8 @@ const WriteButton = styled.button`
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #217dbb;
+    background-color: white;
+    color: #146c94; /* ✅ hover 시 텍스트 색상 변경 */
   }
 `;
 
@@ -598,15 +621,22 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   background: white;
-  padding: 2rem;
   border-radius: 16px;
   max-width: 600px;
   width: 90%;
-  max-height: 90vh; /* ✅ 최대 높이 제한 */
-  overflow-y: auto;  /* ✅ 내부 스크롤 가능하게 */
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  text-align: center;
-  box-sizing: border-box; /* ✅ 중요 */
+  max-height: 90vh;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ModalBody = styled.div`
+  overflow-y: auto;
+  padding: 2rem;
+  max-height: 80vh; /* 스크롤 제한 높이 */
+  box-sizing: border-box;
 
   img {
     width: 100%;
@@ -614,39 +644,63 @@ const ModalContent = styled.div`
     margin-bottom: 1rem;
   }
 
-  /* ✅ 스크롤바 꾸미기 */
+  h2 {
+    margin-top: 0;
+  }
+
+  /* 스크롤바 스타일 */
   &::-webkit-scrollbar {
-    width: 12px;                  /* 스크롤바 너비 */
+    width: 12px;
   }
 
   &::-webkit-scrollbar-track {
-    background:rgb(255, 255, 255);          /* 트랙 배경색 */
+    background: #fff;
     border-radius: 10px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgb(129, 215, 255);       /* 스크롤바 색 */
+    background: rgb(129, 215, 255);
     border-radius: 12px;
-    border: 1.5px solid white;      /* 안쪽 간격처럼 보이게 */
+    border: 1.5px solid white;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: #217dbb;          /* hover 시 색 변경 */
+    background: #217dbb;
   }
 `;
 
+
 const CloseButton = styled.button`
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: rgb(129, 215, 255);
-  border: none;
-  border-radius: 999px;
-  color: white;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  background-color: #146c94; /* 하늘색 배경 */
+  color: white;              /* 흰색 X */
+  border: 2px solid transparent;
+  border-radius: 50%;        /* 동그란 모양 */
+  font-size: 1.2rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;    // ✅ 부드럽게 색 전환
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    background-color: #217dbb;
+    background-color: white;     /* hover 시 배경 하얀색 */
+    color: #146c94;;              /* X는 하늘색 */
+    border-color: #146c94;;       /* 테두리 하늘색 */
   }
+`;
+
+const StickyFooter = styled.footer`
+  background-color: #222;
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  font-size: 0.85rem;
+  width: 100%;
+  margin-top: auto; /* ✅ 화면 아래로 푸터 자동 밀리게 함 */
 `;
