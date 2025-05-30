@@ -757,27 +757,35 @@ const EditDeleteButtonWrapper = styled.div`
 `;
 
 const EditButton = styled.button`
-  padding: 5px 10px;
+  padding: 6px 12px;
   background-color: #4a90e2;
   color: white;
   font-size: 0.85rem;
-  border: none;
-  border-radius: 4px;
+  font-weight: 600;
+  border: 2px solid transparent;
+  border-radius: 999px;
   cursor: pointer;
+  
   &:hover {
-    background-color: #357ab8;
+    background-color: white;
+    color: #4a90e2;
+    border: 2px solid #4a90e2;
   }
 `;
 
 const DeleteButton = styled.button`
-  padding: 5px 10px;
-  background-color: #d9534f;
+  padding: 6px 12px;
+  background-color: #e74c3c;
   color: white;
   font-size: 0.85rem;
-  border: none;
-  border-radius: 4px;
+  font-weight: 600;
+  border: 2px solid transparent;
+  border-radius: 999px;
   cursor: pointer;
+
   &:hover {
-    background-color: #c9302c;
+    background-color: white;
+    color: #e74c3c;
+    border: 2px solid #e74c3c;
   }
 `;
