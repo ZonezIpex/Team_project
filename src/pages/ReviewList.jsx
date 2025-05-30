@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import resumeImage from "../assets/이력서이미지.jpg";
 import { useNavigate } from "react-router-dom";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import { likeReview } from '../api/reviewApi';
 
 const TOTAL_PER_TYPE = 12;
 
@@ -96,25 +97,47 @@ const ReviewList = () => {
     return [myReviews, sliderMyLiked, setSliderMyLiked, sliderMyLikes, setSliderMyLikes];
   };
 
+  const getSliderLikeState = () => {
+  if (reviewType === "인기") return [sliderPopularLikes, setSliderPopularLikes];
+  if (reviewType === "최신") return [sliderLatestLikes, setSliderLatestLikes];
+  return [sliderMyLikes, setSliderMyLikes];
+};
+
+
   const [sliderReviews, sliderLikedMap, setSliderLikedMap] = getSliderData();
 
   const toggleSliderLike = (id) => {
-    setSliderLikedMap(prev => {
-      const newLiked = !prev[id];
-      return { ...prev, [id]: newLiked };
-    });
-  };
+  const [likeCountMap, setLikeCountMap] = getSliderLikeState();
+
+  setSliderLikedMap(prev => {
+    const newLiked = !prev[id];
+    if (!newLiked) return prev;
+
+    setLikeCountMap(prevCount => ({
+      ...prevCount,
+      [id]: (prevCount[id] || 0) + 1,
+    }));
+
+    return { ...prev, [id]: newLiked };
+  });
+
+  likeReview(id).catch(err => console.error("좋아요 실패", err));
+};
 
   const toggleBottomLike = (id) => {
-    setBottomLikedMap(prev => {
-      const newLiked = !prev[id];
-      setBottomLikeCountMap(prevCount => ({
-        ...prevCount,
-        [id]: (prevCount[id] || 0) + (newLiked ? 1 : -1),
+  const alreadyLiked = bottomLikedMap[id];
+  if (alreadyLiked) return;
+
+  likeReview(id)
+    .then(() => {
+      setBottomLikedMap(prev => ({ ...prev, [id]: true }));
+      setBottomLikeCountMap(prev => ({
+        ...prev,
+        [id]: (prev[id] || 0) + 1
       }));
-      return { ...prev, [id]: newLiked };
-    });
-  };
+    })
+    .catch(err => console.error("좋아요 실패", err));
+};
 
   const handleCardClick = (review) => {
     setSelectedReview(review);
