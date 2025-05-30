@@ -104,8 +104,15 @@ registerLocale("ko", ko);
   const [birthDay, setBirthDay] = useState(formData.birthDay || '일');
 
   const handleNext = () => {
-    if(!formData.name|| !formData.nameEn||!formData.firstName||!formData.firstNameEn||!formData.email||!formData.phone ){
+    if(!formData.name|| !formData.nameEn||!formData.firstName||!formData.firstNameEn
+      ||!formData.email||!formData.phone ){
       alert("필수 인적사항을 입력해주세요.");
+    } else if(!formData.birthYear ){
+      alert("생년월일 중 생년을 입력해주세요.");
+    } else if( !formData.birthMonth ){
+      alert("생년월일 중 월을 입력해주세요.");
+    } else if( !formData.birthDay ){
+      alert("생년월일 중 일을 입력해주세요.");
     }
     else
     navigate("/step3Page", { state: { formData, language } })};
@@ -155,13 +162,19 @@ registerLocale("ko", ko);
                   type="text"
                   placeholder={text.name[language]}
                   value={formData.name || ""}
-                  onChange={(e) => handleFormDataChange({ ...formData, name: e.target.value })}
+                  onChange={(e) => {
+                  const koreanOnly = e.target.value.replace(/[^ㄱ-ㅎ가-힣\s]/g, ""); 
+                  handleFormDataChange({ ...formData, name: koreanOnly });
+                }}
                 />
                 *<Input
                   type="text"
                   placeholder={text.nameEn[language]}
                   value={formData.firstNameEn || ""}
-                  onChange={(e) => handleFormDataChange({ ...formData, firstNameEn: e.target.value })}
+                  onChange={(e) => {
+                    const englishOnly = e.target.value.replace(/[^a-zA-Z\s]/g, ""); 
+                    handleFormDataChange({ ...formData, firstNameEn: englishOnly });
+                  }}
                 />
               </InputRow>
               <InputRow marginTop="10px">
@@ -169,13 +182,19 @@ registerLocale("ko", ko);
                   type="text"
                   placeholder={text.surname[language]}
                   value={formData.firstName || ""}
-                  onChange={(e) => handleFormDataChange({ ...formData, firstName: e.target.value })}
+                  onChange={(e) => {
+                  const koreanOnly = e.target.value.replace(/[^ㄱ-ㅎ가-힣\s]/g, ""); 
+                  handleFormDataChange({ ...formData, firstName: koreanOnly });
+                }}
                 />
                 *<Input
                   type="text"
                   placeholder={text.surnameEn[language]}
                   value={formData.nameEn || ""}
-                  onChange={(e) => handleFormDataChange({ ...formData, nameEn: e.target.value })}
+                  onChange={(e) => {
+                    const englishOnly = e.target.value.replace(/[^a-zA-Z\s]/g, ""); 
+                    handleFormDataChange({ ...formData, nameEn: englishOnly });
+                  }}
                 />
               </InputRow>
               <InputRow marginTop="10px">
@@ -189,7 +208,10 @@ registerLocale("ko", ko);
                   type="tel"
                   placeholder={text.phone[language]}
                   value={formData.phone || ""}
-                  onChange={(e) => handleFormDataChange({ ...formData, phone: e.target.value })}
+                  onChange={(e) => {
+                    const numbersOnly = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 허용
+                    handleFormDataChange({ ...formData, phone: numbersOnly });
+                  }}
                 />
               </InputRow>
             </InputsColumn>
@@ -197,7 +219,7 @@ registerLocale("ko", ko);
 
           <BirthAddressSection>
             <div>
-              <BirthTitle>{text.birth[language]}</BirthTitle>
+              <BirthTitle>* {text.birth[language]}</BirthTitle>
               <Select value={birthYear} onChange={(e) => {
                 setBirthYear(e.target.value);
                 handleFormDataChange({ ...formData, birthYear: e.target.value });
