@@ -29,6 +29,7 @@ import Step3Page from './pages/Step3Page';
 import Step4Page from './pages/Step4Page';
 import Step5Page from './pages/Step5'; //
 import AiGeneratingLoader from './loadings/AiGeneratingLoader';
+import FileScanningLoader from './loadings/FileScanningLoader';
 
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -68,26 +69,43 @@ function App() {
     languageSkills: []   // 외국어 스킬 (Array of languages)
   });
   
-  // formData 갱신 함수
+  // formData 갱신 함수 (배열 및 객체 병합 방식 변경)
   const handleFormDataChange = (newData) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      ...newData,
-      education: Array.isArray(newData.education)
-        ? newData.education
-        : newData.education
-        ? [newData.education]
-        : prevData.education,
-      military: newData.military
-        ? { ...prevData.military, ...newData.military }
-        : prevData.military,
-      skills: newData.skills || prevData.skills,
-      languageSkills: newData.languageSkills || prevData.languageSkills,
-      experience: newData.experience || prevData.experience,
-    }));
+    setFormData((prevData) => {
+      const updatedData = { ...prevData };
+
+      for (const key in newData) {
+        if (newData.hasOwnProperty(key)) {
+          if (key === 'military' && typeof newData.military === 'object' && newData.military !== null) {
+            updatedData.military = { ...prevData.military, ...newData.military };
+          } else if (Array.isArray(prevData[key]) && Array.isArray(newData[key])) {
+            // Step3Page 등에서 StyledTable을 통해 배열 전체를 새로 전달하는 경우
+            updatedData[key] = newData[key];
+          } else {
+            updatedData[key] = newData[key];
+          }
+        }
+      }
+      console.log("App.js: formData 업데이트됨 ->", updatedData);
+      return updatedData;
+    });
+    // 변경 전 데이터
+    // setFormData((prevData) => ({
+    //   ...prevData,
+    //   ...newData,
+    //   education: Array.isArray(newData.education)
+    //     ? newData.education
+    //     : newData.education
+    //     ? [newData.education]
+    //     : prevData.education,
+    //   military: newData.military
+    //     ? { ...prevData.military, ...newData.military }
+    //     : prevData.military,
+    //   skills: newData.skills || prevData.skills,
+    //   languageSkills: newData.languageSkills || prevData.languageSkills,
+    //   experience: newData.experience || prevData.experience,
+    // }));
   };
-
-
 
   return (
     <AuthProvider>
@@ -99,11 +117,6 @@ function App() {
           <Route path="/signup" element={<SignupPage language={language} onChangeLanguage={setLanguage} />} />
           <Route path="/profilepage" element={<ProfilePage language={language} onChangeLanguage={setLanguage} />} />
 
-          {/* 이력서 작성 단계 */}
-          <Route
-            path="/loading" 
-            element={<AiGeneratingLoader
-            language={language}/>}/>
           <Route 
             path="/step1page" 
             element={
@@ -165,6 +178,19 @@ function App() {
               />
             } 
           />
+          {/* PDF 스캔 로더 라우터*/}
+          <Route
+            path='/scan-pdf'
+            element={<FileScanningLoader/>}
+            // FileScanningLoader는 location.state로 fileToScan, userId 등을 받음
+            // language prop은 필요시 전달: element={<FileScanningLoader language={language} />}
+            />
+
+          {/* 이력서 작성 단계 */}
+          <Route
+            path="/loading" 
+            element={<AiGeneratingLoader
+            language={language}/>}/>
 
           {/* 리뷰 */}
           <Route path="/review" element={<ReviewList language={language} onChangeLanguage={setLanguage} />} />
