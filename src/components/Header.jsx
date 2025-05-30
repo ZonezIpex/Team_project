@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import changeLangIcon from '../assets/changelanguage.png';
+import logo from '../assets/AirLogo02.png';
 import profileIcon from '../assets/profile.png';
 import menuIcon from '../assets/menu.png';
 import koreaFlag from '../assets/korea.png';
@@ -19,12 +20,6 @@ const HeaderWrapper = styled.header`
   left: 0;
   right: 0;
   box-sizing: border-box;
-`;
-
-const Logo = styled.div`
-  font-size: clamp(1.2rem, 2vw, 1.6rem);
-  font-weight: bold;
-  color: white;
 `;
 
 const IconGroup = styled.div`
@@ -111,7 +106,15 @@ function Header({ onChangeLanguage, language }) {
   return (
     <>
       <HeaderWrapper>
-        <Logo>AiR</Logo>
+          <img
+            src={logo}
+            style={{
+              margin:0,
+              padding:0,
+              width: '90px',
+              height: '30px',
+            }}
+          />
         <IconGroup>
           <div ref={langRef}>
             <Icon
