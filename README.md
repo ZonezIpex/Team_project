@@ -1,3 +1,12 @@
+## 5월 30일
+
+# ReviewList.jsx
+1. 내 리뷰를 누르면 해당 리뷰 카드에 수정하기 버튼 만듬(누르면 review/write 페이지로 이동)
+2. 하트 버튼 중복되게 선택 되던거 수정
+
+# index.js
+1. <React.StrictMode> 해당 문구로 인하여 하트 수가 중복되기에 주석처리 함
+
 ## 5월 27일
 
 # SignupPage.jsx

@@ -102,25 +102,41 @@ const ReviewList = () => {
     return [myReviews, sliderMyLiked, setSliderMyLiked, sliderMyLikes, setSliderMyLikes];
   };
 
-  const [sliderReviews, sliderLikedMap, setSliderLikedMap] = getSliderData();
+  const [sliderReviews, sliderLikedMap, setSliderLikedMap, sliderLikeCountMap, setSliderLikeCountMap] = getSliderData();
 
   const toggleSliderLike = (id) => {
-    setSliderLikedMap(prev => {
-      const newLiked = !prev[id];
-      return { ...prev, [id]: newLiked };
-    });
-  };
+    console.log("🔥 슬라이더 좋아요 클릭:", id);
+  setSliderLikedMap(prevLiked => {
+    const newLiked = !prevLiked[id];
+
+    setSliderLikeCountMap(prevCount => ({
+      ...prevCount,
+      [id]: (prevCount[id] || 0) + (newLiked ? 1 : -1)
+    }));
+
+    return {
+      ...prevLiked,
+      [id]: newLiked
+    };
+  });
+};
 
   const toggleBottomLike = (id) => {
-    setBottomLikedMap(prev => {
-      const newLiked = !prev[id];
-      setBottomLikeCountMap(prevCount => ({
-        ...prevCount,
-        [id]: (prevCount[id] || 0) + (newLiked ? 1 : -1),
-      }));
-      return { ...prev, [id]: newLiked };
-    });
-  };
+    console.log("🔥 하단 좋아요 클릭:", id);
+  setBottomLikedMap((prevLikedMap) => {
+    const newLiked = !prevLikedMap[id];
+
+    setBottomLikeCountMap((prevCount) => ({
+      ...prevCount,
+      [id]: (prevCount[id] || 0) + (newLiked ? 1 : -1),
+    }));
+
+    return {
+      ...prevLikedMap,
+      [id]: newLiked,
+    };
+  });
+};
 
   const handleCardClick = (review) => {
     setSelectedReview(review);
@@ -168,6 +184,8 @@ const ReviewList = () => {
     }
   }, [selectedReview]);
 
+  
+
   return (
     <PageWrapper>
       <Header onChangeLanguage={setLanguage} language={language} />
@@ -200,13 +218,14 @@ const ReviewList = () => {
                     <HeartRow>
                       <HeartButton
                         onClick={(e) => {
+                          e.preventDefault();
                           e.stopPropagation();
                           toggleSliderLike(review.id);
                         }}
                       >
                         {sliderLikedMap[review.id] ? <FaHeart /> : <FaRegHeart />}
                       </HeartButton>
-                      <LikeCountText>{formatLikeCount(sliderPopularLikes[review.id] || 0)}</LikeCountText>
+                      <LikeCountText>{formatLikeCount(sliderLikeCountMap[review.id] || 0)}</LikeCountText>
                       <RatingWrapper>
                         {renderStars(4.5)}
                         <RatingValue>4.5</RatingValue>
@@ -220,6 +239,31 @@ const ReviewList = () => {
                         ? `${review.desc.slice(0, 35)}...`
                         : review.desc || ""}
                     </CardDesc>
+                      {reviewType === "내" && (
+  <EditDeleteButtonWrapper>
+    <EditButton
+      onClick={(e) => {
+        e.stopPropagation();
+        //navigate(`/review/edit/${review.id}`); // 이거는 백엔드랑 연동하면 활성화 하고 아래 코드는 삭제
+        navigate("/review/write");
+      }}
+    >
+      수정하기
+    </EditButton>
+    <DeleteButton
+      onClick={(e) => {
+        e.stopPropagation();
+        // 삭제 처리 로직: confirm → fetch → 상태 갱신 등
+        if (window.confirm("정말 삭제하시겠습니까?")) {
+          // 여기에 삭제 API 연동 또는 상태 제거 처리
+          alert(`리뷰 ${review.id} 삭제됨 (예시)`);
+        }
+      }}
+    >
+      삭제하기
+    </DeleteButton>
+  </EditDeleteButtonWrapper>
+)}
                   </SliderCardTextWrapper>
                 </ImageCard>
               ))}
@@ -244,6 +288,7 @@ const ReviewList = () => {
                   <HeartRow>
                     <HeartButton
                       onClick={(e) => {
+                        e.preventDefault();
                         e.stopPropagation();
                         toggleBottomLike(review.id);
                       }}
@@ -703,4 +748,36 @@ const StickyFooter = styled.footer`
   font-size: 0.85rem;
   width: 100%;
   margin-top: auto; /* ✅ 화면 아래로 푸터 자동 밀리게 함 */
+`;
+
+const EditDeleteButtonWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+`;
+
+const EditButton = styled.button`
+  padding: 5px 10px;
+  background-color: #4a90e2;
+  color: white;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    background-color: #357ab8;
+  }
+`;
+
+const DeleteButton = styled.button`
+  padding: 5px 10px;
+  background-color: #d9534f;
+  color: white;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    background-color: #c9302c;
+  }
 `;
