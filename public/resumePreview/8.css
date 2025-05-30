@@ -1,11 +1,11 @@
 .resume-template-8 {
   display: flex;
   width: 950px;
+  min-height: 1334px;
   margin: 0 auto;
   font-family: 'Noto Sans KR', sans-serif;
   background: #ffffff;
   box-shadow: 0 0 10px rgba(0,0,0,0.08);
-  border-radius: 10px;
   overflow: hidden;
 }
 

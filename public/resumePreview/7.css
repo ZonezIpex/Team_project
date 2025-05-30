@@ -6,13 +6,13 @@ body {
 }
 
 .resume-template-7 {
-  max-width: 920px;
+  width: 843px;
+  min-height: 1232.5px;
   margin: auto;
   padding: 50px;
   background-color: white;
   border: 1px solid #cce5d4;
   box-shadow: 0 0 8px rgba(0,0,0,0.05);
-  border-radius: 12px;
   color: #104332;
 }
 

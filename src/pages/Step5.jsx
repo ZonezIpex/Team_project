@@ -97,11 +97,6 @@ const StepButton = styled.div`
   margin-top: 40px;
 `;
 
-const Content = styled.div`
-    width: 2480px;
-    hegit: 3508px;
-`;
-
 // 텍스트 객체
 const text = {
   title: { ko: "경력 입력", en: "Enter Experience" },
@@ -147,6 +142,13 @@ const text = {
       proficiency: "구사정도",
       testName: "시험명",
       score: "점수",
+
+      ServicePeriod: "복무기간",
+      Branch: "군별",
+      Rank: "계급",
+      MilitarySpecialty: "병과",
+      ServiceStatus: "병역여부",
+      VeteranStatus: "보훈대상",
     },
     en: {
       email: "Email",
@@ -167,6 +169,13 @@ const text = {
       proficiency: "Proficiency",
       testName: "Test Name",
       score: "Score",
+      
+      ServicePeriod: "Service Period",
+      Branch: "Branch",
+      Rank: "Rank",
+      MilitarySpecialty: "Military Specialty",
+      ServiceStatus: "Service Status",
+      VeteranStatus: "Veteran Status",
     }
   },
   next: { ko: "PDF 다운", en: "PDF DOWNLOAD" },
@@ -243,7 +252,6 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
           ))}
         </Stepper>
 
-
         <div id="pdf-download" className={`resume-template-${selectedTemplate}`}>
 
           <div className="resume-left">
@@ -308,11 +316,38 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
             {military && Object.values(military).some(value => value) && (
               <div className="resume-section">
                 <div className="resume-section-title">{getText("sectionTitles", "military")}</div>
-                <div className="resume-text-line">
-                  {(military.serviceStart || "-").replace(/-/g, ".")} ~ {(military.serviceEnd || "-").replace(/-/g, ".")}
-                </div>
-                <div className="resume-text-line">{military.branch} / {military.rank} / {military.specialty}</div>
-                <div className="resume-text-line">{military.served} / {military.veteran}</div>
+                <table className="resume-table">
+                  <thead>
+                    <tr>
+                      <th>{getText("sectionText", "ServicePeriod")}</th><th>{getText("sectionText", "Branch")}</th><th>{getText("sectionText", "Rank")}</th><th>{getText("sectionText", "MilitarySpecialty")}</th><th>{getText("sectionText", "ServiceStatus")}</th><th>{getText("sectionText", "MilitarySpecialty")}</th><th>{getText("sectionText", "VeteranStatus")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        {(military.serviceStart || "-").replace(/-/g, ".")} ~ {(military.serviceEnd || "-").replace(/-/g, ".")}
+                      </td>
+                      <td>
+                        {military.branch}
+                      </td>
+                      <td>
+                        {military.rank}
+                      </td>
+                      <td>
+                        {military.specialty}
+                      </td>
+                      <td>
+                        {military.rank}
+                      </td>
+                      <td>
+                        {military.served}
+                      </td>
+                      <td>
+                        {military.veteran}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             )}
 
@@ -334,9 +369,7 @@ const ResumePreview = ({ language = "ko", formData, onChangeLanguage }) => {
               </div>
             )}
           </div>
-          
         </div>
-
         <StepButton>
           <PreButton onClick={() => navigate("/step4page")}>{getText("prev")}</PreButton>
           <NextButton onClick={downloadPDF}>{getText("next")}</NextButton>

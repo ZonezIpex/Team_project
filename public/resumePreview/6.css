@@ -1,11 +1,11 @@
 .resume-template-6 {
-  width: 900px;
+  width: 945px;
+  min-height: 1334px;
   margin: 0 auto;
   font-family: 'Noto Sans KR', sans-serif;
   display: flex;
   background-color: white;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  border-radius: 10px;
   overflow: hidden;
 }
 

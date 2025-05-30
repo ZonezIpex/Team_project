@@ -12,8 +12,8 @@ const FooterWrapper = styled.footer`
 
 function Footer({ language }) {
     const text = {
-      ko: '대표전화 : 031-467-4700 | Copyright 익서누 ALL RIGHTS RESERVED',
-      en: 'Tel: +82-31-467-4700 | Copyright 익서누 ALL RIGHTS RESERVED',
+      ko: '대표전화 : 031-467-4700 | Copyright 학사뉴 ALL RIGHTS RESERVED',
+      en: 'Tel: +82-31-467-4700 | Copyright BachelorNew ALL RIGHTS RESERVED',
     };
   
     return (
