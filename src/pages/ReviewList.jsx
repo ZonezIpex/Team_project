@@ -158,6 +158,8 @@ const ReviewList = () => {
   );
   const totalPages = Math.ceil(sliderReviews.length / imagesPerPage);
 
+  const descLimit = reviewType === "내" ? 16 : 35;
+
   /*useEffect(() => {
     const cardWidth = 240 + 16; // 카드 너비 + gap
     setOffset(page * cardWidth * imagesPerPage);
@@ -235,10 +237,10 @@ const ReviewList = () => {
                       {review.title.length > 10 ? `${review.title.slice(0, 10)}...` : review.title}
                     </CardTitle>
                     <CardDesc>
-                      {review.desc && review.desc.length > 35
-                        ? `${review.desc.slice(0, 35)}...`
-                        : review.desc || ""}
-                    </CardDesc>
+  {review.desc && review.desc.length > descLimit
+    ? `${review.desc.slice(0, descLimit)}...`
+    : review.desc || ""}
+</CardDesc>
                       {reviewType === "내" && (
   <EditDeleteButtonWrapper>
     <EditButton
@@ -325,7 +327,7 @@ const ReviewList = () => {
         {selectedReview && (
           <ModalOverlay onClick={closeModal}>
             <ModalContent onClick={(e) => e.stopPropagation()}>
-              <CloseButton onClick={closeModal}>×</CloseButton>
+              <CloseButton onClick={closeModal}>X</CloseButton>
               <ModalBody>
                 <img src={selectedReview.image} alt="modal" />
                 <h2>{selectedReview.title}</h2>
@@ -721,7 +723,7 @@ const CloseButton = styled.button`
   right: 1rem;
   width: 36px;
   height: 36px;
-  background-color: #146c94; /* 하늘색 배경 */
+  background-color: rgb(94, 198, 247); /* 하늘색 배경 */
   color: white;              /* 흰색 X */
   border: 2px solid transparent;
   border-radius: 50%;        /* 동그란 모양 */
@@ -735,8 +737,8 @@ const CloseButton = styled.button`
 
   &:hover {
     background-color: white;     /* hover 시 배경 하얀색 */
-    color: #146c94;;              /* X는 하늘색 */
-    border-color: #146c94;;       /* 테두리 하늘색 */
+    color:rgb(94, 198, 247);;              /* X는 하늘색 */
+    border-color: rgb(94, 198, 247);;       /* 테두리 하늘색 */
   }
 `;
 
