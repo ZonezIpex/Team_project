@@ -72,12 +72,24 @@ const LangItem = styled.div`
   }
 `;
 
+const Logo = styled.div`
+ cursor: pointer;
+`;
+
 function Header({ onChangeLanguage, language }) {
+  const [isClosing, setIsClosing] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const menuRef = useRef(null);
   const menuButtonRef = useRef(null);
   const langRef = useRef(null);
+
+  const handleNavigation = (url) => {
+    setIsClosing(true);
+    setTimeout(() => {
+      window.location.href = url;
+    }, 400); // 애니메이션 길이와 동일한 시간 설정
+  };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -106,6 +118,7 @@ function Header({ onChangeLanguage, language }) {
   return (
     <>
       <HeaderWrapper>
+          <Logo onClick={() => handleNavigation('/')}>
           <img
             src={logo}
             style={{
@@ -115,6 +128,7 @@ function Header({ onChangeLanguage, language }) {
               height: '30px',
             }}
           />
+          </Logo>
         <IconGroup>
           <div ref={langRef}>
             <Icon
