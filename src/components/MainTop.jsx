@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const TopSection = styled.section`
-  min-height: 100vh; /* 80vh -> 100vh */
+  min-height: 100vh;
   padding: 4vh 5vw;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* start -> center */
+  justify-content: center;
   align-items: center;
   color: white;
   text-align: center;
@@ -16,10 +16,9 @@ const TopSection = styled.section`
 const Greeting = styled.div`
   font-size: 1.2rem;
   font-weight: 500;
-  margin-top: 0; /* 10vh -> 0 */
+  margin-top: 0;
   color: #fff7d6;
 `;
-
 
 const Title = styled.h1`
   font-size: clamp(2rem, 5vw, 4rem);
@@ -66,13 +65,13 @@ function MainTop({ language }) {
 
   const text = {
     ko: {
-      title: '이력서 초기 작성 도우미를 통해 \n 작성에 도움을 받으세요',
-      subtitle: '나만의 이력서 만들기',
+      title: ['AI 올인원 플랫폼', '회사 맞춤 이력서를 한번에!'],
+      subtitle: 'AI와 함께 자신만의 이력서를 완성해보세요',
       button: '이력서 작성하기',
       greeting: (name) => `안녕하세요, ${name} 님 👋\n당신의 이력서를 준비해볼까요?`,
     },
     en: {
-      title: 'Use the resume assistant\nto start writing easily',
+      title: ['Use the resume assistant', 'to start writing easily'],
       subtitle: '~Start writing your resume~',
       button: 'Start Resume',
       greeting: (name) => `Hello, ${name}! 👋\nReady to build your resume?`,
@@ -86,7 +85,6 @@ function MainTop({ language }) {
     if (name) setUsername(name);
   }, []);
 
-  // ✅ 로그인 여부에 따라 버튼 동작
   const handleWriteClick = () => {
     const isLoggedIn = localStorage.getItem('loggedIn');
     if (isLoggedIn === 'true') {
@@ -99,7 +97,13 @@ function MainTop({ language }) {
   return (
     <TopSection>
       {username && <Greeting>{t.greeting(username)}</Greeting>}
-      <Title>{t.title}</Title>
+      <Title>
+        {Array.isArray(t.title)
+          ? t.title.map((line, idx) => (
+              <div key={idx}>{line}</div>
+            ))
+          : t.title}
+      </Title>
       <Subtitle>{t.subtitle}</Subtitle>
       <ButtonWrapper>
         <WriteButton onClick={handleWriteClick}>{t.button}</WriteButton>

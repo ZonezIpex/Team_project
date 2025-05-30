@@ -1,14 +1,23 @@
-import api from '../api/axios'; // axios 인스턴스 (withCredentials: true 포함)
+import { jwtDecode } from 'jwt-decode';
+import api from '../api/axios';
 
 // 로그인 (세션 생성)
 export const login = async (username, password) => {
-  const response = await api.post('/api/auth/login', {
-    username,
-    password,
-  });
+    try {
+        const response = await api.post('/api/auth/login', { username, password });
+        const token = response.data.token;
 
-  // 백엔드에서 { isAdmin: true/false } 형태로 응답한다고 가정
-  return response.data; // { isAdmin: true }
+        console.log("Server Response:", response.data);
+        localStorage.setItem('token', token); // 토큰 저장
+
+        const decoded = jwtDecode(token);
+        console.log("Decoded Token:", decoded);
+
+        return { token, isAdmin: decoded.isAdmin };
+    } catch (error) {
+        console.error("Login error:", error);
+        throw new Error("Login failed");
+    }
 };
 
 // 로그아웃 (세션 삭제)
@@ -18,15 +27,12 @@ export const logout = async () => {
 
 // 회원가입
 export const register = async (email, password, name) => {
-  const response = await api.post('/api/user/register', {
-    email,
-    password,
-    name,
-  });
-
-  if (!response.status.toString().startsWith('2')) {
-    throw new Error(`Failed to register: ${response.status}`);
-  }
+    try {
+        await api.post('/api/user/register', { email, password, name });
+    } catch (error) {
+        console.error("Registration error:", error);
+        throw new Error("Failed to register");
+    }
 };
 
 // 관리자 여부 확인 (선택적으로 사용)

@@ -290,7 +290,7 @@ const RatingSection = styled.div`
 
 const ScoreText = styled.span`
   margin-left: 10px;
-  font-size: 15px;
+  font-size: 25px;    // 점수 텍스트 크기 키움
   font-weight: bold;   // ✅ 굵게
   color: #444;
 `;
@@ -299,6 +299,7 @@ const Label = styled.label`
   margin: 12px 0 5px;
   display: block;
   font-weight: bold;
+  font-size: 25px;  // 기존보다 큼직하게
 `;
 
 const StarBox = styled.div`
@@ -307,7 +308,7 @@ const StarBox = styled.div`
 `;
 
 const Star = styled.div`
-  font-size: 24px;
+  font-size: 44px;
   cursor: pointer;
   position: relative;
 `;
@@ -379,18 +380,19 @@ const SubmitSection = styled.div`
 `;
 
 const SubmitButton = styled.button`
-  background-color: rgb(129, 215, 255);
+  background-color: #146c94;
   color: white;
   padding: 12px 32px;
   font-size: 16px;
   font-weight: bold;
-  border: none;
+  border: 2px solid #146c94; /* ✅ 기본 border 설정 */
   border-radius: 999px;
   cursor: pointer;
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #217dbb;
+    background-color: white;
+    color: #146c94; /* ✅ hover 시 텍스트 색상 변경 */
   }
 `;
 

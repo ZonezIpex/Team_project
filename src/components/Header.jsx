@@ -111,7 +111,7 @@ function Header({ onChangeLanguage, language }) {
   return (
     <>
       <HeaderWrapper>
-        <Logo>이력서 도우미</Logo>
+        <Logo>AiR</Logo>
         <IconGroup>
           <div ref={langRef}>
             <Icon
