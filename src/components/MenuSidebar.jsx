@@ -1,6 +1,10 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Home, MessageCircle, User, LogOut, X } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+
 
 const slideIn = keyframes`
   from { right: -300px; opacity: 0; }
@@ -88,18 +92,32 @@ const CloseButton = styled(X)`
 
 function MenuSidebar({ isOpen, innerRef, language, onClose }) {
   const [isClosing, setIsClosing] = useState(false);
+  const { user, setUser } = useAuth(); // ✅ Context 사용
+    const navigate = useNavigate();
+      const location = useLocation(); // ✅ 현재 경로 확인용
 
-  const handleNavigation = (url) => {
-    setIsClosing(true);
-    setTimeout(() => {
-      window.location.href = url;
-    }, 400); // 애니메이션 길이와 동일한 시간 설정
-  };
+
+
+  const handleNavigation = (targetPath) => {
+  setIsClosing(true);
+
+  setTimeout(() => {
+    onClose(); // ✅ 사이드바 닫기
+
+    if (location.pathname !== targetPath) {
+      navigate(targetPath); // ✅ 다른 페이지면 이동
+    } else {
+      navigate(0); // ✅ 같은 페이지면 새로고침
+    }
+  }, 400);
+};
 
   const handleLogout = () => {
     setIsClosing(true);
     setTimeout(() => {
-      localStorage.removeItem('loggedIn');
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+      setUser({ loggedIn: false, isAdmin: false, username: '' });
       window.location.href = '/login';
     }, 400);
   };
@@ -108,6 +126,7 @@ function MenuSidebar({ isOpen, innerRef, language, onClose }) {
     home: language === 'en' ? 'Home' : '홈',
     review: language === 'en' ? 'Reviews' : '리뷰',
     mypage: language === 'en' ? 'My Page' : '마이페이지',
+    login: language === 'en' ? 'Login' : '로그인', // ✅ 추가 필요
     logout: language === 'en' ? 'Logout' : '로그아웃',
     welcome: language === 'en' ? 'Welcome!' : '환영합니다!',
   };
@@ -139,9 +158,15 @@ function MenuSidebar({ isOpen, innerRef, language, onClose }) {
           <User size={18} /> {text.mypage}
         </MenuButton>
 
-        <MenuButton onClick={handleLogout}>
-          <LogOut size={18} /> {text.logout}
-        </MenuButton>
+        {user.loggedIn ? (
+            <MenuButton onClick={handleLogout}>
+              <LogOut size={18} /> {text.logout}
+            </MenuButton>
+          ) : (
+            <MenuButton onClick={() => handleNavigation('/login')}>
+              <LogOut size={18} /> {text.login}
+            </MenuButton>
+          )}
       </SidebarWrapper>
     )}
 
