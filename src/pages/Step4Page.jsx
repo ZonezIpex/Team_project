@@ -12,34 +12,55 @@ export default function Step4Page({
   onChangeLanguage,
   handleFormDataChange,
 }) {
-  const [isGeneratingModalOpen, setIsGeneratingModalOpen] = useState(false);
+  //const [isGeneratingModalOpen, setIsGeneratingModalOpen] = useState(false);
   const navigate = useNavigate();
-  const fileInputRef = useRef(null);
-  const militaryRefs = useRef({});
+  //const fileInputRef = useRef(null);
+  //const militaryRefs = useRef({});
   const currentStep = 3;
 
-  const Modal = ({ children, onClose }) => {
-    // 모달 배경 클릭 시 닫히게 (선택사항)
-    const handleOverlayClick = (e) => {
-      if (e.target === e.currentTarget) {
-        onClose && onClose();
-      }
-    };
+  // const Modal = ({ children, onClose }) => {
+  //   // 모달 배경 클릭 시 닫히게 (선택사항)
+  //   const handleOverlayClick = (e) => {
+  //     if (e.target === e.currentTarget) {
+  //       onClose && onClose();
+  //     }
+  //   };
 
-    return <ModalOverlay onClick={handleOverlayClick}>{children}</ModalOverlay>;
-  };
-  const handleStartGenerating = () => {
-    setIsGeneratingModalOpen(true);
+  //   return <ModalOverlay onClick={handleOverlayClick}>{children}</ModalOverlay>;
+  // };
 
-    // 3초 후에 모달 닫고 다음 페이지 이동 (GeneratingPage 역할 대신 여기서 처리)
-    setTimeout(() => {
-      setIsGeneratingModalOpen(false);
-      // 필요한 데이터 넘기기
-      const resumeData = {
-        /* Step4Page에서 준비한 데이터 */
-      };
-      navigate("/step5Page", { state: { selectedTemplate, language } });
-    }, 3000);
+  // const handleStartGenerating = () => {
+  //   //setIsGeneratingModalOpen(true);
+
+  //   // 3초 후에 모달 닫고 다음 페이지 이동 (GeneratingPage 역할 대신 여기서 처리)
+  //   setTimeout(() => {
+  //     setIsGeneratingModalOpen(false);
+  //     // 필요한 데이터 넘기기
+  //     const resumeData = {
+  //       /* Step4Page에서 준비한 데이터 */
+  //     };
+  //     navigate("/step5Page", { state: { selectedTemplate, language } });
+  //   }, 3000);
+  // };
+
+  const handleNavigateToAiLoader = () => {
+    // 데이터 로깅
+    console.log("Step4 -> /loading으로 전달할 데이터", {
+      formData: formData, // 이력서 데이터
+      selectedTemplate: selectedTemplate, // 템플릿 선택
+      language: language, // 언어
+    });
+
+    // 데이터 전달
+    navigate("/loading", {
+      // App.js에 정의된 AiGeneratingLoader 라우트 경로
+      state: {
+        type: "formInput", // 데이터 타입
+        data: formData, // 이력서 데이터
+        selectedTemplate: selectedTemplate, // 템플릿 선택
+        language: language, // 언어
+      },
+    });
   };
 
   const text = {
@@ -390,17 +411,17 @@ export default function Step4Page({
           <PreButton onClick={() => navigate("/step3page")}>
             {getText("prev")}
           </PreButton>
-          <NextButton onClick={handleStartGenerating}>
+          <NextButton onClick={handleNavigateToAiLoader}>
             {getText("next")}
           </NextButton>
-          {isGeneratingModalOpen && (
+          {/* {isGeneratingModalOpen && (
             <Modal>
               <AiGeneratingLoader
                 selectedTemplate={selectedTemplate}
                 language={language}
               />
             </Modal>
-          )}
+          )} */}
         </StepButton>
       </Container>
       <Footer language={language} />
