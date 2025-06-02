@@ -38,6 +38,10 @@ export default function Step3Page({ selectedTemplate, language, onChangeLanguage
         language: "Languages",
       },
     },
+    optionSelect:{
+      ko:"선택",
+      en:"Option",
+    },
     next: {
       ko: "다음",
       en: "Next",
@@ -76,7 +80,7 @@ const StyledSelect = styled.select`
 
 const Select = React.memo(({ options = [], ...props }) => (
   <StyledSelect {...props}>
-    <option value="">선택</option>
+    <option value="">{text.optionSelect[language]}</option>
     {options.map((opt) => (
       <option key={opt} value={opt}>
         {opt}

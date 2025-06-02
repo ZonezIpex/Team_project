@@ -3,13 +3,19 @@ import styled from "styled-components";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
+import en from "date-fns/locale/en-US";
+import ko from "date-fns/locale/ko";
+import { registerLocale } from "react-datepicker"; // 추가되어야 함
+
 
 const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange }) => {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+registerLocale("en-US", en);
+registerLocale("ko", ko);
   
   const currentStep = 1;
-
+  const locale = language === "en" ? "en-US" : "ko";
 
   const handlePhotoChange = (event) => {
     const file = event.target.files[0];
@@ -39,8 +45,48 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
     email: { ko: "이메일 주소", en: "Email Address" },
     phone: { ko: "전화번호", en: "Phone Number" },
     birth: { ko: "생년월일", en: "Date of Birth" },
+    birthYear: {ko:"년", en:"Year"},
+    birthMonth: {ko:"월", en:"Month"},
+    birthDay: {ko:"일", en:"Day"},
+
     address: { ko: "주소", en: "Address" },
+
     military: { ko: "병역 사항", en: "Military Service" },
+    
+    startDatePlaceholder: {
+      ko: "시작일 선택",
+      en: "Start Date",
+    },
+    endDatePlaceholder: {
+      ko: "종료일 선택",
+      en: "End Date",
+    },
+    militaryBranch: { 
+      ko: [ "육군", "공군", "해군", "해병대"], 
+      en: [ "Army", "Air Force", "Navy", "Marine Corps"] 
+    },
+    militaryRank: { ko: "계급", en: "Rank" },
+    militarySpecialty: { ko: "병과", en: "Specialty" },
+    militaryStatusOptions: {
+      ko: ["병역여부", "미필", "현역필", "방위필", "공익", "면제", "직업군인", "단기사병"],
+      en: ["Military Status", "Not Served", "Active Duty", "Reserve", "Public Service", "Exempted", "Professional Soldier", "Short-Term Enlistee"]
+    },
+    veteranOptions: {
+      ko: ["보훈대상", "대상", "비대상"],
+      en: ["Veteran Status", "Eligible", "Not Eligible"]
+    },
+    noMilitary: {
+      ko: "병역 사항이 없습니다.",
+      en: "No military service."
+    },
+    notApplicable: {
+      ko: "해당없음",
+      en: "N/A"
+    },
+    requireText:{
+      ko: "* 은 필수사항",
+      en: "* is required"
+    },
     prev: { ko: "이전", en: "Previous" },
     next: { ko: "다음", en: "Next" },
   };
@@ -57,7 +103,19 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
   const [birthMonth, setBirthMonth] = useState(formData.birthMonth || '월');
   const [birthDay, setBirthDay] = useState(formData.birthDay || '일');
 
-  const handleNext = () => navigate("/step3Page", { state: { formData, language } });
+  const handleNext = () => {
+    if(!formData.name|| !formData.nameEn||!formData.firstName||!formData.firstNameEn
+      ||!formData.email||!formData.phone ){
+      alert("필수 인적사항을 입력해주세요.");
+    } else if(!formData.birthYear ){
+      alert("생년월일 중 생년을 입력해주세요.");
+    } else if( !formData.birthMonth ){
+      alert("생년월일 중 월을 입력해주세요.");
+    } else if( !formData.birthDay ){
+      alert("생년월일 중 일을 입력해주세요.");
+    }
+    else
+    navigate("/step3Page", { state: { formData, language } })};
 
   return (
     <PageWrapper>
@@ -77,7 +135,11 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
         </Stepper>
 
         <ResumeInput>
-          <SectionTitle>{text.inputTitle[language]}</SectionTitle>
+          <SectionTitleWrapper>
+            <SectionTitle>{text.inputTitle[language]}</SectionTitle>
+            <RequiredNote>{text.requireText[language]}</RequiredNote>
+          </SectionTitleWrapper>
+
           <InfoSection>
             <PhotoBox onClick={handlePhotoClick}>
               {formData.photo ? (
@@ -96,45 +158,60 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
 
             <InputsColumn>
               <InputRow>
-                <Input
+                *<Input
                   type="text"
                   placeholder={text.name[language]}
                   value={formData.name || ""}
-                  onChange={(e) => handleFormDataChange({ ...formData, name: e.target.value })}
+                  onChange={(e) => {
+                  const koreanOnly = e.target.value.replace(/[^ㄱ-ㅎ가-힣\s]/g, ""); 
+                  handleFormDataChange({ ...formData, name: koreanOnly });
+                }}
                 />
-                <Input
+                *<Input
                   type="text"
                   placeholder={text.nameEn[language]}
                   value={formData.firstNameEn || ""}
-                  onChange={(e) => handleFormDataChange({ ...formData, firstNameEn: e.target.value })}
+                  onChange={(e) => {
+                    const englishOnly = e.target.value.replace(/[^a-zA-Z\s]/g, ""); 
+                    handleFormDataChange({ ...formData, firstNameEn: englishOnly });
+                  }}
                 />
               </InputRow>
               <InputRow marginTop="10px">
-                <Input
+                *<Input
                   type="text"
                   placeholder={text.surname[language]}
                   value={formData.firstName || ""}
-                  onChange={(e) => handleFormDataChange({ ...formData, firstName: e.target.value })}
+                  onChange={(e) => {
+                  const koreanOnly = e.target.value.replace(/[^ㄱ-ㅎ가-힣\s]/g, ""); 
+                  handleFormDataChange({ ...formData, firstName: koreanOnly });
+                }}
                 />
-                <Input
+                *<Input
                   type="text"
                   placeholder={text.surnameEn[language]}
                   value={formData.nameEn || ""}
-                  onChange={(e) => handleFormDataChange({ ...formData, nameEn: e.target.value })}
+                  onChange={(e) => {
+                    const englishOnly = e.target.value.replace(/[^a-zA-Z\s]/g, ""); 
+                    handleFormDataChange({ ...formData, nameEn: englishOnly });
+                  }}
                 />
               </InputRow>
               <InputRow marginTop="10px">
-                <Input
+                *<Input
                   type="email"
                   placeholder={text.email[language]}
                   value={formData.email || ""}
                   onChange={(e) => handleFormDataChange({ ...formData, email: e.target.value })}
                 />
-                <Input
+                *<Input
                   type="tel"
                   placeholder={text.phone[language]}
                   value={formData.phone || ""}
-                  onChange={(e) => handleFormDataChange({ ...formData, phone: e.target.value })}
+                  onChange={(e) => {
+                    const numbersOnly = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 허용
+                    handleFormDataChange({ ...formData, phone: numbersOnly });
+                  }}
                 />
               </InputRow>
             </InputsColumn>
@@ -142,27 +219,45 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
 
           <BirthAddressSection>
             <div>
-              <BirthTitle>{text.birth[language]}</BirthTitle>
+              <BirthTitle>* {text.birth[language]}</BirthTitle>
               <Select value={birthYear} onChange={(e) => {
                 setBirthYear(e.target.value);
                 handleFormDataChange({ ...formData, birthYear: e.target.value });
               }}>
-                <option value="년">년</option>
-                {getYearOptions().map((year) => <option key={year} value={year}>{year}</option>)}
+                <option value="">{text.birthYear[language]}</option>
+                {getYearOptions().map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
               </Select>
-              <Select value={birthMonth} onChange={(e) => {
-                setBirthMonth(e.target.value);
-                handleFormDataChange({ ...formData, birthMonth: e.target.value });
-              }}>
-                <option value="월">월</option>
-                {getMonthOptions().map((month, i) => <option key={month} value={i + 1}>{month}</option>)}
+              <Select
+                value={birthMonth}
+                onChange={(e) => {
+                  setBirthMonth(e.target.value);
+                  handleFormDataChange({ ...formData, birthMonth: e.target.value });
+                }}
+              >
+                <option value="">{text.birthMonth[language]}</option>
+                {getMonthOptions().map((month, i) => (
+                  <option key={month} value={i + 1}>
+                    {month}
+                  </option>
+                ))}
               </Select>
-              <Select value={birthDay} onChange={(e) => {
-                setBirthDay(e.target.value);
-                handleFormDataChange({ ...formData, birthDay: e.target.value });
-              }}>
-                <option value="일">일</option>
-                {getDayOptions().map((day) => <option key={day} value={day}>{day}</option>)}
+              <Select
+                value={birthDay}
+                onChange={(e) => {
+                  setBirthDay(e.target.value);
+                  handleFormDataChange({ ...formData, birthDay: e.target.value });
+                }}
+              >
+                <option value="">{text.birthDay[language]}</option>
+                {getDayOptions().map((day) => (
+                  <option key={day} value={day}>
+                    {day}
+                  </option>
+                ))}
               </Select>
             </div>
 
@@ -178,50 +273,63 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
           </BirthAddressSection>
 
           <MilitarySection>
-            <MilitaryTitle>{text.military[language]}</MilitaryTitle>
+            <MilitaryTitle>{text.military[language]}  
+             <MilitaryBtn
+                type="button"
+                onClick={() => {
+                  alert(`${text.noMilitary[language]}`);
+                  handleFormDataChange({
+                    ...formData,
+                    military: {
+                      serviceStart: null,
+                      serviceEnd: null,
+                      rank: null,
+                      specialty: null,
+                      branch: null,
+                      served: null,
+                      veteran: null,
+                    },
+                  });
+                }}
+              >
+                {text.notApplicable[language]}
+              </MilitaryBtn>
+            </MilitaryTitle>
+
             <InputRow><div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                <Input
-                  type="date"
-                  value={formData.military?.serviceStart || ""}
-                  onChange={(e) =>
-                    handleFormDataChange({
-                      ...formData,
-                      military: {
-                        ...formData.military,
-                        serviceStart: e.target.value,
-                      },
-                    })
-                  }
-                />
-                ~
-                <Input
-                  type="date"
-                  value={formData.military?.serviceEnd || ""}
-                  onChange={(e) =>
-                    handleFormDataChange({
-                      ...formData,
-                      military: {
-                        ...formData.military,
-                        serviceEnd: e.target.value,
-                      },
-                    })
-                  }
-                />
-              </div>
-              <Input
-                type="text"
-                placeholder="군별"
-                value={formData.military?.branch || ""}
+               <Input
+                type="date"
+                value={formData.military?.serviceStart || ""}
                 onChange={(e) =>
                   handleFormDataChange({
                     ...formData,
-                    military: { ...formData.military, branch: e.target.value },
+                    military: {
+                      ...formData.military,
+                      serviceStart: e.target.value,
+                    },
                   })
                 }
+                date-placeholder={text.startDatePlaceholder[language]}
               />
+              ~
+              <Input
+                type="date"
+                value={formData.military?.serviceEnd || ""}
+                onChange={(e) =>
+                  handleFormDataChange({
+                    ...formData,
+                    military: {
+                      ...formData.military,
+                      serviceEnd: e.target.value,
+                    },
+                  })
+                }
+                placeholder={text.endDatePlaceholder[language]}
+              />
+            </div>
               <Input
                 type="text"
-                placeholder="계급"
+                placeholder={text.militaryRank[language]}
                 value={formData.military?.rank || ""}
                 onChange={(e) =>
                   handleFormDataChange({
@@ -232,7 +340,7 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
               />
               <Input
                 type="text"
-                placeholder="병과"
+                placeholder={text.militarySpecialty[language]}
                 value={formData.military?.specialty || ""}
                 onChange={(e) =>
                   handleFormDataChange({
@@ -245,6 +353,23 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
 
             <InputRow marginTop="10px">
               <Select
+                value={formData.military?.branch || ""}
+                onChange={(e) =>
+                  handleFormDataChange({
+                    ...formData,
+                    military: { ...formData.military, branch: e.target.value },
+                  })
+                }
+              >
+              <option value="">{language === 'ko' ? "군별" : "Branch"}</option>
+
+              {text.militaryBranch[language].map((option, idx) => (
+                <option key={idx} value={option}>
+                  {option}
+                </option>
+              ))}
+              </Select>
+              <Select
                 value={formData.military?.served || ""}
                 onChange={(e) =>
                   handleFormDataChange({
@@ -253,14 +378,11 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
                   })
                 }
               >
-                <option value="">병역여부</option>
-                <option value="미필">미필</option>
-                <option value="현역필">현역필</option>
-                <option value="방위필">방위필</option>
-                <option value="공익">공익</option>
-                <option value="면제">면제</option>
-                <option value="직업군인">직업군인</option>
-                <option value="단기사병">단기사병</option>
+              {text.militaryStatusOptions[language].map((option, idx) => (
+                <option key={idx} value={option}>
+                  {option}
+                </option>
+              ))}
               </Select>
 
               <Select
@@ -272,9 +394,11 @@ const Step2Page = ({ language, onChangeLanguage, formData, handleFormDataChange 
                   })
                 }
               >
-                <option value="">보훈대상</option>
-                <option value="대상">대상</option>
-                <option value="비대상">비대상</option>
+              {text.veteranOptions[language].map((option, idx) => (
+                <option key={idx} value={option}>
+                  {option}
+                </option>
+              ))}
               </Select>
             </InputRow>
           </MilitarySection>
@@ -302,10 +426,10 @@ export default Step2Page;
 // 스타일 컴포넌트는 그대로 유지됩니다.
 
 
-const PageWrapper = styled.div`background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff); min-height: 100vh; display: flex; flex-direction: column;`;
+const PageWrapper = styled.div`background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff); min-height: 100vh; min-width:800px; display: flex; flex-direction: column;`;
 const Container = styled.div`flex: 1; padding: 2rem; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; text-align: center;`;
 const Title = styled.h1`font-size: clamp(1.8rem, 3vw, 2.5rem); color: white; margin-top: 100px; margin-bottom: 30px;`;
-const ResumeInput = styled.div`background-color: white; padding: 20px 30px; border-radius: 20px; box-shadow: 3px 3px 10px -3px gray;`;
+const ResumeInput = styled.div`width:800px; background-color: white; padding: 20px 30px; border-radius: 20px; box-shadow: 3px 3px 10px -3px gray;`;
 const InputTitle = styled.h1`margin-top: 0; font-size: 1.2rem;`;
 const InfoSection = styled.div`display: flex; gap: 20px; margin-top: 30px; width: 100%; max-width: 800px;`;
 const PhotoBox = styled.div`width: 120px; height: 150px; border: 1px solid #aaa; display: flex; justify-content: center; align-items: center; flex-shrink: 0; cursor: pointer;`;
@@ -325,7 +449,7 @@ const LinkText = styled.div`color: white; background-color: #146c94; border: 1px
 const PreButton = styled(LinkText)`margin-left: 30px;`;
 const NextButton = styled(LinkText)`text-align: left; margin-right: 30px;`;
 const StepButton = styled.div`width: 100%; max-width: 900px; margin: 50px auto 0; display: flex; justify-content: space-between; align-items: center;`;
-
+const MilitaryBtn = styled.button` padding:5px; margin-left:10px; color: white; background-color:rgb(104, 104, 105); border-radius: 10px; font-size: 0.8rem; cursor: pointer; text-decoration: none; &:hover { color:rgb(104, 104, 105); background-color: white; }`;
 const Stepper = styled.div`
   display: flex;
   justify-content: center;
@@ -361,11 +485,23 @@ const Line = styled.div`
   height: 5px;
   background-color: #146c94;
 `;
-const SectionTitle = styled.h4`
+const SectionTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-top: 10px;
-  text-align: left;
-  font-size: 1.2rem;
   border-bottom: 1px solid black;
   padding-bottom: 0.3rem;
 `;
 
+const SectionTitle = styled.h4`
+  text-align: left;
+  font-size: 1.2rem;
+  margin: 0;
+`;
+
+const RequiredNote = styled.h6`
+  font-size: 0.9rem;
+  margin: 0;
+  color:#146c94;
+`;

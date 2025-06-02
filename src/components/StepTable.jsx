@@ -90,6 +90,9 @@ export { Input, Select };
 
 // 컬럼 정의
 const columnConfigs = {
+  languageSang:{ ko: "상", en: "High" },
+  languageJoong:{ ko: "중", en: "Medium" },
+  languageHa:{ ko: "하", en: "Low" },
   education: {
     ko: ['졸업일', '학교명', '졸업여부', '성적'],
     en: ['Graduation Date', 'School Name', 'Graduation Status', 'Grade'],
@@ -194,15 +197,13 @@ const StyledTable = ({
  
                 if (type === 'languageSkills' && colIndex === 1){
                   Component = selectComponent;
-                  options = ['상', '중', '하'];
-                } else if(type === 'military' && (colIndex === 4 || colIndex === 5))
-                 {
-                  Component = selectComponent;
-                  options = ['예', '아니오'];
+                  options = [columnConfigs.languageSang[language], columnConfigs.languageJoong[language], columnConfigs.languageHa[language]];
                 } else if (type === 'education' && colIndex === 2) {
                   Component = selectComponent;
-                  options = ['졸업', '졸업예정', '수료', '중퇴', '휴학', '재학'];
-                }
+                  options = language === 'ko'
+                    ? ['졸업', '졸업예정', '수료', '중퇴', '휴학', '재학']
+                    : ['Graduated', 'Expected Graduation', 'Completed', 'Withdrawn', 'Leave of Absence', 'Enrolled'];
+}
 
                 return (
                   <Td key={colIndex}>

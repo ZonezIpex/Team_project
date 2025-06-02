@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import changeLangIcon from '../assets/changelanguage.png';
+import logo from '../assets/AirLogo02.png';
 import profileIcon from '../assets/profile.png';
 import menuIcon from '../assets/menu.png';
 import koreaFlag from '../assets/korea.png';
@@ -19,12 +20,6 @@ const HeaderWrapper = styled.header`
   left: 0;
   right: 0;
   box-sizing: border-box;
-`;
-
-const Logo = styled.div`
-  font-size: clamp(1.2rem, 2vw, 1.6rem);
-  font-weight: bold;
-  color: white;
 `;
 
 const IconGroup = styled.div`
@@ -77,12 +72,24 @@ const LangItem = styled.div`
   }
 `;
 
+const Logo = styled.div`
+ cursor: pointer;
+`;
+
 function Header({ onChangeLanguage, language }) {
+  const [isClosing, setIsClosing] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const menuRef = useRef(null);
   const menuButtonRef = useRef(null);
   const langRef = useRef(null);
+
+  const handleNavigation = (url) => {
+    setIsClosing(true);
+    setTimeout(() => {
+      window.location.href = url;
+    }, 400); // 애니메이션 길이와 동일한 시간 설정
+  };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -111,7 +118,17 @@ function Header({ onChangeLanguage, language }) {
   return (
     <>
       <HeaderWrapper>
-        <Logo>AiR</Logo>
+          <Logo onClick={() => handleNavigation('/')}>
+          <img
+            src={logo}
+            style={{
+              margin:0,
+              padding:0,
+              width: '80px',
+              height: '30px',
+            }}
+          />
+          </Logo>
         <IconGroup>
           <div ref={langRef}>
             <Icon

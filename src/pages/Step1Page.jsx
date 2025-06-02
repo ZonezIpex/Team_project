@@ -4,14 +4,14 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router-dom";
 
-import resume1 from "../assets/resume1.png";
-import resume2 from "../assets/resume2.png";
-import resume3 from "../assets/resume3.png";
-import resume4 from "../assets/resume4.png";
-import resume5 from "../assets/resume5.png";
-import resume6 from "../assets/resume6.png";
-import resume7 from "../assets/resume7.png";
-import resume8 from "../assets/resume8.png";
+import resume1 from "../assets/resume01.png";
+import resume2 from "../assets/resume02.png";
+import resume3 from "../assets/resume03.png";
+import resume4 from "../assets/resume04.png";
+import resume5 from "../assets/resume05.png";
+import resume6 from "../assets/resume06.png";
+import resume7 from "../assets/resume07.png";
+import resume8 from "../assets/resume08.png";
 
 const resumeImages = [resume1, resume2, resume3, resume4, resume5, resume6, resume7, resume8];
 const resumeDescriptions = [
