@@ -1,7 +1,7 @@
 // src/loadings/FileScanningLoader.jsx
 import React, { useEffect, useState } from "react"; // React 임포트
 import styled, { keyframes } from "styled-components";
-import api from "../services/api"; // 👈 Axios 인스턴스 경로를 확인해주세요!
+import api from "../api/axios"; // 👈 Axios 인스턴스 경로를 확인해주세요!
 import { useNavigate, useLocation } from "react-router-dom";
 
 const spin = keyframes`
@@ -63,25 +63,29 @@ function FileScanningLoader() {
 
     const processUploadedFile = async () => {
       // 이전 페이지(예: Step1Page)에서 navigate state로 전달받은 데이터
-      const { 
-        fileToScan,       // 사용자가 선택한 File 객체
-        userId,           // 사용자 ID
-        language,         // 현재 언어 설정
+      const {
+        fileToScan, // 사용자가 선택한 File 객체
+        userId, // 사용자 ID
+        language, // 현재 언어 설정
         selectedTemplate, // 선택된 템플릿 정보 (PDF 경로에서는 null일 수 있음)
-        originalFormData  // PDF 업로드 전 다른 단계에서 수집된 formData
+        originalFormData, // PDF 업로드 전 다른 단계에서 수집된 formData
       } = location.state || {}; // location.state가 없을 경우를 대비한 기본값
 
       if (!isMounted) return; // 이미 언마운트되었다면 아무것도 안 함
 
       // 필수 데이터 유효성 검사
       if (!fileToScan || !(fileToScan instanceof File)) {
-        setError("스캔할 PDF 파일이 올바르게 전달되지 않았습니다. 이전 페이지로 돌아가세요.");
+        setError(
+          "스캔할 PDF 파일이 올바르게 전달되지 않았습니다. 이전 페이지로 돌아가세요."
+        );
         setProcessing(false);
         return;
       }
 
       if (!userId) {
-        setError("사용자 ID가 전달되지 않았습니다. 로그인이 필요할 수 있습니다.");
+        setError(
+          "사용자 ID가 전달되지 않았습니다. 로그인이 필요할 수 있습니다."
+        );
         setProcessing(false);
         return;
       }
@@ -95,13 +99,16 @@ function FileScanningLoader() {
         console.log(
           `FileScanningLoader: PDF 업로드 및 스캔 시작 - userId=${userId}, fileName=${fileToScan.name}`
         );
-        
+
         // 백엔드 API 호출 (PDF 업로드 및 텍스트 추출)
         const response = await api.post("/api/resumes/upload", formDataApi);
 
         if (isMounted) {
           const uploadedResume = response.data; // 백엔드에서 반환된 UserResume 객체
-          console.log("FileScanningLoader: PDF 업로드 및 스캔 성공:", uploadedResume);
+          console.log(
+            "FileScanningLoader: PDF 업로드 및 스캔 성공:",
+            uploadedResume
+          );
 
           // 성공 후 AiGeneratingLoader (경로: /loading)로 이동
           // 업로드된 이력서 ID와 필요한 다른 정보들을 state로 전달
@@ -120,10 +127,13 @@ function FileScanningLoader() {
         if (isMounted) {
           let message = "이력서 파일 처리 중 오류가 발생했습니다.";
           if (err.response && err.response.data) {
-            message = err.response.data.message || 
-                      (typeof err.response.data === "string" ? err.response.data : message) || 
-                      err.response.statusText || 
-                      `서버 오류 (${err.response.status})`;
+            message =
+              err.response.data.message ||
+              (typeof err.response.data === "string"
+                ? err.response.data
+                : message) ||
+              err.response.statusText ||
+              `서버 오류 (${err.response.status})`;
           } else if (err.message) {
             message = err.message; // 예: Network Error
           }
@@ -133,21 +143,24 @@ function FileScanningLoader() {
       }
     };
 
-    if (location.state) { // location.state가 있을 때만 파일 처리 시도
-        processUploadedFile();
+    if (location.state) {
+      // location.state가 있을 때만 파일 처리 시도
+      processUploadedFile();
     } else {
-        if (isMounted) {
-            setError("파일 정보를 찾을 수 없습니다. 이전 페이지에서 다시 시도해주세요.");
-            setProcessing(false);
-            // 선택적: 데이터가 없을 경우 몇 초 후 자동으로 이전 페이지로 이동
-            // setTimeout(() => { if (isMounted && navigate) navigate(-1); }, 3000);
-        }
+      if (isMounted) {
+        setError(
+          "파일 정보를 찾을 수 없습니다. 이전 페이지에서 다시 시도해주세요."
+        );
+        setProcessing(false);
+        // 선택적: 데이터가 없을 경우 몇 초 후 자동으로 이전 페이지로 이동
+        // setTimeout(() => { if (isMounted && navigate) navigate(-1); }, 3000);
+      }
     }
 
     return () => {
       isMounted = false; // 컴포넌트 언마운트 시 플래그 설정
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.state]); // location.state가 변경될 때마다 useEffect 실행 (보통 페이지 진입 시 한 번)
 
   // API 처리(성공 또는 실패) 후 페이지 이동을 위한 useEffect
@@ -158,11 +171,10 @@ function FileScanningLoader() {
       // 예시: 에러가 있다면 3초 후 이전 페이지로 이동
       const timer = setTimeout(() => {
         if (navigate) navigate(-1); // 또는 특정 에러 페이지로 이동 navigate('/error-page');
-      }, 3000); 
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [processing, error, navigate]);
-
 
   return (
     <LoaderWrapper>
