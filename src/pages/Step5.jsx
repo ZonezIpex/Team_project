@@ -202,76 +202,18 @@ const textContent = {
       education: "학력 사항",
       career: "경력 사항",
       certificate: "자격증",
-      language: "외국어",
-      military: "병역 사항"
+      language: "외국어 능력",
+      military: "병역 사항",
+      skills: "보유 기술",
+      experience: "주요 경험 및 활동", // App.js formData에 맞춰 추가
+      aiSuggestion: "AI 자기소개서 작성 제안", // ⭐ AI 섹션 제목 추가
     },
     en: {
-      personal: "Personal",
-      education: "Education",
-      career: "Career",
-      certificate: "Certificates",
-      language: "Languages",
-      military: "Military Service"
-    }
-  },
-  sectionText: {
-    ko: {
-      email: "이메일",
-      phone: "전화번호",
-      birth: "생년월일",
-      
-      eduDate: "졸업일",
-      eduName: "학교명",
-      eduStatus: "졸업여부",
-      eduGrade: "성적",
-      
-      carPeriod: "근무기간",
-      carName: "회사명",
-      carPosition: "최종직위",
-      carResponsibilities: "담당업무",
-      
-      language: "언어명",
-      proficiency: "구사정도",
-      testName: "시험명",
-      score: "점수",
-
-      ServicePeriod: "복무기간",
-      Branch: "군별",
-      Rank: "계급",
-      MilitarySpecialty: "병과",
-      ServiceStatus: "병역여부",
-      VeteranStatus: "보훈대상",
+      /* ... 영어 번역 ... */
     },
-    en: {
-      email: "Email",
-      phone: "Phone",
-      birth: "Birth",
-
-      eduDate: "Graduation Date",
-      eduName: "School Name",
-      eduStatus: "Graduation Status",
-      eduGrade: "Grade",
-      
-      carPeriod: "Employment Period",
-      carName: "Company Name",
-      carPosition: "Final Position",
-      carResponsibilities: "Responsibilities",
-      
-      language: "Language",
-      proficiency: "Proficiency",
-      testName: "Test Name",
-      score: "Score",
-      
-      ServicePeriod: "Service Period",
-      Branch: "Branch",
-      Rank: "Rank",
-      MilitarySpecialty: "Military Specialty",
-      ServiceStatus: "Service Status",
-      VeteranStatus: "Veteran Status",
-    }
   },
-  next: { ko: "PDF 다운", en: "PDF DOWNLOAD" },
-  prev: { ko: "이전", en: "Previous" }
+  downloadPDF: { ko: "PDF 다운로드", en: "Download PDF" }, // 버튼 텍스트 수정
+  retryAI: { ko: "AI 제안 다시받기", en: "Regenerate AI Suggestion" }, // 버튼 텍스트 수정
 };
 
 // ====== 컴포넌트 시작 ======
@@ -469,9 +411,6 @@ const ResumePreview = (props) => {
             </Step>
           ))}
         </Stepper>
-
-        <div id="pdf-download" className={`resume-template-${selectedTemplate}`}>
-
         {/* 이력서 내용 전체를 감싸는 div에 ID 부여 */}
         <ResumeWrapper
           id="pdf-download-area"
@@ -490,10 +429,6 @@ const ResumePreview = (props) => {
             )}
 
             <div className="resume-section">
-              <div className="resume-section-title">{getText("sectionTitles", "personal")}</div>
-              <div className="resume-text-line">{getText("sectionText","email")}: {email}</div>
-              <div className="resume-text-line">{getText("sectionText","phone")}: {phone}</div>
-              <div className="resume-text-line">{getText("sectionText","birth")}: {birthYear}.{birthMonth}.{birthDay}</div>
               <div className="resume-section-title">
                 {getText("sectionTitles", "personal")}
               </div>
@@ -539,23 +474,6 @@ const ResumePreview = (props) => {
           </div>{" "}
           {/* End of resume-left */}
           <div className="resume-right">
-            {Array.isArray(education) && education.length > 0 && (
-              <div className="resume-section">
-                <div className="resume-section-title">{getText("sectionTitles", "education")}</div>
-                <table className="resume-table">
-                  <thead>
-                    <tr>
-                      <th>{getText("sectionText", "eduDate")}</th><th>{getText("sectionText", "eduName")}</th><th>{getText("sectionText", "eduStatus")}</th><th>{getText("sectionText", "eduGrade")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {education.map((row, i) => (
-                      <tr key={i}>{row.map((col, j) => <td key={j}>{col || "-"}</td>)}</tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
             {/* 학력 사항 */}
             {Array.isArray(education) &&
               education.length > 0 &&
@@ -590,23 +508,6 @@ const ResumePreview = (props) => {
                 </div>
               )}
 
-            {Array.isArray(career) && career.length > 0 && (
-              <div className="resume-section">
-                <div className="resume-section-title">{getText("sectionTitles", "career")}</div>
-                <table className="resume-table">
-                  <thead>
-                    <tr>
-                      <th>{getText("sectionText", "carPeriod")}</th><th>{getText("sectionText", "carName")}</th><th>{getText("sectionText", "carPosition")}</th><th>{getText("sectionText", "carResponsibilities")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {career.map((row, i) => (
-                      <tr key={i}>{row.map((col, j) => <td key={j}>{col || "-"}</td>)}</tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
             {/* 경력 사항 */}
             {Array.isArray(career) &&
               career.length > 0 &&
@@ -641,43 +542,9 @@ const ResumePreview = (props) => {
                 </div>
               )}
 
-            {military && Object.values(military).some(value => value) && (
             {/* 주요 경험 및 활동 */}
             {Array.isArray(experience) && experience.length > 0 && (
               <div className="resume-section">
-                <div className="resume-section-title">{getText("sectionTitles", "military")}</div>
-                <table className="resume-table">
-                  <thead>
-                    <tr>
-                      <th>{getText("sectionText", "ServicePeriod")}</th><th>{getText("sectionText", "Branch")}</th><th>{getText("sectionText", "Rank")}</th><th>{getText("sectionText", "MilitarySpecialty")}</th><th>{getText("sectionText", "ServiceStatus")}</th><th>{getText("sectionText", "MilitarySpecialty")}</th><th>{getText("sectionText", "VeteranStatus")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        {(military.serviceStart || "-").replace(/-/g, ".")} ~ {(military.serviceEnd || "-").replace(/-/g, ".")}
-                      </td>
-                      <td>
-                        {military.branch}
-                      </td>
-                      <td>
-                        {military.rank}
-                      </td>
-                      <td>
-                        {military.specialty}
-                      </td>
-                      <td>
-                        {military.rank}
-                      </td>
-                      <td>
-                        {military.served}
-                      </td>
-                      <td>
-                        {military.veteran}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
                 <div className="resume-section-title">
                   {getText("sectionTitles", "experience")}
                 </div>
@@ -706,25 +573,6 @@ const ResumePreview = (props) => {
               </div>
             )}
 
-            {Array.isArray(languageSkills) && languageSkills.length > 0 && (
-              <div className="resume-section">
-                <div className="resume-section-title">{getText("sectionTitles", "language")}</div>
-                <table className="resume-table">
-                  <thead>
-                    <tr>
-                      <th>{getText("sectionText", "language")}</th><th>{getText("sectionText", "proficiency")}</th><th>{getText("sectionText", "testName")}</th><th>{getText("sectionText", "score")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {languageSkills.map((row, i) => (
-                      <tr key={i}>{row.map((col, j) => <td key={j}>{col || "-"}</td>)}</tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </div>
             {/* 병역 사항 */}
             {military &&
               Object.values(military).some(
