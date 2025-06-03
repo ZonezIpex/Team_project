@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { login } from '../contexts/AuthService';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api/axios'; 
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // 추가
+import { createGlobalStyle } from 'styled-components';
 
 const Wrapper = styled.div`
   background: linear-gradient(to bottom, #79A7D3, #C3DAF5);
@@ -69,10 +71,59 @@ const SecondaryButton = styled(Button)`
   }
 `;
 
+const PasswordWrapper = styled.div`
+  width: 90%;
+  margin: 10px auto;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+`;
+
+const PasswordInput = styled.input`
+  flex: 1;
+  border: none;
+  font-size: 16px;
+  padding: 10px;
+  outline: none;
+  background: transparent;
+`;
+
+const IconButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 10px;
+`;
+
+
+const GlobalStyle = createGlobalStyle`
+  /* Edge & IE (ms) */
+  input::-ms-reveal {
+    display: none;
+  }
+
+  /* WebKit (Chrome, Safari) */
+  input::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+  }
+
+  input[type="password"]::-webkit-textfield-decoration-container {
+    display: none;
+  }
+
+  /* Firefox (기본 아이콘 없음) */
+`;
+
 function LoginPage({ language, onChangeLanguage }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // 추가
+
   const auth = useAuth();
 
   const text = {
@@ -139,6 +190,7 @@ function LoginPage({ language, onChangeLanguage }) {
 
   return (
     <Wrapper>
+      <GlobalStyle /> {/* ✅ 여기 추가 */}
       <Header language={language} onChangeLanguage={onChangeLanguage} />
       <LoginSection>
         <LoginBox>
@@ -149,12 +201,33 @@ function LoginPage({ language, onChangeLanguage }) {
             value={email}
             onChange={e => setEmail(e.target.value)}
           />
-          <Input
-            type="password"
-            placeholder={t.password}
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
+          <div style={{ position: 'relative', width: '90%', margin: '10px 0', marginLeft: '4px' }}>
+  <Input
+    type={showPassword ? 'text' : 'password'}
+    placeholder={t.password}
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    style={{ paddingRight: '40px', margin: 0 }} // ✅ 스타일 조정
+  />
+  <button
+    type="button"
+    onClick={() => setShowPassword(!showPassword)}
+    style={{
+      position: 'absolute',
+      right: '-8px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      padding: 0
+    }}
+  >
+    {showPassword ? <FaEye size={18} /> : <FaEyeSlash size={18} />}
+  </button>
+</div>
+
+
           <PrimaryButton onClick={handleLogin}>{t.login}</PrimaryButton>
           <SecondaryButton onClick={() => navigate('/signup')}>
             {t.signup}

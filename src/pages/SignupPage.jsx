@@ -104,7 +104,7 @@ const EmailCheckButton = styled.button`
   background-color: #5D9CEC;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s;
 
@@ -373,12 +373,12 @@ const [birth, setBirth] = useState(''); // ✅ 반드시 포함
 
           {/* 이메일 중복 확인 버튼 */}
           <EmailCheckButton
-  type="button"
-  onClick={handleEmailCheck}
-  disabled={isCheckingEmail}
->
-  {isCheckingEmail ? '확인 중...' : '이메일 중복 확인'}
-</EmailCheckButton>
+            type="button"
+            onClick={handleEmailCheck}
+            disabled={isCheckingEmail}
+          >
+            {isCheckingEmail ? '확인 중...' : '이메일 중복 확인'}
+          </EmailCheckButton>
 
 
           {/* 비밀번호 */}
