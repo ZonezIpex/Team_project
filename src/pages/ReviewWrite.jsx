@@ -3,8 +3,8 @@ import styled from "styled-components";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom"; // ✅ useLocation 추가
+import { submitReview, editReview } from "../api/reviewApi"; // ✅ 등록/수정 API 둘 다 import
 
 const texts = {
   ko: {
@@ -38,12 +38,25 @@ const ReviewWrite = () => {
   const [rating, setRating] = useState(0);
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation(); // ✅ 수정일 때 데이터를 전달받음
+  const existingReview = location.state; // ✅ 기존 리뷰 데이터
 
-  const t = texts[language]; // ✅ 다국어 텍스트
+  const t = texts[language];
 
   useEffect(() => {
     localStorage.setItem("language", language);
   }, [language]);
+
+  // ✅ 수정할 리뷰가 있다면 값 채워넣기
+  useEffect(() => {
+    if (existingReview) {
+      setTitle(existingReview.title);
+      setContent(existingReview.content);
+      setRating(existingReview.rating);
+      setImagePreview(existingReview.image); // base64 또는 서버 이미지 경로
+    }
+  }, [existingReview]);
 
   const handleImageClick = () => {
     fileInputRef.current.click();
@@ -62,13 +75,41 @@ const ReviewWrite = () => {
 
   const handleRemoveImage = () => {
     setImagePreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = null;
-    }
+    if (fileInputRef.current) fileInputRef.current.value = null;
   };
 
-  const navigate = useNavigate();
+  // ✅ 등록 + 수정 통합 처리 함수
+  const handleSubmit = async () => {
+  if (!imagePreview) return alert("이미지를 등록해주십시오.");
+  if (rating === 0) return alert("별점을 정해주십시오.");
+  if (title.trim() === "") return alert("제목을 입력해주십시오.");
+  if (content.trim() === "") return alert("내용을 입력해주십시오.");
 
+  const data = {
+    reviewTitle: title,
+    reviewContent: content,
+    reviewRating: rating,
+    imageBase64: imagePreview,
+  };
+  if (existingReview?.id) {
+    data.reviewId = existingReview.id;
+  }
+  console.log("🔥 보내는 데이터:", data);
+
+  try {
+    if (existingReview && existingReview.id) {
+      await editReview(existingReview.id, data); // ✅ 수정 요청
+      alert("✅ 리뷰가 수정되었습니다.");
+    } else {
+      await submitReview(data); // ✅ 등록 요청
+      alert("✅ 등록되었습니다.");
+    }
+    navigate("/review");
+  } catch (err) {
+    console.error("❌ 리뷰 저장 실패:", err);
+    alert("❌ 저장에 실패했습니다.");
+  }
+};
 
   return (
     <PageWrapper>
@@ -96,32 +137,31 @@ const ReviewWrite = () => {
       <RatingSection>
         <Label>{t.rating} :</Label>
         <StarBox>
-  {[1, 2, 3, 4, 5].map((i) => {
-    const full = rating >= i;
-    const half = rating >= i - 0.5 && rating < i;
+          {[1, 2, 3, 4, 5].map((i) => {
+            const full = rating >= i;
+            const half = rating >= i - 0.5 && rating < i;
 
-    return (
-      <Star
-  key={i}
-  onClick={(e) => {
-    const box = e.currentTarget.getBoundingClientRect();
-    const isLeft = e.clientX - box.left < box.width / 2;
-    setRating(isLeft ? i - 0.5 : i);
-  }}
->
-  {full ? (
-    <FaStar color="rgb(255, 230, 0)" />
-  ) : half ? (
-    <FaStarHalfAlt color="rgb(255, 230, 0)" />
-  ) : (
-    <FaRegStar color="#ccc" />
-  )}
-</Star>
-
-    );
-  })}
-</StarBox>
-{rating > 0 && <ScoreText>{rating.toFixed(1)}{t.scoreUnit}</ScoreText>}
+            return (
+              <Star
+                key={i}
+                onClick={(e) => {
+                  const box = e.currentTarget.getBoundingClientRect();
+                  const isLeft = e.clientX - box.left < box.width / 2;
+                  setRating(isLeft ? i - 0.5 : i);
+                }}
+              >
+                {full ? (
+                  <FaStar color="rgb(255, 230, 0)" />
+                ) : half ? (
+                  <FaStarHalfAlt color="rgb(255, 230, 0)" />
+                ) : (
+                  <FaRegStar color="#ccc" />
+                )}
+              </Star>
+            );
+          })}
+        </StarBox>
+        {rating > 0 && <ScoreText>{rating.toFixed(1)}{t.scoreUnit}</ScoreText>}
       </RatingSection>
 
       <TitleInputSection>
@@ -145,44 +185,11 @@ const ReviewWrite = () => {
         />
       </ContentInputSection>
 
-      <SubmitSection>{/*제출하기 버튼 및 백엔드 연동 예정이여서 빈 함수 넣음*/}
-  <SubmitButton
-  onClick={() => {
-    if (!imagePreview) {
-      alert("이미지를 등록해주십시오.");
-      return;
-    }
-    if (rating === 0) {
-      alert("별점을 정해주십시오.");
-      return;
-    }
-    if (title.trim() === "") {
-      alert("제목을 입력해주십시오.");
-      return;
-    }
-    if (content.trim() === "") {
-      alert("내용을 입력해주십시오.");
-      return;
-    }
-
-    const data = {
-      title,
-      content,
-      rating,
-      image: imagePreview,
-    };
-
-    console.log("📤 리뷰 등록 요청 (백엔드 연동 예정)", data);
-    alert("✅ 등록되었습니다."); // ✅ 임시 알림 표시
-    navigate("/review"); // ✅ 알림 확인 후 페이지 이동
-
-    // 나중에 여기에 fetch POST 요청 추가 예정
-    // 예: fetch("/api/reviews", { method: "POST", body: JSON.stringify(data) })
-  }}
->
-  {t.submit}
-</SubmitButton>
-</SubmitSection>
+      <SubmitSection>
+        <SubmitButton onClick={handleSubmit}>
+          {t.submit}
+        </SubmitButton>
+      </SubmitSection>
 
       <Footer language={language} />
     </PageWrapper>

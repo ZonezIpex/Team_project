@@ -1,4 +1,3 @@
-// src/pages/MyPage.jsx
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
@@ -8,229 +7,37 @@ import resume1 from '../assets/이력서이미지.jpg';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const PageWrapper = styled.div`
-  background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-`;
-
-const Content = styled.div`
-  flex: 1;
-  padding: 100px 20px 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const Title = styled.h1`
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
-  color: white;
-  margin-bottom: 40px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-`;
-
-const ProfileSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 25px;
-  margin-bottom: 50px;
-`;
-
-const ProfileImage = styled.img`
-  width: 120px;
-  height: 120px;
-  border-radius: 16px;
-  object-fit: cover;
-  border: 3px solid white;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-`;
-
-const ProfileText = styled.div`
-  color: white;
-  font-size: clamp(1.2rem, 2vw, 1.6rem);
-  font-weight: bold;
-`;
-
-const LinkText = styled.div`
-  color: white;
-  font-size: 1rem;
-  margin-top: 12px;
-  cursor: pointer;
-  text-decoration: underline;
-  transition: color 0.2s;
-
-  &:hover {
-    color: #ffeb3b;
-  }
-`;
-
-const TabContainer = styled.div`
-  width: 100%;
-  max-width: 1000px;
-`;
-
-const TabHeader = styled.div`
-  display: flex;
-  background-color: #d2ecfb;
-  border-radius: 16px 16px 0 0;
-  overflow: hidden;
-`;
-
-const TabButton = styled.button`
-  flex: 1;
-  background-color: ${(props) => (props.active ? "#64a8f0" : "#eaf8ff")};
-  color: ${(props) => (props.active ? "#ffffff" : "#003049")};
-  font-size: 1.05rem;
-  font-weight: 600;
-  padding: 0.9rem 1.2rem;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  border-top-left-radius: ${(props) => (props.position === "left" ? "16px" : "0")};
-  border-top-right-radius: ${(props) => (props.position === "right" ? "16px" : "0")};
-  border-bottom: ${(props) => (props.active ? "none" : "1px solid #ccc")};
-
-  &:hover {
-    background-color: ${(props) => (props.active ? "#64a8f0" : "#d2ecfb")};
-  }
-`;
-
-const TabContentBox = styled.div`
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 0 0 20px 20px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-  padding: 40px 30px;
-`;
-
-const CardList = styled.div`
-  display: flex;
-  gap: 30px;
-  justify-content: center;
-  flex-wrap: wrap;
-`;
-
-const ResumeCard = styled.div`
-  width: 200px;
-  background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-
-  img {
-    width: 100%;
-    height: 260px;
-    object-fit: cover;
-    border-bottom: 1px solid #eee;
-  }
-
-  &:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-  }
-`;
-
-const ReviewCard = styled.div`
-  width: 200px;
-  background-color: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
-  padding: 20px;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-
-  strong {
-    font-weight: 700;
-    font-size: 1rem;
-    display: block;
-    margin-bottom: 5px;
-    color: #333;
-  }
-
-  &:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-  }
-`;
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
-const ModalContent = styled.div`
-  background: #fff;
-  border-radius: 20px;
-  padding: 24px;
-  max-width: 90%;
-  max-height: 90%;
-  overflow: auto;
-  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-  text-align: center;
-
-  img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 12px;
-    margin-bottom: 16px;
-  }
-
-  p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #444;
-  }
-`;
-
 const MyPage = ({ language = 'ko', onChangeLanguage }) => {
-  const [tab, setTab] = useState('resume');
+  const [tab, setTab] = useState('review');
   const [resumeItems, setResumeItems] = useState([]);
   const [reviewItems, setReviewItems] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalImage, setModalImage] = useState(null);
-  const [modalText, setModalText] = useState(null);
-
+  const [selectedReview, setSelectedReview] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
+      const token = localStorage.getItem('token');
       try {
-        const [resumesRes, reviewsRes] = await Promise.all([
-          axios.get('/api/resumes'),
-          axios.get('/api/reviews'),
-        ]);
-        setResumeItems(resumesRes.data);
+        const reviewsRes = await axios.get('/api/reviews/my', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setReviewItems(reviewsRes.data);
       } catch (err) {
-        console.error("데이터 로딩 오류:", err);
+        console.error("리뷰 로딩 오류:", err);
+      }
+
+      try {
+        const resumesRes = await axios.get('/api/resumes', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setResumeItems(resumesRes.data);
+      } catch (err) {
+        console.warn("이력서 로딩 실패:", err);
       }
     };
+
     fetchData();
   }, []);
-
-  const openModal = (image = null, text = null) => {
-    setModalImage(image);
-    setModalText(text);
-    setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-    setModalImage(null);
-    setModalText(null);
-  };
 
   const t = {
     ko: {
@@ -240,8 +47,6 @@ const MyPage = ({ language = 'ko', onChangeLanguage }) => {
       blog: '블로그 🔗',
       resume: '이력서',
       review: '리뷰',
-      reviewTitle: '진짜 최고의 이력서',
-      reviewContent: '이력서 내용이 너무 마음에 들어서 내용이 너무 좋아요.',
       more: '더 보기',
     },
     en: {
@@ -251,8 +56,6 @@ const MyPage = ({ language = 'ko', onChangeLanguage }) => {
       blog: 'Blog 🔗',
       resume: 'Resume',
       review: 'Review',
-      reviewTitle: 'Truly the Best Resume',
-      reviewContent: 'I really loved the content of this resume. It was so impressive.',
       more: 'Load more',
     },
   }[language];
@@ -287,7 +90,7 @@ const MyPage = ({ language = 'ko', onChangeLanguage }) => {
               <>
                 <CardList>
                   {resumeItems.map((item, idx) => (
-                    <ResumeCard key={idx} onClick={() => openModal(item)}>
+                    <ResumeCard key={idx}>
                       <img src={item} alt="Resume" />
                     </ResumeCard>
                   ))}
@@ -300,34 +103,270 @@ const MyPage = ({ language = 'ko', onChangeLanguage }) => {
               <>
                 <CardList>
                   {reviewItems.map((item, idx) => (
-                    <ReviewCard key={idx} onClick={() => openModal(null, item.content)}>
-                      <strong>{item.title}</strong>
-                      ⭐⭐⭐⭐⭐ <br />
-                      {item.content}
+                    <ReviewCard key={item.reviewId || idx} onClick={() => setSelectedReview(item)}>
+                      <img src={item.imageBase64} alt="리뷰 이미지" />
+                      <strong>{item.reviewTitle}</strong>
+                      <RatingBox>
+                        ⭐ {item.reviewRating} &nbsp; ❤️ {item.likeCount}
+                      </RatingBox>
+                      <p>{item.reviewContent.slice(0, 50)}...</p>
+                      <BtnBox>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate('/review/write', {
+                              state: {
+                                id: item.reviewId,
+                                title: item.reviewTitle,
+                                content: item.reviewContent,
+                                rating: item.reviewRating,
+                                image: item.imageBase64,
+                              },
+                            });
+                          }}
+                        >
+                          수정
+                        </button>
+                        <button
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            if (window.confirm('리뷰를 삭제하시겠습니까?')) {
+                              try {
+                                const token = localStorage.getItem('token');
+                                await axios.delete(`/api/reviews/delete/${item.reviewId}`, {
+                                  headers: {
+                                    Authorization: `Bearer ${token}`,
+                                  },
+                                });
+                                setReviewItems((prev) => prev.filter((r) => r.reviewId !== item.reviewId));
+                                alert('삭제되었습니다.');
+                              } catch (err) {
+                                console.error('삭제 실패', err);
+                                alert('삭제에 실패했습니다.');
+                              }
+                            }
+                          }}
+                        >
+                          삭제
+                        </button>
+                      </BtnBox>
                     </ReviewCard>
                   ))}
                 </CardList>
-                <LinkText onClick={() => setReviewItems([...reviewItems, { title: t.reviewTitle, content: t.reviewContent }])}>
-                  + {t.more}
-                </LinkText>
               </>
             )}
           </TabContentBox>
         </TabContainer>
+
+        {selectedReview && (
+          <ModalOverlay onClick={() => setSelectedReview(null)}>
+            <ModalContent onClick={(e) => e.stopPropagation()}>
+              <img src={selectedReview.imageBase64} alt="상세 이미지" />
+              <h2>{selectedReview.reviewTitle}</h2>
+              <p>{selectedReview.reviewContent}</p>
+              <RatingBox>
+                ⭐ {selectedReview.reviewRating} &nbsp; ❤️ {selectedReview.likeCount}
+              </RatingBox>
+              <button onClick={() => setSelectedReview(null)}>닫기</button>
+            </ModalContent>
+          </ModalOverlay>
+        )}
       </Content>
-
       <Footer language={language} />
-
-      {modalOpen && (
-        <ModalOverlay onClick={closeModal}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            {modalImage && <img src={modalImage} alt="확대보기" />}
-            {modalText && <p>{modalText}</p>}
-          </ModalContent>
-        </ModalOverlay>
-      )}
     </PageWrapper>
   );
 };
 
 export default MyPage;
+
+// styled-components
+const PageWrapper = styled.div`
+  background: linear-gradient(to bottom, #88ccf9, #b6e4ff, #d9f3ff, #f1fbff);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;
+const Content = styled.div`
+  flex: 1;
+  padding: 100px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+const Title = styled.h1`
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  color: white;
+  margin-bottom: 40px;
+  font-weight: 700;
+`;
+const ProfileSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-bottom: 50px;
+`;
+const ProfileImage = styled.img`
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 3px solid white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+`;
+const ProfileText = styled.div`
+  color: white;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: bold;
+`;
+const LinkText = styled.div`
+  color: white;
+  font-size: 1rem;
+  margin-top: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  &:hover {
+    color: #ffeb3b;
+  }
+`;
+const TabContainer = styled.div`
+  width: 100%;
+  max-width: 1000px;
+`;
+const TabHeader = styled.div`
+  display: flex;
+  background-color: #d2ecfb;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+`;
+const TabButton = styled.button`
+  flex: 1;
+  background-color: ${(props) => (props.active ? "#64a8f0" : "#eaf8ff")};
+  color: ${(props) => (props.active ? "#ffffff" : "#003049")};
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 0.9rem 1.2rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-top-left-radius: ${(props) => (props.position === "left" ? "16px" : "0")};
+  border-top-right-radius: ${(props) => (props.position === "right" ? "16px" : "0")};
+  border-bottom: ${(props) => (props.active ? "none" : "1px solid #ccc")};
+`;
+const TabContentBox = styled.div`
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  padding: 40px 30px;
+`;
+const CardList = styled.div`
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+`;
+const ResumeCard = styled.div`
+  width: 200px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  cursor: pointer;
+  img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    border-bottom: 1px solid #eee;
+  }
+`;
+const ReviewCard = styled.div`
+  width: 220px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  padding: 16px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  cursor: pointer;
+  word-break: break-all;
+  img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  strong {
+    font-weight: 700;
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+  }
+`;
+
+const RatingBox = styled.div`
+  margin: 8px 0;
+  font-size: 0.9rem;
+  color: #555;
+`;
+
+const BtnBox = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  button {
+    flex: 1;
+    background-color: #4a90e2;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    border: none;
+    cursor: pointer;
+  }
+  button:last-child {
+    background-color: #e74c3c;
+  }
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 16px;
+  text-align: center;
+  img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  h2 {
+    margin: 20px 0 10px;
+  }
+  p {
+    margin-bottom: 15px;
+  }
+  button {
+    padding: 8px 20px;
+    background-color: #64a8f0;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+`;
