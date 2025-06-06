@@ -1,42 +1,66 @@
-import React, { useState, useRef, useCallback,useEffect } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import styled from "styled-components";
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
-import AiGeneratingLoader from '../loadings/AiGeneratingLoader'; // 경로 예시
+import AiGeneratingLoader from "../loadings/AiGeneratingLoader"; // 경로 예시
 
-
-export default function Step4Page({ selectedTemplate, language = 'ko', formData, onChangeLanguage, handleFormDataChange }) {
-  const [isGeneratingModalOpen, setIsGeneratingModalOpen] = useState(false);
+export default function Step4Page({
+  selectedTemplate,
+  language = "ko",
+  formData,
+  onChangeLanguage,
+  handleFormDataChange,
+}) {
+  //const [isGeneratingModalOpen, setIsGeneratingModalOpen] = useState(false);
   const navigate = useNavigate();
-  const fileInputRef = useRef(null);
-  const militaryRefs = useRef({});
+  //const fileInputRef = useRef(null);
+  //const militaryRefs = useRef({});
   const currentStep = 3;
 
-  const Modal = ({ children, onClose }) => {
-    // 모달 배경 클릭 시 닫히게 (선택사항)
-    const handleOverlayClick = (e) => {
-      if (e.target === e.currentTarget) {
-        onClose && onClose();
-      }
-    };
+  // const Modal = ({ children, onClose }) => {
+  //   // 모달 배경 클릭 시 닫히게 (선택사항)
+  //   const handleOverlayClick = (e) => {
+  //     if (e.target === e.currentTarget) {
+  //       onClose && onClose();
+  //     }
+  //   };
 
-    return (
-      <ModalOverlay onClick={handleOverlayClick}>
-        {children}
-      </ModalOverlay>
-    );
-  };
-  const handleStartGenerating = () => {
-    setIsGeneratingModalOpen(true);
-    
-    // 3초 후에 모달 닫고 다음 페이지 이동 (GeneratingPage 역할 대신 여기서 처리)
-    setTimeout(() => {
-      setIsGeneratingModalOpen(false);
-      // 필요한 데이터 넘기기
-      const resumeData = {/* Step4Page에서 준비한 데이터 */};
-      navigate('/step5Page', { state: { selectedTemplate, language } });
-    }, 3000);
+  //   return <ModalOverlay onClick={handleOverlayClick}>{children}</ModalOverlay>;
+  // };
+
+  // const handleStartGenerating = () => {
+  //   //setIsGeneratingModalOpen(true);
+
+  //   // 3초 후에 모달 닫고 다음 페이지 이동 (GeneratingPage 역할 대신 여기서 처리)
+  //   setTimeout(() => {
+  //     setIsGeneratingModalOpen(false);
+  //     // 필요한 데이터 넘기기
+  //     const resumeData = {
+  //       /* Step4Page에서 준비한 데이터 */
+  //     };
+  //     navigate("/step5Page", { state: { selectedTemplate, language } });
+  //   }, 3000);
+  // };
+
+  const handleNavigateToAiLoader = () => {
+    // 데이터 로깅
+    console.log("Step4 -> /loading으로 전달할 데이터", {
+      formData: formData, // 이력서 데이터
+      selectedTemplate: selectedTemplate, // 템플릿 선택
+      language: language, // 언어
+    });
+
+    // 데이터 전달
+    navigate("/loading", {
+      // App.js에 정의된 AiGeneratingLoader 라우트 경로
+      state: {
+        type: "formInput", // 데이터 타입
+        data: formData, // 이력서 데이터
+        selectedTemplate: selectedTemplate, // 템플릿 선택
+        language: language, // 언어
+      },
+    });
   };
 
   const text = {
@@ -63,8 +87,8 @@ export default function Step4Page({ selectedTemplate, language = 'ko', formData,
         military: "Military Service",
       },
     },
-    nullText:{
-      ko:{
+    nullText: {
+      ko: {
         education: "입력된 학력 정보가 없습니다.",
         career: "입력된 경력 정보가 없습니다.",
         certificate: "입력된 자격증 정보가 없습니다.",
@@ -72,14 +96,14 @@ export default function Step4Page({ selectedTemplate, language = 'ko', formData,
         military: "입력된 병역 정보가 없습니다.",
         photo: "사진없음",
       },
-      en:{
+      en: {
         education: "No education information has been entered.",
         career: "No career information has been entered.",
         certificate: "No certificate information has been entered.",
         language: "No language skills have been entered.",
         military: "No military information has been entered.",
         photo: "No photo",
-      }
+      },
     },
     next: { ko: "이력서 생성", en: "Create Resume" },
     prev: { ko: "이전", en: "Previous" },
@@ -97,49 +121,47 @@ export default function Step4Page({ selectedTemplate, language = 'ko', formData,
     address: { ko: "주소", en: "Address" },
 
     military: { ko: "병역 사항", en: "Military Service" },
-    militaryService: {ko: "복무기간", en:"Service Period"},
+    militaryService: { ko: "복무기간", en: "Service Period" },
     militaryBranch: { ko: "군별", en: "Branch" },
-    militaryRank: {ko: "계급", en:"Rank"},
-    militarySpecialty: {ko: "병과", en:"Military Specialty"},
+    militaryRank: { ko: "계급", en: "Rank" },
+    militarySpecialty: { ko: "병과", en: "Military Specialty" },
     militaryServiceStatus: { ko: "병역여부", en: "Service Status" },
-    militaryVeteranStatus: {ko: "보훈대상", en:"Veteran Status"},
+    militaryVeteranStatus: { ko: "보훈대상", en: "Veteran Status" },
 
-    graduationDate: {ko: "졸업일", en:"Graduation Date"},
-    schoolName: {ko: "학교명", en:"School Name"},
-    graduationStatus: {ko: "졸업여부", en:"Graduation Status"},
-    grade: {ko: "성적", en:"Grade"},
+    graduationDate: { ko: "졸업일", en: "Graduation Date" },
+    schoolName: { ko: "학교명", en: "School Name" },
+    graduationStatus: { ko: "졸업여부", en: "Graduation Status" },
+    grade: { ko: "성적", en: "Grade" },
 
-    employmentPeriod: {ko:"근무기간", en:"Employment Period"},
-    companyName: {ko:"회사명", en:"Company Name"},
-    finalPosition: {ko:"최종직위", en:"Final Position"},
-    responsibilities: {ko:"담당업무", en:"Responsibilities"},
+    employmentPeriod: { ko: "근무기간", en: "Employment Period" },
+    companyName: { ko: "회사명", en: "Company Name" },
+    finalPosition: { ko: "최종직위", en: "Final Position" },
+    responsibilities: { ko: "담당업무", en: "Responsibilities" },
 
-    dateAcquisition: {ko:"취득일", en:"Date of Acquisition"},
-    certificateName: {ko:"자격명", en:"Eertificate Name"},
-    Issuer: {ko:"발행처", en:"Issuer"},
+    dateAcquisition: { ko: "취득일", en: "Date of Acquisition" },
+    certificateName: { ko: "자격명", en: "Eertificate Name" },
+    Issuer: { ko: "발행처", en: "Issuer" },
 
-    language: {ko:"언어명", en:"Language"},
-    proficiency: {ko:"구사정도", en:"Proficiency"},
-    testName: {ko:"시험명", en:"Test Name"},
-    score: {ko:"점수", en:"Score"},
-  }
+    language: { ko: "언어명", en: "Language" },
+    proficiency: { ko: "구사정도", en: "Proficiency" },
+    testName: { ko: "시험명", en: "Test Name" },
+    score: { ko: "점수", en: "Score" },
+  };
 
   const getText = (section, key) => {
     const langData = text[section]?.[language] || text[section]?.ko;
-    if (typeof langData === 'string') return langData;
-    return key ? langData?.[key] || '' : langData || '';
+    if (typeof langData === "string") return langData;
+    return key ? langData?.[key] || "" : langData || "";
   };
   useEffect(() => {
     console.log("📦 formData 값 확인:", formData);
   }, [formData]);
 
   return (
-    
     <PageWrapper>
-
       <Header language={language} onChangeLanguage={onChangeLanguage} />
       <Container>
-        <Title>{getText('title')}</Title>
+        <Title>{getText("title")}</Title>
 
         <Stepper>
           {text.steps[language].map((step, index) => (
@@ -162,98 +184,134 @@ export default function Step4Page({ selectedTemplate, language = 'ko', formData,
                 <label>{getText("nullText", "photo")}</label>
               )}
             </PhotoBox>
-              <div style={{display:'flex', flexDirection: 'column', gap: '10px', flex: 1, marginTop:"13px" }}>
-                <LabeledDisplay>
-                  <span>{getText("surname")}</span>
-                  <TextDisplay>{formData.firstName || ""}</TextDisplay>
-                </LabeledDisplay>
-                <LabeledDisplay>
-                  <span>{getText("name")}</span>
-                  <TextDisplay>{formData.name || ""}</TextDisplay>
-                </LabeledDisplay>
-                <LabeledDisplay>
-                  <span>{getText("email")}</span>
-                  <TextDisplay>{formData.email || ""}</TextDisplay>
-                </LabeledDisplay>
-                <LabeledDisplay>
-                  <span>{getText('birth')}</span>
-                  <TextDisplay>{formData.birthYear || ''}</TextDisplay>
-                  <TextDisplay>{formData.birthMonth || ''}</TextDisplay>
-                  <TextDisplay>{formData.birthDay || ''}</TextDisplay>
-                </LabeledDisplay>
-              </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                flex: 1,
+                marginTop: "13px",
+              }}
+            >
+              <LabeledDisplay>
+                <span>{getText("surname")}</span>
+                <TextDisplay>{formData.firstName || ""}</TextDisplay>
+              </LabeledDisplay>
+              <LabeledDisplay>
+                <span>{getText("name")}</span>
+                <TextDisplay>{formData.name || ""}</TextDisplay>
+              </LabeledDisplay>
+              <LabeledDisplay>
+                <span>{getText("email")}</span>
+                <TextDisplay>{formData.email || ""}</TextDisplay>
+              </LabeledDisplay>
+              <LabeledDisplay>
+                <span>{getText("birth")}</span>
+                <TextDisplay>{formData.birthYear || ""}</TextDisplay>
+                <TextDisplay>{formData.birthMonth || ""}</TextDisplay>
+                <TextDisplay>{formData.birthDay || ""}</TextDisplay>
+              </LabeledDisplay>
+            </div>
 
-              <div style={{display:'flex', flexDirection: 'column', gap: '10px', flex: 1, marginTop:"13px" }}>
-                <LabeledDisplay>
-                  <span>{getText("surnameEn")}</span>
-                  <TextDisplay>{formData.firstNameEn || ""}</TextDisplay>
-                </LabeledDisplay>
-                <LabeledDisplay>
-                  <span>{getText("nameEn")}</span>
-                  <TextDisplay>{formData.nameEn || ""}</TextDisplay>
-                </LabeledDisplay>
-                <LabeledDisplay>
-                  <span>{getText("phone")}</span>
-                  <TextDisplay>{formData.phone || ""}</TextDisplay>
-                </LabeledDisplay>
-                <LabeledDisplay>
-                  <span>{getText("address")}</span>
-                  <TextDisplay>{formData.address || ""}</TextDisplay>
-                </LabeledDisplay>
-              </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                flex: 1,
+                marginTop: "13px",
+              }}
+            >
+              <LabeledDisplay>
+                <span>{getText("surnameEn")}</span>
+                <TextDisplay>{formData.firstNameEn || ""}</TextDisplay>
+              </LabeledDisplay>
+              <LabeledDisplay>
+                <span>{getText("nameEn")}</span>
+                <TextDisplay>{formData.nameEn || ""}</TextDisplay>
+              </LabeledDisplay>
+              <LabeledDisplay>
+                <span>{getText("phone")}</span>
+                <TextDisplay>{formData.phone || ""}</TextDisplay>
+              </LabeledDisplay>
+              <LabeledDisplay>
+                <span>{getText("address")}</span>
+                <TextDisplay>{formData.address || ""}</TextDisplay>
+              </LabeledDisplay>
+            </div>
           </InputRow>
         </ResumeInput>
 
         <InputSection>
           <SectionTitle>{getText("sectionTitles", "military")}</SectionTitle>
-          {formData.military && 
-  Object.values(formData.military).some(value => value && value.trim() !== "") ? (
-          <Table>
-            <thead>
-              <tr>
-                <Th>{getText('militaryService')}</Th>
-                <Th>{getText('militaryBranch')}</Th>
-                <Th>{getText('militaryRank')}</Th>
-                <Th>{getText('militarySpecialty')}</Th>
-                <Th>{getText('militaryServiceStatus')}</Th>
-                <Th>{getText('militaryVeteranStatus')}</Th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <Td>
-                  <ValueBox>
-                    {(formData.military.serviceStart || "-").replace(/-/g, ".")} ~ {(formData.military.serviceEnd || "-").replace(/-/g, ".")}
-                  </ValueBox>
-                </Td>
-                <Td><ValueBox>{formData.military.branch || "-"}</ValueBox></Td>
-                <Td><ValueBox>{formData.military.rank || "-"}</ValueBox></Td>
-                <Td><ValueBox>{formData.military.specialty || "-"}</ValueBox></Td>
-                <Td><ValueBox>{formData.military.served || "-"}</ValueBox></Td>
-                <Td><ValueBox>{formData.military.veteran || "-"}</ValueBox></Td>
-              </tr>
-            </tbody>
-          </Table>
-        ) : (
+          {formData.military &&
+          Object.values(formData.military).some(
+            (value) => value && value.trim() !== ""
+          ) ? (
+            <Table>
+              <thead>
+                <tr>
+                  <Th>{getText("militaryService")}</Th>
+                  <Th>{getText("militaryBranch")}</Th>
+                  <Th>{getText("militaryRank")}</Th>
+                  <Th>{getText("militarySpecialty")}</Th>
+                  <Th>{getText("militaryServiceStatus")}</Th>
+                  <Th>{getText("militaryVeteranStatus")}</Th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <Td>
+                    <ValueBox>
+                      {(formData.military.serviceStart || "-").replace(
+                        /-/g,
+                        "."
+                      )}{" "}
+                      ~{" "}
+                      {(formData.military.serviceEnd || "-").replace(/-/g, ".")}
+                    </ValueBox>
+                  </Td>
+                  <Td>
+                    <ValueBox>{formData.military.branch || "-"}</ValueBox>
+                  </Td>
+                  <Td>
+                    <ValueBox>{formData.military.rank || "-"}</ValueBox>
+                  </Td>
+                  <Td>
+                    <ValueBox>{formData.military.specialty || "-"}</ValueBox>
+                  </Td>
+                  <Td>
+                    <ValueBox>{formData.military.served || "-"}</ValueBox>
+                  </Td>
+                  <Td>
+                    <ValueBox>{formData.military.veteran || "-"}</ValueBox>
+                  </Td>
+                </tr>
+              </tbody>
+            </Table>
+          ) : (
             <div>{getText("nullText", "military")}</div>
           )}
 
           <SectionTitle>{getText("sectionTitles", "education")}</SectionTitle>
-          {Array.isArray(formData.education) && formData.education.some(row => row.some(col => col)) ?  (
+          {Array.isArray(formData.education) &&
+          formData.education.some((row) => row.some((col) => col)) ? (
             <Table>
               <thead>
                 <tr>
-                  <Th>{getText('graduationDate')}</Th>
-                  <Th>{getText('schoolName')}</Th>
-                  <Th>{getText('graduationStatus')}</Th>
-                  <Th>{getText('grade')}</Th>
+                  <Th>{getText("graduationDate")}</Th>
+                  <Th>{getText("schoolName")}</Th>
+                  <Th>{getText("graduationStatus")}</Th>
+                  <Th>{getText("grade")}</Th>
                 </tr>
               </thead>
               <tbody>
                 {formData.education.map((row, idx) => (
                   <tr key={idx}>
                     {row.map((col, colIdx) => (
-                      <Td key={colIdx}><ValueBox>{col || "-"}</ValueBox></Td>
+                      <Td key={colIdx}>
+                        <ValueBox>{col || "-"}</ValueBox>
+                      </Td>
                     ))}
                   </tr>
                 ))}
@@ -264,21 +322,24 @@ export default function Step4Page({ selectedTemplate, language = 'ko', formData,
           )}
 
           <SectionTitle>{getText("sectionTitles", "career")}</SectionTitle>
-          {Array.isArray(formData.career) && formData.career.some(row => row.some(col => col)) ? (
+          {Array.isArray(formData.career) &&
+          formData.career.some((row) => row.some((col) => col)) ? (
             <Table>
               <thead>
                 <tr>
-                  <Th>{getText('employmentPeriod')}</Th>
-                  <Th>{getText('companyName')}</Th>
-                  <Th>{getText('finalPosition')}</Th>
-                  <Th>{getText('responsibilities')}</Th>
+                  <Th>{getText("employmentPeriod")}</Th>
+                  <Th>{getText("companyName")}</Th>
+                  <Th>{getText("finalPosition")}</Th>
+                  <Th>{getText("responsibilities")}</Th>
                 </tr>
               </thead>
               <tbody>
                 {formData.career.map((row, idx) => (
                   <tr key={idx}>
                     {row.map((col, colIdx) => (
-                      <Td key={colIdx}><ValueBox>{col || "-"}</ValueBox></Td>
+                      <Td key={colIdx}>
+                        <ValueBox>{col || "-"}</ValueBox>
+                      </Td>
                     ))}
                   </tr>
                 ))}
@@ -289,20 +350,23 @@ export default function Step4Page({ selectedTemplate, language = 'ko', formData,
           )}
 
           <SectionTitle>{getText("sectionTitles", "certificate")}</SectionTitle>
-          {Array.isArray(formData.certificate) && formData.certificate.some(row => row.some(col => col)) ? (
+          {Array.isArray(formData.certificate) &&
+          formData.certificate.some((row) => row.some((col) => col)) ? (
             <Table>
               <thead>
                 <tr>
-                  <Th>{getText('dateAcquisition')}</Th>
-                  <Th>{getText('certificateName')}</Th>
-                  <Th>{getText('Issuer')}</Th>
+                  <Th>{getText("dateAcquisition")}</Th>
+                  <Th>{getText("certificateName")}</Th>
+                  <Th>{getText("Issuer")}</Th>
                 </tr>
               </thead>
               <tbody>
                 {formData.certificate.map((row, idx) => (
                   <tr key={idx}>
                     {row.map((col, colIdx) => (
-                      <Td key={colIdx}><ValueBox>{col || "-"}</ValueBox></Td>
+                      <Td key={colIdx}>
+                        <ValueBox>{col || "-"}</ValueBox>
+                      </Td>
                     ))}
                   </tr>
                 ))}
@@ -313,28 +377,33 @@ export default function Step4Page({ selectedTemplate, language = 'ko', formData,
           )}
 
           <SectionTitle>{getText("sectionTitles", "language")}</SectionTitle>
-          {Array.isArray(formData.languageSkills) && formData.languageSkills.some(row => row.some(col => col)) ? (
+          {Array.isArray(formData.languageSkills) &&
+          formData.languageSkills.some((row) => row.some((col) => col)) ? (
             <Table>
               <thead>
                 <tr>
-                  <Th>{getText('language')}</Th>
-                  <Th>{getText('proficiency')}</Th>
-                  <Th>{getText('testName')}</Th>
-                  <Th>{getText('score')}</Th>
+                  <Th>{getText("language")}</Th>
+                  <Th>{getText("proficiency")}</Th>
+                  <Th>{getText("testName")}</Th>
+                  <Th>{getText("score")}</Th>
                 </tr>
               </thead>
               <tbody>
                 {formData.languageSkills.map((row, idx) => (
                   <tr key={idx}>
                     {row.map((col, colIdx) => (
-                      <Td key={colIdx}><ValueBox>{col || "-"}</ValueBox></Td>
+                      <Td key={colIdx}>
+                        <ValueBox>{col || "-"}</ValueBox>
+                      </Td>
                     ))}
                   </tr>
                 ))}
               </tbody>
             </Table>
           ) : (
-            <div style={{marginBottom:"30px"}}>{getText("nullText", "language")}</div>
+            <div style={{ marginBottom: "30px" }}>
+              {getText("nullText", "language")}
+            </div>
           )}
         </InputSection>
 
@@ -342,14 +411,17 @@ export default function Step4Page({ selectedTemplate, language = 'ko', formData,
           <PreButton onClick={() => navigate("/step3page")}>
             {getText("prev")}
           </PreButton>
-          <NextButton onClick={handleStartGenerating}>
+          <NextButton onClick={handleNavigateToAiLoader}>
             {getText("next")}
           </NextButton>
-      {isGeneratingModalOpen && (
-        <Modal>
-          <AiGeneratingLoader selectedTemplate={selectedTemplate} language={language} />
-        </Modal>
-      )}
+          {/* {isGeneratingModalOpen && (
+            <Modal>
+              <AiGeneratingLoader
+                selectedTemplate={selectedTemplate}
+                language={language}
+              />
+            </Modal>
+          )} */}
         </StepButton>
       </Container>
       <Footer language={language} />
@@ -358,7 +430,6 @@ export default function Step4Page({ selectedTemplate, language = 'ko', formData,
 }
 
 // Styled-components 생략 가능 — Step2와 동일하게 유지하시면 됩니다.
-
 
 // Styled-components
 // 텍스트 출력용 스타일
@@ -370,7 +441,7 @@ const ModalOverlay = styled.div`
   width: 100%;
   height: 100%;
   background: rgba(255, 255, 255, 0.5);
-  
+
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -458,8 +529,9 @@ const Circle = styled.div`
   min-width: 80px;
   height: 80px;
   border-radius: 50%;
-  background-color: ${props => props.index <= props.currentStep ? '#146c94' : 'white'};
-  color: ${props => props.index <= props.currentStep ? 'white' : '#146c94'};
+  background-color: ${(props) =>
+    props.index <= props.currentStep ? "#146c94" : "white"};
+  color: ${(props) => (props.index <= props.currentStep ? "white" : "#146c94")};
   border: 3px solid #146c94;
   font-weight: bold;
   display: flex;
@@ -497,7 +569,7 @@ const SectionTitle = styled.h4`
 const InputRow = styled.div`
   display: flex;
   gap: 10px;
-  margin-top: ${props => props.marginTop || "0"};
+  margin-top: ${(props) => props.marginTop || "0"};
 `;
 
 const InfoSection = styled.div`

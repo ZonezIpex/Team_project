@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useAuth } from '../contexts/AuthContext'; // 경로는 상황에 맞게
+
 
 const TopSection = styled.section`
   min-height: 100vh;
@@ -61,33 +63,49 @@ const WriteButton = styled.button`
 
 function MainTop({ language }) {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const { user } = useAuth(); // ✅ 전역 사용자 정보 사용
 
   const text = {
     ko: {
-      title: ['AI 올인원 플랫폼', '회사 맞춤 이력서를 한번에!'],
-      subtitle: 'AI와 함께 자신만의 이력서를 완성해보세요',
+      title: '이력서 초기 작성 도우미를 통해 \n 작성에 도움을 받으세요',
+      subtitle: '나만의 이력서 만들기',
       button: '이력서 작성하기',
-      greeting: (name) => `안녕하세요, ${name} 님 👋\n당신의 이력서를 준비해볼까요?`,
+      greeting: (name) => (
+      <>
+        {name ? (
+          <>
+            안녕하세요, {name} 님 👋<br />
+            당신의 이력서를 준비해볼까요?
+          </>
+        ) : (
+          <>환영합니다! 👋</>
+        )}
+      </>
+      ),
     },
     en: {
-      title: ['Use the resume assistant', 'to start writing easily'],
+      title:  ['Use the resume assistant', 'to start writing easily'],
       subtitle: '~Start writing your resume~',
       button: 'Start Resume',
-      greeting: (name) => `Hello, ${name}! 👋\nReady to build your resume?`,
-    },
-  };
+      greeting: (name) => (
+      <>
+        {name ? (
+          <>
+            Hello, {name}! 👋<br />
+            Ready to build your resume?
+          </>
+        ) : (
+          <>Welcome! 👋</>
+        )}
+      </>
+    ),
+  },
+};
 
   const t = text[language || 'ko'];
 
-  useEffect(() => {
-    const name = localStorage.getItem('username');
-    if (name) setUsername(name);
-  }, []);
-
   const handleWriteClick = () => {
-    const isLoggedIn = localStorage.getItem('loggedIn');
-    if (isLoggedIn === 'true') {
+    if (user.loggedIn) {
       navigate('/step1page');
     } else {
       navigate('/login');
@@ -96,7 +114,7 @@ function MainTop({ language }) {
 
   return (
     <TopSection>
-      {username && <Greeting>{t.greeting(username)}</Greeting>}
+      {user.username && <Greeting>{t.greeting(user.username)}</Greeting>}
       <Title>
         {Array.isArray(t.title)
           ? t.title.map((line, idx) => (
