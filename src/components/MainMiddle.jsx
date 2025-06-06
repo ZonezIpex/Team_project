@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import resume1 from '../assets/resume1.png';
-import resume2 from '../assets/resume2.png';
+import resume04 from '../assets/resume04.png';
 
 const MiddleSection = styled.section`
   min-height: 100vh;
@@ -36,6 +36,12 @@ const ResumeContainer = styled.div`
   margin-top: 30px;
 `;
 
+const ResumeBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const ResumeImg = styled.img`
   width: clamp(280px, 32vw, 500px);
   height: auto;
@@ -44,27 +50,42 @@ const ResumeImg = styled.img`
   transition: transform 0.3s ease;
 
   &:hover {
-    transform: scale(1.05); // 커지는 효과
+    transform: scale(1.05);
   }
 `;
 
+const ResumeLabel = styled.p`
+  margin-top: 12px;
+  font-size: 1rem;
+  color: #333;
+`;
 
 function MainMiddle({ language }) {
-    const text = {
-      ko: '이력서 비교',
-      en: 'Resume Comparison',
-    };
-  
-    return (
-      <MiddleSection>
-        <SectionTitle>{text[language]}</SectionTitle>
-        <ResumeContainer>
+  const text = {
+    ko: '이력서 비교',
+    en: 'Resume Comparison',
+  };
+
+  const labels = {
+    ko: ['대기업 실제  예시', '작성될 이력서 예시'],
+    en: ['Original Resume', 'Generated Resume'],
+  };
+
+  return (
+    <MiddleSection>
+      <SectionTitle>{text[language]}</SectionTitle>
+      <ResumeContainer>
+        <ResumeBox>
           <ResumeImg src={resume1} alt="이력서1" />
-          <ResumeImg src={resume2} alt="이력서2" />
-        </ResumeContainer>
-      </MiddleSection>
-    );
-  }
-  
+          <ResumeLabel>{labels[language][0]}</ResumeLabel>
+        </ResumeBox>
+        <ResumeBox>
+          <ResumeImg src={resume04} alt="이력서2" />
+          <ResumeLabel>{labels[language][1]}</ResumeLabel>
+        </ResumeBox>
+      </ResumeContainer>
+    </MiddleSection>
+  );
+}
 
 export default MainMiddle;
