@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import resumeImage from "../assets/이력서이미지.jpg";
 import { useNavigate } from "react-router-dom";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import { likeReview } from '../api/reviewApi';
 
 const TOTAL_PER_TYPE = 12;
 
@@ -106,40 +107,47 @@ const ReviewList = () => {
     return [myReviews, sliderMyLiked, setSliderMyLiked, sliderMyLikes, setSliderMyLikes];
   };
 
-  const [sliderReviews, sliderLikedMap, setSliderLikedMap, sliderLikeCountMap, setSliderLikeCountMap] = getSliderData();
+  const getSliderLikeState = () => {
+  if (reviewType === "인기") return [sliderPopularLikes, setSliderPopularLikes];
+  if (reviewType === "최신") return [sliderLatestLikes, setSliderLatestLikes];
+  return [sliderMyLikes, setSliderMyLikes];
+};
+
+
+  const [sliderReviews, sliderLikedMap, setSliderLikedMap] = getSliderData();
 
   const toggleSliderLike = (id) => {
-    console.log("🔥 슬라이더 좋아요 클릭:", id);
-  setSliderLikedMap(prevLiked => {
-    const newLiked = !prevLiked[id];
+  const [likeCountMap, setLikeCountMap] = getSliderLikeState();
 
-    setSliderLikeCountMap(prevCount => ({
+  setSliderLikedMap(prev => {
+    const newLiked = !prev[id];
+    if (!newLiked) return prev;
+
+    setLikeCountMap(prevCount => ({
       ...prevCount,
-      [id]: (prevCount[id] || 0) + (newLiked ? 1 : -1)
+      [id]: (prevCount[id] || 0) + 1,
     }));
 
-    return {
-      ...prevLiked,
-      [id]: newLiked
-    };
+    return { ...prev, [id]: newLiked };
   });
+
+  likeReview(id).catch(err => console.error("좋아요 실패", err));
 };
 
   const toggleBottomLike = (id) => {
-    console.log("🔥 하단 좋아요 클릭:", id);
-  setBottomLikedMap((prevLikedMap) => {
-    const newLiked = !prevLikedMap[id];
+  const alreadyLiked = bottomLikedMap[id];
+  if (alreadyLiked) return;
 
-    setBottomLikeCountMap((prevCount) => ({
-      ...prevCount,
-      [id]: (prevCount[id] || 0) + (newLiked ? 1 : -1),
-    }));
-
-    return {
-      ...prevLikedMap,
-      [id]: newLiked,
-    };
-  });
+  likeReview(id)
+    .then(() => {
+      setBottomLikedMap(prev => ({ ...prev, [id]: true }));
+      setBottomLikeCountMap(prev => ({
+        ...prev,
+        [id]: (prev[id] || 0) + 1
+      }));
+    })
+    .catch(err => console.error("좋아요 실패", err));
+  
 };
 
   const handleCardClick = (review) => {
