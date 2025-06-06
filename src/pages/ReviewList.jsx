@@ -114,7 +114,7 @@ const ReviewList = () => {
 };
 
 
-  const [sliderReviews, sliderLikedMap, setSliderLikedMap] = getSliderData();
+  const [sliderReviews, sliderLikedMap, setSliderLikedMap, sliderLikes, setSliderLikes] = getSliderData();
 
   const toggleSliderLike = (id) => {
   const [likeCountMap, setLikeCountMap] = getSliderLikeState();
@@ -239,7 +239,7 @@ const ReviewList = () => {
                       >
                         {sliderLikedMap[review.id] ? <FaHeart /> : <FaRegHeart />}
                       </HeartButton>
-                      <LikeCountText>{formatLikeCount(sliderLikeCountMap[review.id] || 0)}</LikeCountText>
+                      <LikeCountText>{formatLikeCount(sliderLikes[review.id] || 0)}</LikeCountText>
                       <RatingWrapper>
                         {renderStars(4.5)}
                         <RatingValue>4.5</RatingValue>
