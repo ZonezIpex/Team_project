@@ -148,11 +148,8 @@ function LoginPage({ language, onChangeLanguage }) {
   const t = text[language || 'ko'];
 
   const handleLogin = async () => {
-    try {
-      const { isAdmin } = await login(email, password); // 세션 로그인 요청
-      auth.setUser({ loggedIn: true });
       try {
-        const { token, isAdmin } = await login(email, password); // 서버 요청
+        const { token } = await login(email, password); // 서버 요청
         console.log("Token received:", token); // 토큰 값 확인
 
         if (token) {
@@ -180,12 +177,8 @@ function LoginPage({ language, onChangeLanguage }) {
         }
       } catch (error) {
         console.error(error);
-        alert(t.error); // 로그인 실패 시 에러 메시지
+        alert(t.error);
       }
-    } catch (error) {
-      console.error(error);
-      alert(t.error);
-    }
   };
 
   return (
