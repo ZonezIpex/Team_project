@@ -183,23 +183,8 @@ const [birth, setBirth] = useState(''); // ✅ 반드시 포함
     setEmailMessage('');
     setIsCheckingEmail(true);
 
-    // 임시 테스트 데이터
-    setTimeout(() => {
-      if (fullEmail === 'test@gmail.com') {
-        setEmailMessage('이미 생성된 아이디가 존재합니다.');
-        setIsEmailAvailable(false);
-      } else {
-        setEmailMessage('사용이 가능한 아이디입니다.');
-        setIsEmailAvailable(true);
-      }
-      setIsCheckingEmail(false);
-    }, 500);
-    // 백엔드랑 연동하면 여까지 지워주세요
-  };
-
-  /* 
-  try { // 백엔드랑 연동할때 사용할 코드
-  const res = await axios.post('/api/user/check-email', { email: fullEmail });
+    try { // 백엔드랑 연동할때 사용할 코드
+  const res = await api.post('/api/user/check-email', { email: fullEmail });
   if (res.data.available) {
     setEmailMessage('사용이 가능한 아이디입니다.');
     setIsEmailAvailable(true);
@@ -211,7 +196,9 @@ const [birth, setBirth] = useState(''); // ✅ 반드시 포함
   setEmailMessage('이메일 확인 중 오류가 발생했습니다.');
   setIsEmailAvailable(false);
 }
-*/
+    
+  };
+
 
   const getDaysInMonth = (year, month) => {
     return new Date(year, month, 0).getDate();
