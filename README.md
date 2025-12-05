@@ -5,3 +5,5 @@
 
 ### 취준생, 졸업예정자 등 이력서 작성 경험이 부족한 이들을 위해
 ### AI가 첫 틀을 잡아주고 이후 사용자가 개인의 입맛에 맞게 수정할 수 있습니다
+
+<img width="723" height="720" alt="image" src="https://github.com/user-attachments/assets/c43e6d42-37ac-417a-8231-98b6a1e5f0c1" />
