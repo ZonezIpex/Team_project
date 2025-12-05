@@ -1,4 +1,4 @@
-# Sarm_project
+# AI Resume Maker ( Sarm_project )
 ## 사용자의 포트폴리오, 자기소개서를 받아 내용을 AI가 읽고
 ## 그를 바탕으로 지원하려고 하는 회사의 이력서 양식을 업로드하여
 ## 완성된 AI가 만든 초안 이력서
